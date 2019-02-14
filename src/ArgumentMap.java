@@ -1,0 +1,267 @@
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
+import java.util.HashMap;
+
+/**
+ * Parses and stores command-line arguments into simple key = value pairs.
+ *
+ * @author CS 212 Software Development
+ * @author University of San Francisco
+ */
+public class ArgumentMap {
+	
+
+	/**
+	 * Stores command-line arguments in key = value pairs.
+	 */
+	private final Map<String, String> map;
+	private final Map<String, Integer> flagmap;
+	
+
+	/**
+	 * Initializes this argument map.
+	 */
+	public ArgumentMap() {
+	
+		// TODO Properly initialize map below
+		this.map = new HashMap<>();
+		this.flagmap = new HashMap<>();
+		
+	}
+
+	/**
+	 * Initializes this argument map and then parsers the arguments into flag/value
+	 * pairs where possible. Some flags may not have associated values. If a flag is
+	 * repeated, its value is overwritten.
+	 *
+	 * @param args
+	 */
+	public ArgumentMap(String[] args) {
+		// DO NOT MODIFY; THIS METHOD IS PROVIDED FOR YOU
+		this();
+		parse(args);
+	}
+
+	/**
+	 * Parses the arguments into flag/value pairs where possible. Some flags may not
+	 * have associated values. If a flag is repeated, its value is overwritten.
+	 *
+	 * @param args the command line arguments to parse
+	 */
+	public void parse(String[] args) {
+		// TODO Fill in (modify as necessary)
+		for(int x = 0; x < args.length; x++) {
+			if(isFlag(args[x]) == true && (hasFlag(args[x]) == false)){
+				if(args.length > x+1 && isValue(args[x+1])) {
+					map.put(args[x],args[x+1]);
+				}
+				else {
+					map.put(args[x],null);
+				}
+			}
+			else if(hasFlag(args[x])) {
+				map.put(args[x],null);
+			}
+		}
+//		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	/**
+	 * Determines whether the argument is a flag. Flags start with a dash "-"
+	 * character, followed by at least one other non-whitespace character.
+	 *
+	 * @param arg the argument to test if its a flag
+	 * @return {@code true} if the argument is a flag
+	 *
+	 * @see String#startsWith(String)
+	 * @see String#trim()
+	 * @see String#isEmpty()
+	 * @see String#isBlank()
+	 * @see String#length()
+	 */
+	public static boolean isFlag(String arg) {
+		// TODO Fill in (modify as necessary)
+		if(arg == null){
+			return false;
+		}
+		else if((arg.trim().length()>1)&& (arg.trim().startsWith("-"))) {
+			return true;
+		}
+		else {
+			return false; 
+		}
+		
+//		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	/**
+	 * Determines whether the argument is a value. Values do not start with a dash
+	 * "-" character, and must consist of at least one non-whitespace character.
+	 *
+	 * @param arg the argument to test if its a value
+	 * @return {@code true} if the argument is a value
+	 *
+	 * @see String#startsWith(String)
+	 * @see String#trim()
+	 * @see String#isEmpty()
+	 * @see String#isBlank()
+	 * @see String#length()
+	 */
+	public static boolean isValue(String arg) {
+		// TODO Fill in (modify as necessary)
+		if(arg == null || arg.startsWith("-") || arg.trim().length()< 1) {
+			return false;
+		}
+		else {
+			return true;
+		}
+//		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	/**
+	 * Returns the number of unique flags.
+	 *
+	 * @return number of unique flags
+	 */
+	public int numFlags() {
+		// TODO Fill in (modify as necessary)
+		return map.size();
+//		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	/**
+	 * Determines whether the specified flag exists.
+	 *
+	 * @param flag the flag to search for
+	 * @return {@code true} if the flag exists
+	 */
+	public boolean hasFlag(String flag) {
+		// TODO Fill in (modify as necessary)
+		if(map.containsKey(flag)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+//		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	/**
+	 * Determines whether the specified flag is mapped to a non-null value.
+	 *
+	 * @param flag the flag to search for
+	 * @return {@code true} if the flag is mapped to a non-null value
+	 */
+	public boolean hasValue(String flag) {
+		// TODO Fill in (modify as necessary)
+		if(map.containsKey(flag)) {
+			if(map.get(flag) == null) {
+			    return false;
+			}
+			else {
+				return true;
+			}
+		}
+		else {
+			return false;
+		}
+		//		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	/**
+	 * Returns the value to which the specified flag is mapped as a {@link String},
+	 * or null if there is no mapping for the flag.
+	 *
+	 * @param flag the flag whose associated value is to be returned
+	 * @return the value to which the specified flag is mapped, or {@code null} if
+	 *         there is no mapping for the flag
+	 */
+	public String getString(String flag) {
+	// TODO Fill in (modify as necessary)
+//		if(map.containsKey(flag)) {
+			return map.get(flag);
+//		}
+//		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	/**
+	 * Returns the value to which the specified flag is mapped as a {@link String},
+	 * or the default value if there is no mapping for the flag.
+	 *
+	 * @param flag         the flag whose associated value is to be returned
+	 * @param defaultValue the default value to return if there is no mapping for
+	 *                     the flag
+	 * @return the value to which the specified flag is mapped, or the default value
+	 *         if there is no mapping for the flag
+	 */
+	public String getString(String flag, String defaultValue) {
+		// DO NOT MODIFY; THIS METHOD IS PROVIDED FOR YOU
+		String value = getString(flag);
+		return value == null ? defaultValue : value;
+	}
+
+	
+	/**
+	 * Returns the value to which the specified flag is mapped as a {@link Path}, or
+	 * {@code null} if unable to retrieve this mapping for any reason (including
+	 * being unable to convert the value to a {@link Path} or no value existing for
+	 * this flag).
+	 *
+	 * This method should not throw any exceptions!
+	 *
+	 * @param flag the flag whose associated value is to be returned
+	 * @return the value to which the specified flag is mapped, or {@code null} if
+	 *         unable to retrieve this mapping for any reason
+	 *
+	 * @see Paths#get(String, String...)
+	 */
+	public Path getPath(String flag) {
+		// TODO Fill in (modify as necessary)
+		if(map.get(flag)!= null) {
+			return Paths.get(map.get(flag));
+		}
+		else {
+			return null;
+		}
+//		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+
+	/**
+	 * Returns the value the specified flag is mapped as a {@link Path}, or the
+	 * default value if unable to retrieve this mapping for any reason (including
+	 * being unable to convert the value to a {@link Path} or if no value exists for
+	 * this flag).
+	 *
+	 * This method should not throw any exceptions!
+	 *
+	 * @param flag         the flag whose associated value will be returned
+	 * @param defaultValue the default value to return if there is no valid mapping
+	 *                     for the flag
+	 * @return the value the specified flag is mapped as a {@link Path}, or the
+	 *         default value if there is no valid mapping for the flag
+	 */
+	public Path getPath(String flag, Path defaultValue) {
+		// DO NOT MODIFY; THIS METHOD IS PROVIDED FOR YOU
+		Path value = getPath(flag);
+		return value == null ? defaultValue : value;
+	}
+
+	@Override
+	public String toString() {
+		// DO NOT MODIFY; THIS METHOD IS PROVIDED FOR YOU
+		return this.map.toString();
+	}
+
+	/**
+	 * A simple main method that parses the command-line arguments provided and
+	 * prints the result to the console.
+	 *
+	 * @param args the command-line arguments to parse
+	 */
+	public static void main(String[] args) {
+		// Modify as needed to debug code
+		var map = new ArgumentMap(args);
+		System.out.println(map);
+	}
+}

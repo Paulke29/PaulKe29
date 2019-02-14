@@ -19,7 +19,6 @@ public class Driver {
 	 *
 	 * @param args flag/value pairs used to start this program
 	 */
-	
 	public static void main(String[] args) {
 		// store initial start time
 		Instant start = Instant.now();
