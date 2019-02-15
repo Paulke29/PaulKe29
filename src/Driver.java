@@ -1,6 +1,13 @@
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.HashMap;
+import java.io.Writer;
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -11,14 +18,35 @@ import java.util.Arrays;
  * @version Spring 2019
  */
 public class Driver {
-
 	/**
 	 * Initializes the classes necessary based on the provided command-line
 	 * arguments. This includes (but is not limited to) how to build or search an
 	 * inverted index.
+	 * 
+	 * 
 	 *
 	 * @param args flag/value pairs used to start this program
 	 */
+	
+	/**
+	 * get the information from the file which catch from the path and return JSON writing type
+	 * @param inputfile keystem
+	 * @throws IOException 
+	 */
+	public static TreeMap<String,TreeMap<String,TreeSet<Integer>>> output_information(Path inputfile,String Keystem,Writer writer) throws IOException{
+		/**
+		 * return all the clean words from file in the TreeSet
+		 */
+		TreeSet <String>file_information = TextFileStemmer.stemFile(inputfile);
+		for(String stemcompare : file_information) {
+			if(Keystem.equals(stemcompare)) {
+				writer.write("{");
+				PrettyJSONWriter.quote(Keystem, writer);
+			}
+		}
+		return null;
+		
+	}
 	public static void main(String[] args) {
 		// store initial start time
 		Instant start = Instant.now();
