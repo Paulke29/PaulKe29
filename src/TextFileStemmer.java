@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 import java.io.BufferedReader;
@@ -72,9 +73,9 @@ public class TextFileStemmer {
 	 * @see #stemLine(String)
 	 * @see TextParser#parse(String)
 	 */
-	public static TreeSet<String> stemFile(Path inputFile) throws IOException {
+	public static ArrayList<String> stemFile(Path inputFile) throws IOException {
 		// TODO Fill in
-		TreeSet<String> answer = new TreeSet<>();
+		ArrayList<String> answer = new ArrayList<>();
 		try (BufferedReader read_line = Files.newBufferedReader(inputFile)){
 		    String line = null;
 			while ((line = read_line.readLine()) != null) {
@@ -106,9 +107,9 @@ public class TextFileStemmer {
 
 		System.out.println(stemLine(text));
 
-//		Path inputPath = Paths.get("test", "animals.text");
-		Path inputPath = Paths.get("test", "rfc475.txt");
-		Set<String> actual = TextFileStemmer.stemFile(inputPath);
-		System.out.println(actual);
+////		Path inputPath = Paths.get("test", "animals.text");
+//		Path inputPath = Paths.get("test", "rfc475.txt");
+//		Set<String> actual = TextFileStemmer.stemFile(inputPath);
+//		System.out.println(actual);
 	}
 }

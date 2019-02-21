@@ -1,17 +1,52 @@
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 
 /**
  * A special type of {@link Index} that indexes the locations words were found.
  */
+
 public class WordIndex implements Index<String>{
 	HashMap<String,HashSet<Integer>> answer = new HashMap<>();
 	HashSet<Integer>index;
+	/**
+	 * 
+	 * @param words
+	 * @param file
+	 * @return the position of words with stem in file
+	 */
+	public  TreeMap<String,TreeMap<String,TreeSet<Integer>>> index(Path file) throws IOException {
+		TreeMap<String,TreeMap<String,TreeSet<Integer>>> wordsindex = new TreeMap<>();
+		int number = 1;
+		for(String words : TextFileStemmer.stemFile(file)) {
+			if(!wordsindex.containsKey(words)) {
+				TreeSet<Integer> position = new TreeSet<>();
+				position.add(number);
+				TreeMap<String,TreeSet<Integer>> textindex = new TreeMap<>();
+				textindex.put(file.toString(), position);
+				wordsindex.put(words,textindex);
+			}
+			else {
+				if(wordsindex.containsKey(words) && !wordsindex.get(words).get(file).contains(number)) {
+					wordsindex.get(words).get(file.toString()).add(number);
+				}
+				if(wordsindex.containsKey(words) && !wordsindex.get(words).containsKey(file)) {
+					TreeSet<Integer> position = new TreeSet<>();
+					position.add(number);
+					wordsindex.get(words).put(file.toString(), position);
+				}
+			}
+			number ++;
+		}
+		return wordsindex;
+	}
 	@Override
 	public boolean add(String element, int position) {
 		// TODO Auto-generated method stub
