@@ -1,4 +1,5 @@
 import java.io.IOException;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -37,7 +38,11 @@ public class TextFileStemmer {
 	 * @see #DEFAULT
 	 * @see #stemLine(String, Stemmer)
 	 */
-	public static TreeSet<String> stemLine(String line) {
+//	public static TreeSet<String> stemLine(String line) {
+//		// THIS IS PROVIDED FOR YOU; NO NEED TO MODIFY
+//		return stemLine(line, new SnowballStemmer(DEFAULT));
+//	}
+	public static ArrayList<String> stemLine2(String line) {
 		// THIS IS PROVIDED FOR YOU; NO NEED TO MODIFY
 		return stemLine(line, new SnowballStemmer(DEFAULT));
 	}
@@ -52,9 +57,9 @@ public class TextFileStemmer {
 	 * @see Stemmer#stem(CharSequence)
 	 * @see TextParser#parse(String)
 	 */
-	public static TreeSet<String> stemLine(String line, Stemmer stemmer) {
+	public static ArrayList<String> stemLine(String line, Stemmer stemmer) {
 		// TODO Fill in
-		TreeSet answer = new TreeSet<>();
+		ArrayList answer = new ArrayList<>();
 		for(String words: TextParser.parse(line)) {
 			answer.add(stemmer.stem(words));
 		}
@@ -80,7 +85,7 @@ public class TextFileStemmer {
 		    String line = null;
 			while ((line = read_line.readLine()) != null) {
 				for(String words: TextParser.parse(line)) {
-					answer.addAll(stemLine(words));
+					answer.addAll(stemLine2(words));
 					}
 				
 				}
@@ -105,11 +110,12 @@ public class TextFileStemmer {
 				+ "practicing practis practisants practise practised practiser "
 				+ "practisers practises practising practitioner practitioners";
 
-		System.out.println(stemLine(text));
+		System.out.println(stemLine2(text));
 
-////		Path inputPath = Paths.get("test", "animals.text");
+		Path inputPath = Paths.get("test", "animals.text");
 //		Path inputPath = Paths.get("test", "rfc475.txt");
-//		Set<String> actual = TextFileStemmer.stemFile(inputPath);
+//		ArrayList<String> actual = TextFileStemmer.stemFile(inputPath);
+//		
 //		System.out.println(actual);
 	}
 }

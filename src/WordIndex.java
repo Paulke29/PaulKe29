@@ -34,10 +34,10 @@ public class WordIndex implements Index<String>{
 				wordsindex.put(words,textindex);
 			}
 			else {
-				if(wordsindex.containsKey(words) && !wordsindex.get(words).get(file).contains(number)) {
+				if(wordsindex.containsKey(words) && !wordsindex.get(words).get(file.toString()).contains(number)) {
 					wordsindex.get(words).get(file.toString()).add(number);
 				}
-				if(wordsindex.containsKey(words) && !wordsindex.get(words).containsKey(file)) {
+				if(wordsindex.containsKey(words) && !wordsindex.get(words).containsKey(file.toString())) {
 					TreeSet<Integer> position = new TreeSet<>();
 					position.add(number);
 					wordsindex.get(words).put(file.toString(), position);

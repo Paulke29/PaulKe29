@@ -189,6 +189,50 @@ public class PrettyJSONWriter {
 		
 		writer.write('}');
 	}
+	
+	
+	public static void asNestedObject_file(TreeMap<String,TreeMap<String, TreeSet<Integer>>> elements, Path path) throws IOException {
+		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+			asNestedObject_file(elements, writer, 0);
+		}
+	}
+	public static void asNestedObject_file(TreeMap<String, TreeMap<String, TreeSet<Integer>>> elements,Writer writer, int level)throws IOException{
+		writer.write('{');
+		writer.write('\n'); 
+		if(!elements.isEmpty()) {
+			for(String keys : elements.headMap(elements.lastKey()).keySet()) {
+		    	  quote(keys,writer,level+1);
+		    	  writer.write(": ");
+		    	  for(String filename: elements.get(keys).keySet()) {
+		    		  writer.write('{');
+		    		  writer.write('\n'); 
+		    		  quote(filename,writer,level+1);
+		    		  writer.write(":");
+		    		  asArray(elements.get(keys).get(filename),writer,level+1);
+		    		  writer.write('\n');
+		    		  writer.write('}');
+		    	  }
+//		    	 
+		    	  writer.write(",\n");
+		    	  
+		      	}
+			 quote(elements.lastKey(),writer,level+1);
+	    	 writer.write(": ");
+	    	 for(String filename: elements.get(elements.lastKey()).keySet()) {
+	    		  quote(elements.lastKey(),writer,level+1); 
+	    		  asArray(elements.get(elements.lastKey()).get(filename),writer,level+1);
+	    	 }
+	    	
+	    	
+	    	
+	    	 writer.write("\n");
+	    	 writer.write('}');
+			
+		}
+		else {
+			System.out.print("NO");
+		}
+	}
 
 	/**
 	 * Writes the elements as a nested pretty JSON object to file.

@@ -36,52 +36,61 @@ public class Driver {
 	
 	
 	
-	/**
-	 * catching valid information from file
-	 * @param args
-	 * @return TreeMap without clean format data 
-	 * @throws IOException
-	 */
-//	public static TreeMap<String,TreeMap<String,TreeSet<Integer>>> infor_catching(String[] args) throws IOException  {
-//		TreeMap<String,TreeMap<String,TreeSet<Integer>>>infro_catching = new TreeMap<>();
-//		WordIndex wordindex = new WordIndex();
-//		Path path;
-//        ArgumentMap argumentMap = new ArgumentMap(args);
-//        /**
-//	      * checking whether input has "Path" flag or not"
-//	     */
-//        if(argumentMap.hasFlag("-path") == true) {
-//        	/**
-//        	 * when "-Path" is true, return the directory of the file 
-//        	 */
-//        	path = argumentMap.getPath("-path");
-//        	for(Path file : traverse_file(path)) {
-//        		infro_catching.putAll(wordindex.index(file));
-//        	}
-//        	
-//        	
-//        }
-//        return infro_catching;
-//     
-//	}
-	
-	
 	public static void main(String[] args) throws IOException {
 		// store initial start time
 		Instant start = Instant.now();
 		// TODO Modify this method as necessary.
+		
 		 ArgumentMap argumentMap = new ArgumentMap(args);
 		 WordIndex wordindex = new WordIndex();
 		 Traverse_directoru traverse_file = new Traverse_directoru();
+		 PrettyJSONWriter format = new PrettyJSONWriter();
 		 Path path = null;
+		 Path index = null;
+		
 		 if(argumentMap.hasFlag("-path") == true) {
-			 if(argumentMap.hasFlag("-index") == true)
+			
 			 path = argumentMap.getPath("-path");
-	        	for(Path file : Traverse_directoru.traverse_file(path)){
-	        		wordindex.index(file);
-	        	}
+			 if(argumentMap.hasFlag("-index") == true && argumentMap.hasValue("-index") == true) {
+//				DirectoryStream<Path> listing = Files.newDirectoryStream(path);
+				index = argumentMap.getPath("-index");
+				if(Files.isDirectory(path) == false) {
+					format.asNestedObject_file(wordindex.index(path), index);
+				}
+				else {
+					for(Path file : Traverse_directoru.traverse_file(path)){
+	        		format.asNestedObject_file(wordindex.index(file), index);
+	        		
+					}
+				}
+	        	
+			 }
+			 if(argumentMap.hasFlag("-index") == true && argumentMap.hasValue("-index") == false) {
+				 /**
+				  * how to output as "index.json"
+				  */
+				 index = Paths.get("index.json");
+				 if(Files.isDirectory(path) == false) {
+						format.asNestedObject_file(wordindex.index(path), index);
+				 }
+				 else {
+					 for(Path file : Traverse_directoru.traverse_file(path)){
+		        		format.asNestedObject_file(wordindex.index(file), index);
+		        	}
+				 }  	
+			 }
+//			 if(argumentMap.hasFlag("-index") == false){
+////				 for(Path file : Traverse_directoru.traverse_HTML(path)){
+////		        		wordindex.index(file);
+////		        	}
+//			 }
+			 
 		 }
-       
+		 if(argumentMap.hasFlag("-path") == false) {
+			 System.out.print("NO");
+//			 format.asNestedObject_file(null, Paths.get("index.json"));
+		 }
+//       
 		System.out.println(Arrays.toString(args));
 		
 		// calculate time elapsed and output
