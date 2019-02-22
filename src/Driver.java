@@ -98,9 +98,16 @@ public class Driver {
 				 }
 			 
 		 }
-		 if(argumentMap.hasFlag("-path") == false){
+		 if((argumentMap.hasFlag("-path") == false) || argumentMap == null){
 			 index = Paths.get("index.json");
-			 format.asNestedObject_file(wordindex.index(null), Paths.get("index.json"));
+//			 if(Files.isDirectory(path) == false) {
+//					format.asNestedObject_file(wordindex.index(path), index);
+//			 }
+//			 else {
+//				 for(Path file : Traverse_directoru.traverse_file(path)){
+//	        		format.asNestedObject_file(wordindex.index(file), index);
+//	        	}
+//			 }  	
 		 }
 //       
 		System.out.println(Arrays.toString(args));

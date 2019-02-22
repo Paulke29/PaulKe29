@@ -255,12 +255,15 @@ public class PrettyJSONWriter {
 	    	
 	    	
 	    	
+	    	
 	    	 writer.write("\n");
 	    	 writer.write('}');
 			
 		}
-		else {
-			System.out.print("NO");
+		if(elements.isEmpty()) {
+			writer.write('{');
+			writer.write('\n'); 
+			writer.write("}");
 		}
 	}
 

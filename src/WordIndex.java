@@ -26,6 +26,7 @@ public class WordIndex implements Index<String>{
 		TreeMap<String,TreeMap<String,TreeSet<Integer>>> wordsindex = new TreeMap<>();
 		int number = 1;
 		for(String words : TextFileStemmer.stemFile(file)) {
+			
 			if(!wordsindex.containsKey(words)) {
 				TreeSet<Integer> position = new TreeSet<>();
 				position.add(number);
