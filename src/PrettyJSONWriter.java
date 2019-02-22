@@ -206,10 +206,12 @@ public class PrettyJSONWriter {
 		    	  for(String filename: elements.get(keys).keySet()) {
 		    		  writer.write('{');
 		    		  writer.write('\n'); 
+		    		  indent(writer,level+1);
 		    		  quote(filename,writer,level+1);
-		    		  writer.write(":");
-		    		  asArray(elements.get(keys).get(filename),writer,level+1);
+		    		  writer.write(": ");
+		    		  asArray(elements.get(keys).get(filename),writer,level+2);
 		    		  writer.write('\n');
+		    		  indent(writer,level+1);
 		    		  writer.write('}');
 		    	  }
 //		    	 
@@ -219,8 +221,15 @@ public class PrettyJSONWriter {
 			 quote(elements.lastKey(),writer,level+1);
 	    	 writer.write(": ");
 	    	 for(String filename: elements.get(elements.lastKey()).keySet()) {
-	    		  quote(elements.lastKey(),writer,level+1); 
-	    		  asArray(elements.get(elements.lastKey()).get(filename),writer,level+1);
+	    		  writer.write('{');
+	    		  writer.write('\n'); 
+	    		  indent(writer,level+1);
+	    		  quote(filename,writer,level+1); 
+	    		  writer.write(": ");
+	    		  asArray(elements.get(elements.lastKey()).get(filename),writer,level+2);
+	    		  writer.write('\n'); 
+	    		  indent(writer,level+1);
+	    		  writer.write("}");
 	    	 }
 	    	
 	    	
