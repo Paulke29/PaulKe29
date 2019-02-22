@@ -47,7 +47,28 @@ public class PrettyJSONWriter {
 		writer.write(']');
 //		throw new UnsupportedOperationException("Not yet implemented.");
 	}
-
+	public static void location_format(TreeMap<String,Integer> counting, Writer writer, int level) throws IOException{
+		writer.write('{');
+		writer.write('\n'); 
+		if(!counting.isEmpty()) {
+			for(String keys: counting.headMap(counting.lastKey()).keySet()) {
+				 quote(keys,writer,level+1);
+				 writer.write(": ");
+				 writer.write(counting.get(keys));
+				 writer.write(",\n"); 
+			}
+		}
+		quote(counting.lastKey(),writer,level+1);
+    	writer.write(": ");
+    	writer.write(counting.get(counting.lastKey()));
+    	writer.write('\n'); 
+    	writer.write('}');
+	}
+	public  void location_format(TreeMap<String,Integer> counting, Path path) throws IOException {
+		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+			location_format(counting, writer, 0);
+		}
+	}
 	/**
 	 * Writes the elements as a pretty JSON array to file.
 	 *
@@ -191,7 +212,7 @@ public class PrettyJSONWriter {
 	}
 	
 	
-	public static void asNestedObject_file(TreeMap<String,TreeMap<String, TreeSet<Integer>>> elements, Path path) throws IOException {
+	public  void asNestedObject_file(TreeMap<String,TreeMap<String, TreeSet<Integer>>> elements, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asNestedObject_file(elements, writer, 0);
 		}

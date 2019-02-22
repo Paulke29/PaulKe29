@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
+import java.io.Writer;
 
 /**
  * A special type of {@link Index} that indexes the locations words were found.
@@ -46,6 +46,20 @@ public class WordIndex implements Index<String>{
 			number ++;
 		}
 		return wordsindex;
+	}
+	public TreeMap<String,Integer>word_count(Path file) throws IOException{
+		TreeMap<String,Integer> counting  = new TreeMap<>();
+		HashSet<Path> files = new HashSet<>();
+		Writer writer = null;
+		files.addAll(Traverse_directoru.traverse_file(file));
+		int number = 0;
+		int level = 0;
+		for(Path counting_words : files) {
+			number = TextFileStemmer.stemFile(counting_words).size();
+			counting.put(counting_words.toString(), number);
+		}
+		return counting;
+		
 	}
 	@Override
 	public boolean add(String element, int position) {

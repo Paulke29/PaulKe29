@@ -47,6 +47,7 @@ public class Driver {
 		 PrettyJSONWriter format = new PrettyJSONWriter();
 		 Path path = null;
 		 Path index = null;
+		 Path location = null;
 		
 		 if(argumentMap.hasFlag("-path") == true) {
 			
@@ -79,16 +80,27 @@ public class Driver {
 		        	}
 				 }  	
 			 }
-//			 if(argumentMap.hasFlag("-index") == false){
-////				 for(Path file : Traverse_directoru.traverse_HTML(path)){
-////		        		wordindex.index(file);
-////		        	}
-//			 }
+			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == true){
+				location = argumentMap.getPath("-location");
+				format.location_format(wordindex.word_count(path),location);
+			 }
+			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == false){
+					location = argumentMap.getPath("locations.json");
+					if(Files.isDirectory(path) == false) {
+						format.location_format(wordindex.word_count(path),location);
+					}
+					else {
+						for(Path file : Traverse_directoru.traverse_file(path)){
+			        		format.location_format(wordindex.word_count(file),location);
+			        	}
+					}
+					
+				 }
 			 
 		 }
-		 if(argumentMap.hasFlag("-path") == false) {
-			 System.out.print("NO");
-//			 format.asNestedObject_file(null, Paths.get("index.json"));
+		 if(argumentMap.hasFlag("-path") == false){
+			 index = Paths.get("index.json");
+			 format.asNestedObject_file(wordindex.index(null), Paths.get("index.json"));
 		 }
 //       
 		System.out.println(Arrays.toString(args));
