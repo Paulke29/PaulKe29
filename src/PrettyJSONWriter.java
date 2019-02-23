@@ -5,6 +5,8 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -204,11 +206,11 @@ public class PrettyJSONWriter {
 	    	 writer.write(": ");
 	    	 asArray(elements.get(elements.lastKey()),writer,level+1);
 	    	
-	    	 writer.write("\n");
+//	    	 writer.write("\n");
 			
 		}
 		
-		writer.write('}');
+//		writer.write('}');
 	}
 	
 	
@@ -218,46 +220,46 @@ public class PrettyJSONWriter {
 		}
 	}
 	public static void asNestedObject_file(TreeMap<String, TreeMap<String, TreeSet<Integer>>> elements,Writer writer, int level)throws IOException{
-		writer.write('{');
-		writer.write('\n'); 
+		
 		if(!elements.isEmpty()) {
+			writer.write('{');
+			writer.write('\n'); 
 			for(String keys : elements.headMap(elements.lastKey()).keySet()) {
 		    	  quote(keys,writer,level+1);
 		    	  writer.write(": ");
-		    	  for(String filename: elements.get(keys).keySet()) {
-		    		  writer.write('{');
-		    		  writer.write('\n'); 
-		    		  indent(writer,level+1);
-		    		  quote(filename,writer,level+1);
-		    		  writer.write(": ");
-		    		  asArray(elements.get(keys).get(filename),writer,level+2);
+		    	  asNestedObject(elements.get(keys),writer,level+1);
+//		    	  for(String filename: elements.get(keys).keySet()) {
+//		    		  writer.write('{');
+//		    		  writer.write('\n'); 
+//		    		  indent(writer,level+1);
+//		    		  quote(filename,writer,level+1);
+//		    		  writer.write(": ");
+//		    		  asArray(elements.get(keys).get(filename),writer,level+3);
+//		    		  
+//		    	 } 
 		    		  writer.write('\n');
-		    		  indent(writer,level+1);
+		    		  indent(writer,level+ 1);
 		    		  writer.write('}');
-		    	  }
-//		    	 
-		    	  writer.write(",\n");
+		    		  writer.write(",\n");
 		    	  
-		      	}
+		      }
 			 quote(elements.lastKey(),writer,level+1);
 	    	 writer.write(": ");
-	    	 for(String filename: elements.get(elements.lastKey()).keySet()) {
+	    	
 	    		  writer.write('{');
 	    		  writer.write('\n'); 
 	    		  indent(writer,level+1);
+	    	for(String filename: elements.get(elements.lastKey()).keySet()) {
 	    		  quote(filename,writer,level+1); 
 	    		  writer.write(": ");
-	    		  asArray(elements.get(elements.lastKey()).get(filename),writer,level+2);
+	    		  
+	    		  asArray(elements.get(elements.lastKey()).get(filename),writer,level+3);
+	    	}
 	    		  writer.write('\n'); 
 	    		  indent(writer,level+1);
 	    		  writer.write("}");
-	    	 }
-	    	
-	    	
-	    	
-	    	
-	    	 writer.write("\n");
-	    	 writer.write('}');
+	              writer.write("\n");
+	              writer.write('}');
 			
 		}
 		if(elements.isEmpty()) {

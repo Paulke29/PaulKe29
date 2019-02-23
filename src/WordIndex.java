@@ -16,17 +16,24 @@ import java.io.Writer;
 public class WordIndex implements Index<String>{
 	HashMap<String,HashSet<Integer>> answer = new HashMap<>();
 	HashSet<Integer>index;
+	private static TreeMap<String,TreeMap<String,TreeSet<Integer>>> wordsindex ;
+	private TreeMap<String,TreeMap<String,TreeSet<Integer>>> fileindex = new TreeMap<>();
 	/**
 	 * 
 	 * @param words
 	 * @param file
 	 * @return the position of words with stem in file
 	 */
-	public  TreeMap<String,TreeMap<String,TreeSet<Integer>>> index(Path file) throws IOException {
-		TreeMap<String,TreeMap<String,TreeSet<Integer>>> wordsindex = new TreeMap<>();
+	public WordIndex() {
+		wordsindex = new TreeMap<>();
+	}
+	public TreeMap<String,TreeMap<String,TreeSet<Integer>>> getWordsindex(Path file)throws IOException{
+		return index(file);
+	}
+	public TreeMap<String,TreeMap<String,TreeSet<Integer>>> index(Path file) throws IOException {
+		
 		int number = 1;
 		for(String words : TextFileStemmer.stemFile(file)) {
-			
 			if(!wordsindex.containsKey(words)) {
 				TreeSet<Integer> position = new TreeSet<>();
 				position.add(number);
@@ -34,18 +41,23 @@ public class WordIndex implements Index<String>{
 				textindex.put(file.toString(), position);
 				wordsindex.put(words,textindex);
 			}
-			else {
-				if(wordsindex.containsKey(words) && !wordsindex.get(words).get(file.toString()).contains(number)) {
-					wordsindex.get(words).get(file.toString()).add(number);
-				}
-				if(wordsindex.containsKey(words) && !wordsindex.get(words).containsKey(file.toString())) {
+			else{
+				
+				if(!wordsindex.get(words).containsKey(file.toString())) {
 					TreeSet<Integer> position = new TreeSet<>();
 					position.add(number);
-					wordsindex.get(words).put(file.toString(), position);
+					wordsindex.get(words).put(file.toString(),position);
+					
+				}
+				if(!wordsindex.get(words).get(file.toString()).contains(number)) {
+					wordsindex.get(words).get(file.toString()).add(number);
 				}
 			}
 			number ++;
+			
 		}
+		
+//		System.out.println(wordsindex.size());
 		return wordsindex;
 	}
 	public TreeMap<String,Integer>word_count(Path file) throws IOException{

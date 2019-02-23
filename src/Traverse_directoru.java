@@ -5,24 +5,24 @@ import java.nio.file.Path;
 import java.util.HashSet;
 
 public class Traverse_directoru {
-	public static HashSet<Path> traverse_file(Path path) throws IOException{
-		 HashSet<Path> file = new HashSet<>();
-		 try (DirectoryStream<Path> listing = Files.newDirectoryStream(path)){
-			 for (Path files : listing) {
-				 if ((Files.isDirectory(files) == false) && (files.getFileName().toString().toLowerCase().endsWith("text") || files.getFileName().toString().toLowerCase().endsWith("txt"))){
-					 file.add(files);
-				 }
-				
-		     } 
-		} 
-		 traverse_file(path);
-		 return file;
+	public static HashSet<Path> traverse_file(Path path) throws IOException {
+		HashSet<Path> file = new HashSet<>();
+		
+			try (DirectoryStream<Path> listing = Files.newDirectoryStream(path)) {
+				for (Path files : listing) {
+					if ((Files.isDirectory(files) == false)
+							&& (files.getFileName().toString().toLowerCase().endsWith("text")
+									|| files.getFileName().toString().toLowerCase().endsWith("txt"))) {
+						file.add(files);
+					} 
+					else {
+						file.addAll((traverse_file(files)));
+						}
+					}
+			}
+		return file;
 	}
-	
-	
-	
-	
-	
+
 //	public static HashSet<Path> traverse_HTML(Path path) throws IOException{
 //		 HashSet<Path> file = new HashSet<>();
 //		 try (DirectoryStream<Path> listing = Files.newDirectoryStream(path)){

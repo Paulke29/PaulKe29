@@ -48,7 +48,7 @@ public class Driver {
 		 Path path = null;
 		 Path index = null;
 		 Path location = null;
-		
+		 TreeMap<String,TreeMap<String,TreeSet<Integer>>> filesindex = new TreeMap<>();
 		 if(argumentMap.hasFlag("-path") == true) {
 			
 			 path = argumentMap.getPath("-path");
@@ -56,11 +56,12 @@ public class Driver {
 //				DirectoryStream<Path> listing = Files.newDirectoryStream(path);
 				index = argumentMap.getPath("-index");
 				if(Files.isDirectory(path) == false) {
-					format.asNestedObject_file(wordindex.index(path), index);
+					format.asNestedObject_file(wordindex.getWordsindex(path), index);
 				}
 				else {
 					for(Path file : Traverse_directoru.traverse_file(path)){
-	        		format.asNestedObject_file(wordindex.index(file), index);
+						
+						format.asNestedObject_file(wordindex.getWordsindex(file), index);
 	        		
 					}
 				}
@@ -72,30 +73,31 @@ public class Driver {
 				  */
 				 index = Paths.get("index.json");
 				 if(Files.isDirectory(path) == false) {
-						format.asNestedObject_file(wordindex.index(path), index);
+						format.asNestedObject_file(wordindex.getWordsindex(path), index);
 				 }
 				 else {
 					 for(Path file : Traverse_directoru.traverse_file(path)){
-		        		format.asNestedObject_file(wordindex.index(file), index);
+						 System.out.println("Driver2"+Traverse_directoru.traverse_file(path).size());
+		        		format.asNestedObject_file(wordindex.getWordsindex(file), index);
 		        	}
 				 }  	
 			 }
-			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == true){
-				location = argumentMap.getPath("-location");
-				format.location_format(wordindex.word_count(path),location);
-			 }
-			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == false){
-					location = argumentMap.getPath("locations.json");
-					if(Files.isDirectory(path) == false) {
-						format.location_format(wordindex.word_count(path),location);
-					}
-					else {
-						for(Path file : Traverse_directoru.traverse_file(path)){
-			        		format.location_format(wordindex.word_count(file),location);
-			        	}
-					}
-					
-				 }
+//			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == true){
+//				location = argumentMap.getPath("-location");
+//				format.location_format(wordindex.word_count(path),location);
+//			 }
+//			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == false){
+//					location = argumentMap.getPath("locations.json");
+//					if(Files.isDirectory(path) == false) {
+//						format.location_format(wordindex.word_count(path),location);
+//					}
+//					else {
+//						for(Path file : Traverse_directoru.traverse_file(path)){
+//			        		format.location_format(wordindex.word_count(file),location);
+//			        	}
+//					}
+//					
+//				 }
 			 
 		 }
 		 if((argumentMap.hasFlag("-path") == false) || argumentMap == null){
