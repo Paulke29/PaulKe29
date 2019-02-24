@@ -82,22 +82,22 @@ public class Driver {
 		        	}
 				 }  	
 			 }
-//			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == true){
-//				location = argumentMap.getPath("-location");
-//				format.location_format(wordindex.word_count(path),location);
-//			 }
-//			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == false){
-//					location = argumentMap.getPath("locations.json");
-//					if(Files.isDirectory(path) == false) {
-//						format.location_format(wordindex.word_count(path),location);
-//					}
-//					else {
-//						for(Path file : Traverse_directoru.traverse_file(path)){
-//			        		format.location_format(wordindex.word_count(file),location);
-//			        	}
-//					}
-//					
-//				 }
+			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == true){
+				location = argumentMap.getPath("-location");
+				format.location_format(wordindex.word_count(path),location);
+			 }
+			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == false){
+					location = argumentMap.getPath("locations.json");
+					if(Files.isDirectory(path) == false) {
+						format.location_format(wordindex.word_count(path),location);
+					}
+					else {
+						for(Path file : Traverse_directoru.traverse_file(path)){
+			        		format.location_format(wordindex.word_count(file),location);
+			        	}
+					}
+					
+				 }
 			 
 		 }
 		 if((argumentMap.hasFlag("-path") == false) || argumentMap == null){
