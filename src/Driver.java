@@ -59,7 +59,7 @@ public class Driver {
 					format.asNestedObject_file(wordindex.getWordsindex(path), index);
 				}
 				else {
-					for(Path file : Traverse_directoru.traverse_file(path)){
+					for(Path file : traverse_file.getDirectory(path)){
 						
 						format.asNestedObject_file(wordindex.getWordsindex(file), index);
 	        		
@@ -76,13 +76,14 @@ public class Driver {
 						format.asNestedObject_file(wordindex.getWordsindex(path), index);
 				 }
 				 else {
-					 for(Path file : Traverse_directoru.traverse_file(path)){
+					 for(Path file : traverse_file.getDirectory(path)){
 						 System.out.println("Driver2"+Traverse_directoru.traverse_file(path).size());
 		        		format.asNestedObject_file(wordindex.getWordsindex(file), index);
 		        	}
 				 }  	
 			 }
 			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == true){
+				 System.out.println("Location");
 				location = argumentMap.getPath("-location");
 				format.location_format(wordindex.word_count(path),location);
 			 }
@@ -92,7 +93,7 @@ public class Driver {
 						format.location_format(wordindex.word_count(path),location);
 					}
 					else {
-						for(Path file : Traverse_directoru.traverse_file(path)){
+						for(Path file : traverse_file.getDirectory(path)){
 			        		format.location_format(wordindex.word_count(file),location);
 			        	}
 					}

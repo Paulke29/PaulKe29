@@ -33,6 +33,7 @@ public class WordIndex implements Index<String>{
 	public TreeMap<String,TreeMap<String,TreeSet<Integer>>> index(Path file) throws IOException {
 		
 		int number = 1;
+	if((file.getFileName().toString().toLowerCase().endsWith("text") || file.getFileName().toString().toLowerCase().endsWith("txt"))) {
 		for(String words : TextFileStemmer.stemFile(file)) {
 			if(!wordsindex.containsKey(words)) {
 				TreeSet<Integer> position = new TreeSet<>();
@@ -56,6 +57,7 @@ public class WordIndex implements Index<String>{
 			number ++;
 			
 		}
+	}
 		
 //		System.out.println(wordsindex.size());
 		return wordsindex;
