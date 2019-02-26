@@ -67,6 +67,11 @@ public class PrettyJSONWriter {
     	writer.write('\n'); 
     	writer.write('}');
 	}
+	/**
+	 * @param counting
+	 * @param path
+	 * @throws IOException
+	 */
 	public static void location_format(TreeMap<String,Integer> counting, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			location_format(counting, writer, 0);
@@ -123,7 +128,7 @@ public class PrettyJSONWriter {
 		
       var iterator = elements.keySet().iterator();
       
-      if(! elements.isEmpty()) {
+      if(elements != null) {
 	      for(String keys : elements.headMap(elements.lastKey()).keySet()) {
 	    	  quote(keys,writer,level+1);
 	    	  writer.write(": ");
@@ -193,9 +198,9 @@ public class PrettyJSONWriter {
 		writer.write('\n'); 
 		
 		
-		var iterator = elements.keySet().iterator();
+//		var iterator = elements.keySet().iterator();
 		
-		if(!elements.isEmpty()) {
+		if(elements != null) {
 			for(String keys : elements.headMap(elements.lastKey()).keySet()) {
 		    	  quote(keys,writer,level+1);
 		    	  writer.write(": ");
@@ -220,24 +225,23 @@ public class PrettyJSONWriter {
 			asNestedObject_file(elements, writer, 0);
 		}
 	}
+	/**
+	 * @param elements
+	 * @param writer
+	 * @param level
+	 * @throws IOException
+	 */
 	public static void asNestedObject_file(TreeMap<String, TreeMap<String, TreeSet<Integer>>> elements,Writer writer, int level)throws IOException{
-		
-		if(!elements.isEmpty()) {
+//		System.out.print(elements.size()+"\n");
+		if(!elements.isEmpty()){
 			writer.write('{');
 			writer.write('\n'); 
+			
 			for(String keys : elements.headMap(elements.lastKey()).keySet()) {
 		    	  quote(keys,writer,level+1);
 		    	  writer.write(": ");
 		    	  asNestedObject(elements.get(keys),writer,level+1);
-//		    	  for(String filename: elements.get(keys).keySet()) {
-//		    		  writer.write('{');
-//		    		  writer.write('\n'); 
-//		    		  indent(writer,level+1);
-//		    		  quote(filename,writer,level+1);
-//		    		  writer.write(": ");
-//		    		  asArray(elements.get(keys).get(filename),writer,level+3);
-//		    		  
-//		    	 } 
+
 		    		  writer.write('\n');
 		    		  indent(writer,level+ 1);
 		    		  writer.write('}');
@@ -263,11 +267,21 @@ public class PrettyJSONWriter {
 	              writer.write('}');
 			
 		}
-		if(elements.isEmpty()) {
-			writer.write('{');
-			writer.write('\n'); 
-			writer.write("}");
+//		if(elements == null) {
+//			writer.write('{');
+//			 asNestedObject(null,writer,level+1);
+//			writer.write("}");
+//		}
+	}
+	public  void empty_file( Path path) throws IOException {
+		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+			empty_file( writer);
 		}
+	}
+	public void empty_file(Writer writer) throws IOException {
+		writer.write('{');
+		writer.write('\n');
+		writer.write("}");
 	}
 
 	/**

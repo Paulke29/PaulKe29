@@ -87,7 +87,7 @@ public class Driver {
 				location = argumentMap.getPath("-locations"); 
 				System.out.println("Location");
 				format.location_format(wordindex.getWordcount(path),location);
-			 }
+			 } 
 			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == false){
 					location = argumentMap.getPath("locations.json");
 					if(Files.isDirectory(path) == false) {
@@ -103,15 +103,23 @@ public class Driver {
 			 
 		 }
 		 if((argumentMap.hasFlag("-path") == false) || argumentMap == null){
-			 index = Paths.get("index.json");
-//			 if(Files.isDirectory(path) == false) {
-//					format.asNestedObject_file(wordindex.index(path), index);
-//			 }
-//			 else {
-//				 for(Path file : Traverse_directoru.traverse_file(path)){
-//	        		format.asNestedObject_file(wordindex.index(file), index);
-//	        	}
-//			 }  	
+			 Path file = argumentMap.getPath("-path");
+			 if(argumentMap.hasFlag("-index") == true && argumentMap.hasValue("-index") == true) {
+				 index = argumentMap.getPath("-index"); 
+//				 format.asNestedObject_file(wordindex.getWordsindex(file), index); 
+				 format.empty_file(index);
+			 }
+			 if(argumentMap.hasFlag("-index") == true && argumentMap.hasValue("-index") == false) {
+				  index = Paths.get("index.json");
+//				  format.asNestedObject_file(wordindex.getWordsindex(file), index); 
+				  format.empty_file(index);
+				  
+			 }   
+//			 index = argumentMap.getPath("-index"); 
+//			 format.empty_file(index);
+				
+			 
+			 	
 		 }
 //       
 		System.out.println(Arrays.toString(args));
