@@ -32,20 +32,4 @@ public class Traverse_directoru {
 			}
 		return file;
 	}
-
-//	public static HashSet<Path> traverse_HTML(Path path) throws IOException{
-//		 HashSet<Path> file = new HashSet<>();
-//		 try (DirectoryStream<Path> listing = Files.newDirectoryStream(path)){
-//			 for (Path files : listing) {
-//				 if ((Files.isDirectory(files) == false) && (files.getFileName().toString().toUpperCase().endsWith("HTML"))){
-//					 file.add(files);
-//				 }
-//				 else {
-//					 traverse_file(path);
-//				 }
-//			 }
-//		 }	 
-//		 return file;
-//	}
-
 }

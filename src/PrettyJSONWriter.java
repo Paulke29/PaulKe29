@@ -56,17 +56,18 @@ public class PrettyJSONWriter {
 			for(String keys: counting.headMap(counting.lastKey()).keySet()) {
 				 quote(keys,writer,level+1);
 				 writer.write(": ");
-				 writer.write(counting.get(keys));
+				 writer.write(counting.get(keys).toString());
+//				 writer.flush(); // to-do remove
 				 writer.write(",\n"); 
 			}
 		}
 		quote(counting.lastKey(),writer,level+1);
     	writer.write(": ");
-    	writer.write(counting.get(counting.lastKey()));
+    	writer.write(counting.get(counting.lastKey()).toString());
     	writer.write('\n'); 
     	writer.write('}');
 	}
-	public  void location_format(TreeMap<String,Integer> counting, Path path) throws IOException {
+	public static void location_format(TreeMap<String,Integer> counting, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			location_format(counting, writer, 0);
 		}

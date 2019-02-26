@@ -18,6 +18,7 @@ public class WordIndex implements Index<String>{
 	HashSet<Integer>index;
 	private static TreeMap<String,TreeMap<String,TreeSet<Integer>>> wordsindex ;
 	private TreeMap<String,TreeMap<String,TreeSet<Integer>>> fileindex = new TreeMap<>();
+	private  TreeMap<String,Integer> counting;
 	/**
 	 * 
 	 * @param words
@@ -26,9 +27,13 @@ public class WordIndex implements Index<String>{
 	 */
 	public WordIndex() {
 		wordsindex = new TreeMap<>();
+//		counting = new TreeMap<>();
 	}
 	public TreeMap<String,TreeMap<String,TreeSet<Integer>>> getWordsindex(Path file)throws IOException{
 		return index(file);
+	}
+	public TreeMap<String,Integer>getWordcount(Path file) throws IOException{
+		return word_count(file);
 	}
 	public TreeMap<String,TreeMap<String,TreeSet<Integer>>> index(Path file) throws IOException {
 		
@@ -67,12 +72,25 @@ public class WordIndex implements Index<String>{
 		HashSet<Path> files = new HashSet<>();
 		Writer writer = null;
 		files.addAll(Traverse_directoru.traverse_file(file));
-		int number = 0;
+		
 		int level = 0;
+		
 		for(Path counting_words : files) {
-			number = TextFileStemmer.stemFile(counting_words).size();
-			counting.put(counting_words.toString(), number);
+			int number = 0;
+			if(counting_words.getFileName().toString().toLowerCase().endsWith("text") || counting_words.getFileName().toString().toLowerCase().endsWith("txt")) {
+//			System.out.println(counting_words.getFileName());
+			for(String words: TextFileStemmer.stemFile(counting_words)) {
+				number++;
+				}
+			if(number != 0) {
+				counting.put(counting_words.toString(), number);
+			}
+			
+			}
+			
 		}
+		
+		
 		return counting;
 		
 	}

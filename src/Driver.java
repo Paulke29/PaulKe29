@@ -77,24 +77,25 @@ public class Driver {
 				 }
 				 else {
 					 for(Path file : traverse_file.getDirectory(path)){
-						 System.out.println("Driver2"+Traverse_directoru.traverse_file(path).size());
+//						 System.out.println("Driver2"+Traverse_directoru.traverse_file(path).size());
 		        		format.asNestedObject_file(wordindex.getWordsindex(file), index);
 		        	}
 				 }  	
 			 }
 			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == true){
-				 System.out.println("Location");
-				location = argumentMap.getPath("-location");
-				format.location_format(wordindex.word_count(path),location);
+				
+				location = argumentMap.getPath("-locations"); 
+				System.out.println("Location");
+				format.location_format(wordindex.getWordcount(path),location);
 			 }
 			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == false){
 					location = argumentMap.getPath("locations.json");
 					if(Files.isDirectory(path) == false) {
-						format.location_format(wordindex.word_count(path),location);
+						format.location_format(wordindex.getWordcount(path),location);
 					}
 					else {
 						for(Path file : traverse_file.getDirectory(path)){
-			        		format.location_format(wordindex.word_count(file),location);
+			        		format.location_format(wordindex.getWordcount(file),location);
 			        	}
 					}
 					
