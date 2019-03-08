@@ -1,13 +1,20 @@
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.io.Writer;
+
+// TODO Rename to InvertedIndex
+// TODO Can remove the Index interface and the generic types, since an inverted index and an index are slightly different
+
+/*
+ * TODO Be wary of using static data, especially for mutable objects.
+ * Usually mutable private data is final but not static.
+ */
 
 /**
  * A special type of {@link Index} that indexes the locations words were found.
@@ -21,7 +28,7 @@ public class WordIndex implements Index<String> {
 	private TreeMap<String, Integer> counting;
 
 	/**
-	 * 
+	 *
 	 * @param words
 	 * @param file
 	 * @return the position of words with stem in file
@@ -45,7 +52,7 @@ public class WordIndex implements Index<String> {
 		if (file == null) {
 			wordsindex = null;
 		}
-		if ((file != null) && (file.getFileName().toString().toLowerCase().endsWith("text")
+		if (file != null && (file.getFileName().toString().toLowerCase().endsWith("text")
 				|| file.getFileName().toString().toLowerCase().endsWith("txt"))) {
 			for (String words : TextFileStemmer.stemFile(file)) {
 				if (!wordsindex.containsKey(words)) {

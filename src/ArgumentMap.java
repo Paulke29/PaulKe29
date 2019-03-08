@@ -1,7 +1,7 @@
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Parses and stores command-line arguments into simple key = value pairs.
@@ -10,24 +10,24 @@ import java.util.HashMap;
  * @author University of San Francisco
  */
 public class ArgumentMap {
-	
+
 
 	/**
 	 * Stores command-line arguments in key = value pairs.
 	 */
 	private final Map<String, String> map;
-	private final Map<String, Integer> flagmap;
-	
+	private final Map<String, Integer> flagmap; // TODO Remove
+
 
 	/**
 	 * Initializes this argument map.
 	 */
 	public ArgumentMap() {
-	
+
 		// TODO Properly initialize map below
 		this.map = new HashMap<>();
 		this.flagmap = new HashMap<>();
-		
+
 	}
 
 	/**
@@ -52,7 +52,18 @@ public class ArgumentMap {
 	public void parse(String[] args) {
 		// TODO Fill in (modify as necessary)
 		for(int x = 0; x < args.length; x++) {
-			if(isFlag(args[x]) == true && (hasFlag(args[x]) == false)){
+			/* TODO try to reduce repeated code
+			if (isFlag(args[x])) {
+				if (args.length > x + 1 && isValue(args[x + 1])) {
+					map.put(args[x], args[x + 1]);
+				}
+				else {
+					map.put(args[x], null);
+				}
+			}
+			*/
+
+			if(isFlag(args[x]) == true && hasFlag(args[x]) == false){
 				if(args.length > x+1 && isValue(args[x+1])) {
 					map.put(args[x],args[x+1]);
 				}
@@ -85,13 +96,22 @@ public class ArgumentMap {
 		if(arg == null){
 			return false;
 		}
-		else if((arg.trim().length()>1)&& (arg.trim().startsWith("-"))) {
+		else if(arg.trim().length()>1&& arg.trim().startsWith("-")) {
 			return true;
 		}
 		else {
-			return false; 
+			return false;
 		}
-		
+
+		/* TODO Try this approach for all your other methods
+		if (arg == null) {
+			return false;
+		}
+
+		arg = arg.strip();
+		return arg.length() > 1 && arg.startsWith("-");
+		*/
+
 //		throw new UnsupportedOperationException("Not yet implemented.");
 	}
 
@@ -154,6 +174,8 @@ public class ArgumentMap {
 	 * @return {@code true} if the flag is mapped to a non-null value
 	 */
 	public boolean hasValue(String flag) {
+		// TODO return (map.get(flag) == null);
+
 		// TODO Fill in (modify as necessary)
 		if(map.containsKey(flag)) {
 			if(map.get(flag) == null) {
@@ -201,7 +223,7 @@ public class ArgumentMap {
 		return value == null ? defaultValue : value;
 	}
 
-	
+
 	/**
 	 * Returns the value to which the specified flag is mapped as a {@link Path}, or
 	 * {@code null} if unable to retrieve this mapping for any reason (including
