@@ -100,6 +100,7 @@ public class Driver {
 		Path path = null;
 		Path index = null;
 		Path location = null;
+		Path query = null;
 		TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex = new TreeMap<>();
 		if (argumentMap.hasFlag("-path")) {
 			if (argumentMap.hasValue("-path")) {
@@ -167,6 +168,20 @@ public class Driver {
 					System.out.println(e);
 				}
 				
+			}
+		}
+		if (argumentMap.hasFlag("-query")) {
+			if (argumentMap.hasValue("-query")) {
+				try {
+					query = argumentMap.getPath("-query");
+					TreeSet<String>querystem = new TreeSet<>();
+					for (String words : TextFileStemmer.stemFile(query)) {
+							querystem.add(words);
+					}
+				} catch (IOException e) {
+					System.out.println(e);
+				}
+
 			}
 		}
 
