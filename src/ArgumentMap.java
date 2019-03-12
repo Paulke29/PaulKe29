@@ -16,7 +16,6 @@ public class ArgumentMap {
 	 * Stores command-line arguments in key = value pairs.
 	 */
 	private final Map<String, String> map;
-	private final Map<String, Integer> flagmap; // TODO Remove
 
 
 	/**
@@ -24,9 +23,7 @@ public class ArgumentMap {
 	 */
 	public ArgumentMap() {
 
-		// TODO Properly initialize map below
 		this.map = new HashMap<>();
-		this.flagmap = new HashMap<>();
 
 	}
 
@@ -50,32 +47,16 @@ public class ArgumentMap {
 	 * @param args the command line arguments to parse
 	 */
 	public void parse(String[] args) {
-		// TODO Fill in (modify as necessary)
-		for(int x = 0; x < args.length; x++) {
-			/* TODO try to reduce repeated code
+		for (int x = 0; x < args.length; x++) {
+
 			if (isFlag(args[x])) {
 				if (args.length > x + 1 && isValue(args[x + 1])) {
 					map.put(args[x], args[x + 1]);
-				}
-				else {
+				} else {
 					map.put(args[x], null);
 				}
 			}
-			*/
-
-			if(isFlag(args[x]) == true && hasFlag(args[x]) == false){
-				if(args.length > x+1 && isValue(args[x+1])) {
-					map.put(args[x],args[x+1]);
-				}
-				else {
-					map.put(args[x],null);
-				}
-			}
-			else if(hasFlag(args[x])) {
-				map.put(args[x],null);
-			}
 		}
-//		throw new UnsupportedOperationException("Not yet implemented.");
 	}
 
 	/**
@@ -92,27 +73,13 @@ public class ArgumentMap {
 	 * @see String#length()
 	 */
 	public static boolean isFlag(String arg) {
-		// TODO Fill in (modify as necessary)
-		if(arg == null){
-			return false;
-		}
-		else if(arg.trim().length()>1&& arg.trim().startsWith("-")) {
-			return true;
-		}
-		else {
-			return false;
-		}
 
-		/* TODO Try this approach for all your other methods
 		if (arg == null) {
 			return false;
 		}
 
 		arg = arg.strip();
 		return arg.length() > 1 && arg.startsWith("-");
-		*/
-
-//		throw new UnsupportedOperationException("Not yet implemented.");
 	}
 
 	/**
@@ -136,7 +103,6 @@ public class ArgumentMap {
 		else {
 			return true;
 		}
-//		throw new UnsupportedOperationException("Not yet implemented.");
 	}
 
 	/**
@@ -145,9 +111,7 @@ public class ArgumentMap {
 	 * @return number of unique flags
 	 */
 	public int numFlags() {
-		// TODO Fill in (modify as necessary)
 		return map.size();
-//		throw new UnsupportedOperationException("Not yet implemented.");
 	}
 
 	/**
@@ -164,7 +128,6 @@ public class ArgumentMap {
 		else {
 			return false;
 		}
-//		throw new UnsupportedOperationException("Not yet implemented.");
 	}
 
 	/**
@@ -177,18 +140,15 @@ public class ArgumentMap {
 		// TODO return (map.get(flag) == null);
 
 		// TODO Fill in (modify as necessary)
-		if(map.containsKey(flag)) {
-			if(map.get(flag) == null) {
-			    return false;
-			}
-			else {
+		if (map.containsKey(flag)) {
+			if (map.get(flag) == null) {
+				return false;
+			} else {
 				return true;
 			}
 		}
-		else {
-			return false;
-		}
-		//		throw new UnsupportedOperationException("Not yet implemented.");
+		return (map.get(flag) == null);
+
 	}
 
 	/**
@@ -200,11 +160,7 @@ public class ArgumentMap {
 	 *         there is no mapping for the flag
 	 */
 	public String getString(String flag) {
-	// TODO Fill in (modify as necessary)
-//		if(map.containsKey(flag)) {
 			return map.get(flag);
-//		}
-//		throw new UnsupportedOperationException("Not yet implemented.");
 	}
 
 	/**

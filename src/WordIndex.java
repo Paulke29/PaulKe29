@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.io.Writer;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,29 +22,40 @@ import java.util.TreeSet;
 public class WordIndex implements Index<String> {
 	HashMap<String, HashSet<Integer>> answer = new HashMap<>();
 	HashSet<Integer> index;
-	private static TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordsindex;
-	private TreeMap<String, TreeMap<String, TreeSet<Integer>>> fileindex = new TreeMap<>();
-	private TreeMap<String, Integer> counting;
+	private  TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordsindex;
 
 	/**
 	 *
 	 * @param words
 	 * @param file
-	 * @return the position of words with stem in file
 	 */
 	public WordIndex() {
 		wordsindex = new TreeMap<>();
-//		counting = new TreeMap<>();
 	}
 
+	/**
+	 * @param file
+	 * @return index(file)
+	 * @throws IOException
+	 */
 	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> getWordsindex(Path file) throws IOException {
 		return index(file);
 	}
 
+	/**
+	 * @param file
+	 * @return wordcount class
+	 * @throws IOException
+	 */
 	public TreeMap<String, Integer> getWordcount(Path file) throws IOException {
-		return word_count(file);
+		return wordcount(file);
 	}
 
+	/**
+	 * @param file
+	 * @return the index of words in file
+	 * @throws IOException
+	 */
 	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> index(Path file) throws IOException {
 
 		int number = 1;
@@ -77,24 +87,23 @@ public class WordIndex implements Index<String> {
 
 			}
 		}
-
-//		System.out.println(wordsindex.size());
 		return wordsindex;
 	}
 
-	public TreeMap<String, Integer> word_count(Path file) throws IOException {
+	/**
+	 * @param file
+	 * @return the number of words
+	 * @throws IOException
+	 */
+	public TreeMap<String, Integer> wordcount(Path file) throws IOException {
 		TreeMap<String, Integer> counting = new TreeMap<>();
 		HashSet<Path> files = new HashSet<>();
-		Writer writer = null;
-		files.addAll(Traverse_directoru.traverse_file(file));
-
-		int level = 0;
+		files.addAll(TraverseDirectory.traversefiles(file));
 
 		for (Path counting_words : files) {
 			int number = 0;
 			if (counting_words.getFileName().toString().toLowerCase().endsWith("text")
 					|| counting_words.getFileName().toString().toLowerCase().endsWith("txt")) {
-//			System.out.println(counting_words.getFileName());
 				for (String words : TextFileStemmer.stemFile(counting_words)) {
 					number++;
 				}
@@ -130,7 +139,7 @@ public class WordIndex implements Index<String> {
 
 	@Override
 	public int numPositions(String element) {
-		int number = 0;
+//		int number = 0;
 		if (!answer.containsKey(element)) {
 			return 0;
 		}
@@ -189,7 +198,9 @@ public class WordIndex implements Index<String> {
 			Collection<String> newlist = Collections.unmodifiableCollection(elements);
 			return newlist;
 		} catch (UnsupportedOperationException e) {
-			return (Collection<String>) e;
+			@SuppressWarnings("unchecked")
+			Collection<String> e2 = (Collection<String>) e;
+			return e2;
 		}
 	}
 
@@ -210,7 +221,9 @@ public class WordIndex implements Index<String> {
 
 			}
 		} catch (UnsupportedOperationException e) {
-			return (Collection<Integer>) e;
+			@SuppressWarnings("unchecked")
+			Collection<Integer> e2 = (Collection<Integer>) e;
+			return e2;
 		}
 	}
 

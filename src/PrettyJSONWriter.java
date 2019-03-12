@@ -5,8 +5,6 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -49,6 +47,12 @@ public class PrettyJSONWriter {
 		writer.write(']');
 //		throw new UnsupportedOperationException("Not yet implemented.");
 	}
+	/**
+	 * @param counting
+	 * @param writer
+	 * @param level
+	 * @throws IOException
+	 */
 	public static void location_format(TreeMap<String,Integer> counting, Writer writer, int level) throws IOException{
 		writer.write('{');
 		writer.write('\n'); 
@@ -126,7 +130,7 @@ public class PrettyJSONWriter {
 		writer.write('{');
 		writer.write('\n'); 
 		
-      var iterator = elements.keySet().iterator();
+//      var iterator = elements.keySet().iterator();
       
       if(elements != null) {
 	      for(String keys : elements.headMap(elements.lastKey()).keySet()) {
@@ -220,6 +224,11 @@ public class PrettyJSONWriter {
 	}
 	
 	
+	/**
+	 * @param elements
+	 * @param path
+	 * @throws IOException
+	 */
 	public  void asNestedObject_file(TreeMap<String,TreeMap<String, TreeSet<Integer>>> elements, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asNestedObject_file(elements, writer, 0);
@@ -273,11 +282,19 @@ public class PrettyJSONWriter {
 //			writer.write("}");
 //		}
 	}
+	/**
+	 * @param path
+	 * @throws IOException
+	 */
 	public  void empty_file( Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			empty_file( writer);
 		}
 	}
+	/**
+	 * @param writer
+	 * @throws IOException
+	 */
 	public void empty_file(Writer writer) throws IOException {
 		writer.write('{');
 		writer.write('\n');

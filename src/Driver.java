@@ -95,92 +95,89 @@ public class Driver {
 	 * @param args flag/value pairs used to start this program
 	 * @throws IOException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		// store initial start time
 		Instant start = Instant.now();
 		// TODO Modify this method as necessary.
 
-		 ArgumentMap argumentMap = new ArgumentMap(args);
-		 WordIndex wordindex = new WordIndex();
-		 Traverse_directoru traverse_file = new Traverse_directoru();
-		 PrettyJSONWriter format = new PrettyJSONWriter();
-		 Path path = null;
-		 Path index = null;
-		 Path location = null;
-		 TreeMap<String,TreeMap<String,TreeSet<Integer>>> filesindex = new TreeMap<>();
-		 if(argumentMap.hasFlag("-path") == true) {
-
-			 path = argumentMap.getPath("-path");
-			 if(argumentMap.hasFlag("-index") == true && argumentMap.hasValue("-index") == true) {
-//				DirectoryStream<Path> listing = Files.newDirectoryStream(path);
-				index = argumentMap.getPath("-index");
-				if(Files.isDirectory(path) == false) {
-					format.asNestedObject_file(wordindex.getWordsindex(path), index);
-				}
-				else {
-					for(Path file : traverse_file.getDirectory(path)){
-
-						format.asNestedObject_file(wordindex.getWordsindex(file), index);
-
+		ArgumentMap argumentMap = new ArgumentMap(args);
+		WordIndex wordindex = new WordIndex();
+		TraverseDirectory traversefile = new TraverseDirectory();
+		PrettyJSONWriter format = new PrettyJSONWriter();
+		Path path = null;
+		Path index = null;
+		Path location = null;
+		TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex = new TreeMap<>();
+		if (argumentMap.hasFlag("-path")) {
+			if (argumentMap.hasValue("-path")) {
+				path = argumentMap.getPath("-path");
+				try {
+					if (Files.isDirectory(path) == false) {
+						filesindex.putAll(wordindex.getWordsindex(path));
+					} else {
+						for (Path file : traversefile.getDirectory(path)) {
+							filesindex.putAll(wordindex.getWordsindex(file));
+						}
 					}
+				} catch (IOException e) {
+					System.out.println(e);
+				}
+			} else {
+				try {
+					path = argumentMap.getPath("-path");
+					filesindex = wordindex.getWordsindex(path);
+				} catch (IOException e) {
+					System.out.println(e);
 				}
 
-			 }
-			 if(argumentMap.hasFlag("-index") == true && argumentMap.hasValue("-index") == false) {
-				 /**
-				  * how to output as "index.json"
-				  */
-				 index = Paths.get("index.json");
-				 if(Files.isDirectory(path) == false) {
-						format.asNestedObject_file(wordindex.getWordsindex(path), index);
-				 }
-				 else {
-					 for(Path file : traverse_file.getDirectory(path)){
-//						 System.out.println("Driver2"+Traverse_directoru.traverse_file(path).size());
-		        		format.asNestedObject_file(wordindex.getWordsindex(file), index);
-		        	}
-				 }
-			 }
-			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == true){
-
+			}
+		}
+		if (argumentMap.hasFlag("-index")) {
+			if (argumentMap.hasValue("-index")) {
+				index = argumentMap.getPath("-index");
+				try {
+					format.asNestedObject_file(filesindex, index);
+				} catch (IOException e) {
+					System.out.println(e);
+				}
+			} else {
+				index = Paths.get("index.json");
+				try {
+					format.asNestedObject_file(filesindex, index);
+				} catch (IOException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		if(argumentMap.hasFlag("-locations")) {
+			if(argumentMap.hasValue("-locations")) {
 				location = argumentMap.getPath("-locations");
-				System.out.println("Location");
-				format.location_format(wordindex.getWordcount(path),location);
-			 }
-			 if(argumentMap.hasFlag("-locations") == true && argumentMap.hasValue("-locations") == false){
+				try {
+					PrettyJSONWriter.location_format(wordindex.getWordcount(path),location);
+				}catch (IOException e) {
+					System.out.println(e);
+				}
+			}
+			else {
+				try {
 					location = argumentMap.getPath("locations.json");
 					if(Files.isDirectory(path) == false) {
-						format.location_format(wordindex.getWordcount(path),location);
+						PrettyJSONWriter.location_format(wordindex.getWordcount(path),location);
 					}
 					else {
-						for(Path file : traverse_file.getDirectory(path)){
-			        		format.location_format(wordindex.getWordcount(file),location);
+						for(Path file : traversefile.getDirectory(path)){
+			        		PrettyJSONWriter.location_format(wordindex.getWordcount(file),location);
 			        	}
 					}
-
-				 }
-
-		 }
-		 if(argumentMap.hasFlag("-path") == false || argumentMap == null){
-			 Path file = argumentMap.getPath("-path");
-			 if(argumentMap.hasFlag("-index") == true && argumentMap.hasValue("-index") == true) {
-				 index = argumentMap.getPath("-index");
-//				 format.asNestedObject_file(wordindex.getWordsindex(file), index);
-				 format.empty_file(index);
-			 }
-			 if(argumentMap.hasFlag("-index") == true && argumentMap.hasValue("-index") == false) {
-				  index = Paths.get("index.json");
-//				  format.asNestedObject_file(wordindex.getWordsindex(file), index);
-				  format.empty_file(index);
-
-			 }
-//			 index = argumentMap.getPath("-index");
-//			 format.empty_file(index);
+					
+				}catch (IOException e) {
+					System.out.println(e);
+				}
+				
+			}
+		}
 
 
-
-		 }
-//
 		System.out.println(Arrays.toString(args));
 
 		// calculate time elapsed and output

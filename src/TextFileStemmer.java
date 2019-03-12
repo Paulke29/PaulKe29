@@ -1,12 +1,8 @@
 import java.io.IOException;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.TreeSet;
 import java.io.BufferedReader;
-import java.io.FileReader;
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 import java.nio.file.Files;
@@ -59,9 +55,9 @@ public class TextFileStemmer {
 	 */
 	public static ArrayList<String> stemLine(String line, Stemmer stemmer) {
 		// TODO Fill in
-		ArrayList answer = new ArrayList<>();
+		ArrayList<String>answer = new ArrayList<>();
 		for(String words: TextParser.parse(line)) {
-			answer.add(stemmer.stem(words));
+			answer.add((String) stemmer.stem(words));
 		}
 		return answer;
 //		throw new UnsupportedOperationException("Not yet implemented.");
@@ -112,7 +108,7 @@ public class TextFileStemmer {
 
 		System.out.println(stemLine2(text));
 
-		Path inputPath = Paths.get("test", "animals.text");
+//		Path inputPath = Paths.get("test", "animals.text");
 //		Path inputPath = Paths.get("test", "rfc475.txt");
 //		ArrayList<String> actual = TextFileStemmer.stemFile(inputPath);
 //		
