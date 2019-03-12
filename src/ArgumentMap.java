@@ -35,7 +35,6 @@ public class ArgumentMap {
 	 * @param args
 	 */
 	public ArgumentMap(String[] args) {
-		// DO NOT MODIFY; THIS METHOD IS PROVIDED FOR YOU
 		this();
 		parse(args);
 	}
@@ -95,8 +94,7 @@ public class ArgumentMap {
 	 * @see String#isBlank()
 	 * @see String#length()
 	 */
-	public static boolean isValue(String arg) {
-		// TODO Fill in (modify as necessary)
+	public static boolean isValue(String arg) {	
 		if(arg == null || arg.startsWith("-") || arg.trim().length()< 1) {
 			return false;
 		}
@@ -121,7 +119,6 @@ public class ArgumentMap {
 	 * @return {@code true} if the flag exists
 	 */
 	public boolean hasFlag(String flag) {
-		// TODO Fill in (modify as necessary)
 		if(map.containsKey(flag)) {
 			return true;
 		}
@@ -174,7 +171,6 @@ public class ArgumentMap {
 	 *         if there is no mapping for the flag
 	 */
 	public String getString(String flag, String defaultValue) {
-		// DO NOT MODIFY; THIS METHOD IS PROVIDED FOR YOU
 		String value = getString(flag);
 		return value == null ? defaultValue : value;
 	}
@@ -195,14 +191,13 @@ public class ArgumentMap {
 	 * @see Paths#get(String, String...)
 	 */
 	public Path getPath(String flag) {
-		// TODO Fill in (modify as necessary)
+
 		if(map.get(flag)!= null) {
 			return Paths.get(map.get(flag));
 		}
 		else {
 			return null;
 		}
-//		throw new UnsupportedOperationException("Not yet implemented.");
 	}
 
 	/**
@@ -220,14 +215,12 @@ public class ArgumentMap {
 	 *         default value if there is no valid mapping for the flag
 	 */
 	public Path getPath(String flag, Path defaultValue) {
-		// DO NOT MODIFY; THIS METHOD IS PROVIDED FOR YOU
 		Path value = getPath(flag);
 		return value == null ? defaultValue : value;
 	}
 
 	@Override
 	public String toString() {
-		// DO NOT MODIFY; THIS METHOD IS PROVIDED FOR YOU
 		return this.map.toString();
 	}
 
@@ -238,7 +231,6 @@ public class ArgumentMap {
 	 * @param args the command-line arguments to parse
 	 */
 	public static void main(String[] args) {
-		// Modify as needed to debug code
 		var map = new ArgumentMap(args);
 		System.out.println(map);
 	}
