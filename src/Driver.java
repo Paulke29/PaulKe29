@@ -8,13 +8,6 @@ import java.util.Arrays;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-// TODO Remove old TODO comments
-// TODO Always address any warnings in your code
-
-// TODO Configure Eclipse to remove unused imports every time you save.
-// TODO Check Piazza for how to configure Eclipse to give you Javadoc warnings.
-// TODO Make sure to format code before code review (can use the built in formatter and built in correct indentation feature)
-// TODO "Clean up" of any old print statements and commented out code
 
 /*
  * TODO Exception Handling...
