@@ -170,8 +170,20 @@ public class Driver {
 				
 			}
 		}
+		if (argumentMap.hasFlag("-query")) {
+			if (argumentMap.hasValue("-query")) {
+				try {
+					query = argumentMap.getPath("-query");
+					TreeSet<String>querystem = new TreeSet<>();
+					for (String words : TextFileStemmer.stemFile(query)) {
+							querystem.add(words);
+					}
+				} catch (IOException e) {
+					System.out.println(e);
+				}
 
-
+			}
+		}
 
 		System.out.println(Arrays.toString(args));
 
