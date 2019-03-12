@@ -10,7 +10,7 @@ import java.util.Map;
  * @author University of San Francisco
  */
 public class ArgumentMap {
-
+  
 
 	/**
 	 * Stores command-line arguments in key = value pairs.
