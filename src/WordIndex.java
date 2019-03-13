@@ -23,7 +23,7 @@ public class WordIndex implements Index<String> {
 	HashMap<String, HashSet<Integer>> answer = new HashMap<>();
 	HashSet<Integer> index;
 	private  TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordsindex;
-
+    private  TreeSet<String> querywords;
 	/**
 	 *
 	 * @param words
@@ -31,6 +31,7 @@ public class WordIndex implements Index<String> {
 	 */
 	public WordIndex() {
 		wordsindex = new TreeMap<>();
+		querywords = new TreeSet<>();
 	}
 
 	/**
@@ -50,7 +51,27 @@ public class WordIndex implements Index<String> {
 	public TreeMap<String, Integer> getWordcount(Path file) throws IOException {
 		return wordcount(file);
 	}
-
+	/**
+	 * @param file
+	 * @return getQueryword(file)
+	 * @throws IOException
+	 */
+	public TreeSet<String>getQuery(Path file) throws IOException {
+		return getQueryword(file);
+	}
+	
+	/**
+	 * @param file
+	 * @return a tree set of stem query words
+	 * @throws IOException
+	 */
+	public TreeSet<String> getQueryword(Path file) throws IOException{
+		for (String words : TextFileStemmer.stemFile(file)){
+			querywords.add(words);
+		}
+		return querywords;
+		
+	}
 	/**
 	 * @param file
 	 * @return the index of words in file

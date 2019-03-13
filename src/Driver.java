@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-
 /*
  * TODO Exception Handling...
  * When Driver.main throws an exception, the user will see a stack trace.
@@ -101,7 +100,9 @@ public class Driver {
 		Path index = null;
 		Path location = null;
 		Path query = null;
+		Path result = null;
 		TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex = new TreeMap<>();
+		TreeSet<String> queryfile = new TreeSet<>();
 		if (argumentMap.hasFlag("-path")) {
 			if (argumentMap.hasValue("-path")) {
 				path = argumentMap.getPath("-path");
@@ -143,45 +144,71 @@ public class Driver {
 				}
 			}
 		}
-		if(argumentMap.hasFlag("-locations")) {
-			if(argumentMap.hasValue("-locations")) {
+		if (argumentMap.hasFlag("-locations")) {
+			if (argumentMap.hasValue("-locations")) {
 				location = argumentMap.getPath("-locations");
 				try {
-					PrettyJSONWriter.location_format(wordindex.getWordcount(path),location);
-				}catch (IOException e) {
+					PrettyJSONWriter.location_format(wordindex.getWordcount(path), location);
+				} catch (IOException e) {
 					System.out.println(e);
 				}
-			}
-			else {
+			} else {
 				try {
 					location = argumentMap.getPath("locations.json");
-					if(Files.isDirectory(path) == false) {
-						PrettyJSONWriter.location_format(wordindex.getWordcount(path),location);
+					if (Files.isDirectory(path) == false) {
+						PrettyJSONWriter.location_format(wordindex.getWordcount(path), location);
+					} else {
+						for (Path file : traversefile.getDirectory(path)) {
+							PrettyJSONWriter.location_format(wordindex.getWordcount(file), location);
+						}
 					}
-					else {
-						for(Path file : traversefile.getDirectory(path)){
-			        		PrettyJSONWriter.location_format(wordindex.getWordcount(file),location);
-			        	}
-					}
-					
-				}catch (IOException e) {
-					System.out.println(e);
-				}
-				
-			}
-		}
-		if (argumentMap.hasFlag("-query")) {
-			if (argumentMap.hasValue("-query")) {
-				try {
-					query = argumentMap.getPath("-query");
-					TreeSet<String>querystem = new TreeSet<>();
-					for (String words : TextFileStemmer.stemFile(query)) {
-							querystem.add(words);
-					}
+
 				} catch (IOException e) {
 					System.out.println(e);
 				}
 
+			}
+		}
+		if (argumentMap.hasFlag("-query")) {
+			if (argumentMap.hasValue("-query")) {
+				query = argumentMap.getPath("-query");
+				try {
+					if (Files.isDirectory(query) == false) {
+						queryfile.addAll(wordindex.getQuery(query));
+					} else {
+						for (Path file : traversefile.getDirectory(query)) {
+							queryfile.addAll(wordindex.getQuery(file));
+						}
+					}
+				} catch (IOException e) {
+					System.out.println(e);
+				}
+			} else {
+				try {
+					query = argumentMap.getPath("-query");
+					queryfile = wordindex.getQuery(query);
+				} catch (IOException e) {
+					System.out.println(e);
+				}
+
+			}
+		}
+		if (argumentMap.hasFlag("-results")) {
+			System.out.println("Result");
+			if (argumentMap.hasValue("-results")) {
+				result = argumentMap.getPath("-results");
+				try {
+					format.asNestedObject_file(filesindex, result);
+				} catch (IOException e) {
+					System.out.println(e);
+				}
+			} else {
+				result = Paths.get("results.json");
+				try {
+					format.asNestedObject_file(filesindex, result);
+				} catch (IOException e) {
+					System.out.println(e);
+				}
 			}
 		}
 
