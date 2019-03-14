@@ -96,6 +96,7 @@ public class Driver {
 		WordIndex wordindex = new WordIndex();
 		TraverseDirectory traversefile = new TraverseDirectory();
 		PrettyJSONWriter format = new PrettyJSONWriter();
+		searchResult Search = new searchResult();
 		Path path = null;
 		Path index = null;
 		Path location = null;
@@ -109,6 +110,7 @@ public class Driver {
 				try {
 					if (Files.isDirectory(path) == false) {
 						filesindex.putAll(wordindex.getWordsindex(path));
+
 					} else {
 						for (Path file : traversefile.getDirectory(path)) {
 							filesindex.putAll(wordindex.getWordsindex(file));
@@ -175,9 +177,23 @@ public class Driver {
 				try {
 					if (Files.isDirectory(query) == false) {
 						queryfile.addAll(wordindex.getQuery(query));
+						for(Path file : TextFileFinder.list(path)) {
+							Search.getCount(query, file);
+							Search.getTotal(file);
+							Search.getScore(query, file);
+						}
+						
+
 					} else {
-						for (Path file : traversefile.getDirectory(query)) {
-							queryfile.addAll(wordindex.getQuery(file));
+//						for (Path file : traversefile.getDirectory(query)) {
+//							queryfile.addAll(wordindex.getQuery(file));
+////							Search.getCount(query, path);
+////							Search.getinformation(path);
+//						}
+						for(Path file : TextFileFinder.list(path)) {
+							Search.getCount(query, file);
+							Search.getTotal(file);
+							Search.getScore(query, file);
 						}
 					}
 				} catch (IOException e) {

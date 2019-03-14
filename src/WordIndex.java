@@ -57,6 +57,7 @@ public class WordIndex implements Index<String> {
 	 * @throws IOException
 	 */
 	public TreeSet<String>getQuery(Path file) throws IOException {
+		System.out.println(file);
 		return getQueryword(file);
 	}
 	
@@ -116,11 +117,10 @@ public class WordIndex implements Index<String> {
 	 * @return the number of words
 	 * @throws IOException
 	 */
-	public TreeMap<String, Integer> wordcount(Path file) throws IOException {
+	public static TreeMap<String, Integer> wordcount(Path file) throws IOException {
 		TreeMap<String, Integer> counting = new TreeMap<>();
 		HashSet<Path> files = new HashSet<>();
 		files.addAll(TraverseDirectory.traversefiles(file));
-
 		for (Path counting_words : files) {
 			int number = 0;
 			if (counting_words.getFileName().toString().toLowerCase().endsWith("text")
