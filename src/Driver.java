@@ -4,7 +4,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -96,7 +98,7 @@ public class Driver {
 		WordIndex wordindex = new WordIndex();
 		TraverseDirectory traversefile = new TraverseDirectory();
 		PrettyJSONWriter format = new PrettyJSONWriter();
-		searchResult Search = new searchResult();
+		searchResult Search;
 		Path path = null;
 		Path index = null;
 		Path location = null;
@@ -104,6 +106,7 @@ public class Driver {
 		Path result = null;
 		TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex = new TreeMap<>();
 		TreeSet<String> queryfile = new TreeSet<>();
+		ArrayList<searchResult>resultRearch = new ArrayList<>();
 		if (argumentMap.hasFlag("-path")) {
 			if (argumentMap.hasValue("-path")) {
 				path = argumentMap.getPath("-path");
@@ -175,38 +178,20 @@ public class Driver {
 			if (argumentMap.hasValue("-query")) {
 				query = argumentMap.getPath("-query");
 				try {
-					if (Files.isDirectory(query) == false) {
 						queryfile.addAll(wordindex.getQuery(query));
-						for(Path file : TextFileFinder.list(path)) {
-							Search.getCount(query, file);
-							Search.getTotal(file);
-							Search.getScore(query, file);
+						for (Path file : TextFileFinder.list(path)) {
+							Search = new searchResult(query,file);
+//							System.out.println("Search:"+Search);
+							resultRearch.add(Search);
+//							System.out.println("resultRearch size: "+resultRearch.size());
 						}
-						
-
-					} else {
-//						for (Path file : traversefile.getDirectory(query)) {
-//							queryfile.addAll(wordindex.getQuery(file));
-////							Search.getCount(query, path);
-////							Search.getinformation(path);
-//						}
-						for(Path file : TextFileFinder.list(path)) {
-							Search.getCount(query, file);
-							Search.getTotal(file);
-							Search.getScore(query, file);
-						}
-					}
+						System.out.println("resultRearch size: "+resultRearch.size());
+						Collections.sort((resultRearch));
+						System.out.println("resultRearch list: "+resultRearch.toString());
+						System.out.println("resultRearch result: "+resultRearch.get(0));
 				} catch (IOException e) {
 					System.out.println(e);
 				}
-			} else {
-				try {
-					query = argumentMap.getPath("-query");
-					queryfile = wordindex.getQuery(query);
-				} catch (IOException e) {
-					System.out.println(e);
-				}
-
 			}
 		}
 		if (argumentMap.hasFlag("-results")) {

@@ -47,6 +47,12 @@ public class PrettyJSONWriter {
 		writer.write(']');
 //		throw new UnsupportedOperationException("Not yet implemented.");
 	}
+	public static void SearchFormat(searchResult searchlist, Path queryfile, Writer writer, int level)throws IOException{
+		if(searchlist != null){
+			writer.write('{');
+			writer.write('\n'); 
+		}
+	}
 	/**
 	 * @param counting
 	 * @param writer
