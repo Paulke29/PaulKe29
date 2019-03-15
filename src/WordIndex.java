@@ -57,7 +57,6 @@ public class WordIndex implements Index<String> {
 	 * @throws IOException
 	 */
 	public TreeSet<String>getQuery(Path file) throws IOException {
-		System.out.println(file);
 		return getQueryword(file);
 	}
 	

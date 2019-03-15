@@ -98,7 +98,7 @@ public class Driver {
 		WordIndex wordindex = new WordIndex();
 		TraverseDirectory traversefile = new TraverseDirectory();
 		PrettyJSONWriter format = new PrettyJSONWriter();
-		searchResult Search;
+		searchResult Search = new searchResult();
 		Path path = null;
 		Path index = null;
 		Path location = null;
@@ -178,17 +178,17 @@ public class Driver {
 			if (argumentMap.hasValue("-query")) {
 				query = argumentMap.getPath("-query");
 				try {
-						queryfile.addAll(wordindex.getQuery(query));
-						for (Path file : TextFileFinder.list(path)) {
-							Search = new searchResult(query,file);
-//							System.out.println("Search:"+Search);
-							resultRearch.add(Search);
-//							System.out.println("resultRearch size: "+resultRearch.size());
+					queryfile.addAll(wordindex.getQuery(query));
+					for (String querywords : queryfile) {
+						if (!querywords.isBlank()) {
+							for (Path file : TextFileFinder.list(path)) {
+								Search.Result(querywords, file);
+							}
 						}
-						System.out.println("resultRearch size: "+resultRearch.size());
-						Collections.sort((resultRearch));
-						System.out.println("resultRearch list: "+resultRearch.toString());
-						System.out.println("resultRearch result: "+resultRearch.get(0));
+					}
+//					for(Path file : TextFileFinder.list(path)) {
+//						Search.getMatch(query, file);
+//					}
 				} catch (IOException e) {
 					System.out.println(e);
 				}
