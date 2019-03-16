@@ -2,6 +2,8 @@ import java.io.IOException;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.TreeSet;
 import java.io.BufferedReader;
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
@@ -22,7 +24,34 @@ public class TextFileStemmer {
 
 	/** The default stemmer algorithm used by this class. */
 	public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
+    public static Set<String> QuerySet;
 
+	/**
+	 * @param queryfile
+	 * @param stemmer
+	 * @return Returns a set of cleaned and stemmed words parsed from the provided line.
+	 */
+	public static ArrayList<Set<String>> QuerystemLine(Path queryfile, Stemmer stemmer) {
+		ArrayList<Set<String>> answer = new ArrayList<>();
+		
+		try (BufferedReader readline = Files.newBufferedReader(queryfile)) {
+			String line = null;
+			while ((line = readline.readLine()) != null) {
+				for (String words : TextParser.parse(line)) {
+					QuerySet = new TreeSet<String>();
+					QuerySet.add(words);
+				}
+				answer.add(QuerySet);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return answer;
+	}
+	public static ArrayList<Set<String>>QuerystemLine2(Path queryfile) {
+		// THIS IS PROVIDED FOR YOU; NO NEED TO MODIFY
+		return QuerystemLine(queryfile, new SnowballStemmer(DEFAULT));
+	}
 	/**
 	 * Returns a set of cleaned and stemmed words parsed from the provided line.
 	 * Uses the {@link #DEFAULT} algorithm for stemming.
@@ -34,15 +63,12 @@ public class TextFileStemmer {
 	 * @see #DEFAULT
 	 * @see #stemLine(String, Stemmer)
 	 */
-//	public static TreeSet<String> stemLine(String line) {
-//		// THIS IS PROVIDED FOR YOU; NO NEED TO MODIFY
-//		return stemLine(line, new SnowballStemmer(DEFAULT));
-//	}
+	
 	public static ArrayList<String> stemLine2(String line) {
 		// THIS IS PROVIDED FOR YOU; NO NEED TO MODIFY
 		return stemLine(line, new SnowballStemmer(DEFAULT));
 	}
-
+	
 	/**
 	 * Returns a set of cleaned and stemmed words parsed from the provided line.
 	 *
@@ -77,9 +103,9 @@ public class TextFileStemmer {
 	public static ArrayList<String> stemFile(Path inputFile) throws IOException {
 		// TODO Fill in
 		ArrayList<String> answer = new ArrayList<>();
-		try (BufferedReader read_line = Files.newBufferedReader(inputFile)){
+		try (BufferedReader readline = Files.newBufferedReader(inputFile)){
 		    String line = null;
-			while ((line = read_line.readLine()) != null) {
+			while ((line = readline.readLine()) != null) {
 				for(String words: TextParser.parse(line)) {
 					answer.addAll(stemLine2(words));
 					}

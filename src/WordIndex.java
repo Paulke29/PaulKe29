@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -66,8 +67,13 @@ public class WordIndex implements Index<String> {
 	 * @throws IOException
 	 */
 	public TreeSet<String> getQueryword(Path file) throws IOException{
-		for (String words : TextFileStemmer.stemFile(file)){
-			querywords.add(words);
+		querywords = new TreeSet<>();
+		for (Set<String> words : TextFileStemmer.QuerystemLine2(file)){
+			if(!words.isEmpty()) {
+				for(String Querywords : words) {
+					querywords.add(Querywords);
+				}
+			}
 		}
 		return querywords;
 		

@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -45,7 +46,9 @@ public class PrettyJSONWriter {
 		}
 		indent(writer,level);
 		writer.write(']');
-//		throw new UnsupportedOperationException("Not yet implemented.");
+	}
+	public static void FormatSearch(TreeMap<String,Map[]> result,Writer writer, int level) throws IOException{
+		
 	}
 	public static void SearchFormat(searchResult searchlist, Path queryfile, Writer writer, int level)throws IOException{
 		if(searchlist != null){

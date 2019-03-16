@@ -179,16 +179,9 @@ public class Driver {
 				query = argumentMap.getPath("-query");
 				try {
 					queryfile.addAll(wordindex.getQuery(query));
-					for (String querywords : queryfile) {
-						if (!querywords.isBlank()) {
-							for (Path file : TextFileFinder.list(path)) {
-								Search.Result(querywords, file);
-							}
-						}
+					for(Path file : TextFileFinder.list(path)) {
+						Search.SearchResult(query, file);
 					}
-//					for(Path file : TextFileFinder.list(path)) {
-//						Search.getMatch(query, file);
-//					}
 				} catch (IOException e) {
 					System.out.println(e);
 				}
