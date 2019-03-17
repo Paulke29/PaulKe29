@@ -47,13 +47,45 @@ public class PrettyJSONWriter {
 		indent(writer,level);
 		writer.write(']');
 	}
-	public static void FormatSearch(TreeMap<String,Map[]> result,Writer writer, int level) throws IOException{
-		
+
+	public static void asResultArray(Map[]result, Writer writer, int level) throws IOException {
+		// TODO FILL IN. You may modify everything INSIDE this method as needed!
+		writer.write('[');
+		writer.write('\n');
+		for (Map map : result) {
+			indent(writer, level + 2);
+			writer.write("{");
+			writer.write("\n");
+			indent(map.toString(), writer, level + 4);
+			writer.write(",\n");
+			indent(map.toString(), writer, level + 4);
+			indent(writer, level + 2);
+			writer.write("}");
+		}
+		writer.write("\n");
+		indent(writer, level);
+		writer.write(']');
 	}
-	public static void SearchFormat(searchResult searchlist, Path queryfile, Writer writer, int level)throws IOException{
-		if(searchlist != null){
-			writer.write('{');
-			writer.write('\n'); 
+
+	public static void FormatSearch(TreeMap<String,Map[]> result,Writer writer, int level) throws IOException{
+		writer.write('{');
+		writer.write('\n'); 
+		if(!result.isEmpty()) {
+			for(String keys: result.headMap(result.lastKey()).keySet()) {
+				quote(keys,writer,level+1);
+				writer.write(": ");
+				 asResultArray(result.get(keys),writer,level+1);
+		    	  writer.write(",\n");
+			}
+			quote(result.lastKey(),writer,level+1);
+			writer.write(": ");
+			asResultArray(result.get(result.lastKey()),writer,level+1);
+			
+		}
+	}
+	public static void Rearchformat(TreeMap<String,Map[]> result,Path path) throws IOException {
+		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+			FormatSearch(result, writer, 1);
 		}
 	}
 	/**

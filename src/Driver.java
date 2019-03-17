@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -107,6 +108,7 @@ public class Driver {
 		TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex = new TreeMap<>();
 		TreeSet<String> queryfile = new TreeSet<>();
 		ArrayList<searchResult>resultRearch = new ArrayList<>();
+		TreeMap<String,Map[]> SearchResult = new TreeMap<>();
 		if (argumentMap.hasFlag("-path")) {
 			if (argumentMap.hasValue("-path")) {
 				path = argumentMap.getPath("-path");
@@ -180,7 +182,8 @@ public class Driver {
 				try {
 					queryfile.addAll(wordindex.getQuery(query));
 					for(Path file : TextFileFinder.list(path)) {
-						Search.SearchResult(query, file);
+						SearchResult =  Search.getSearchResult(query, file);
+//						Search.getMatch(query, file);
 					}
 				} catch (IOException e) {
 					System.out.println(e);
@@ -192,16 +195,16 @@ public class Driver {
 			if (argumentMap.hasValue("-results")) {
 				result = argumentMap.getPath("-results");
 				try {
-					format.asNestedObject_file(filesindex, result);
+					PrettyJSONWriter.Rearchformat(SearchResult, result);
 				} catch (IOException e) {
 					System.out.println(e);
 				}
 			} else {
 				result = Paths.get("results.json");
 				try {
-					format.asNestedObject_file(filesindex, result);
+					PrettyJSONWriter.Rearchformat(SearchResult, result);
 				} catch (IOException e) {
-					System.out.println(e);
+					System.out.println(e); 
 				}
 			}
 		}

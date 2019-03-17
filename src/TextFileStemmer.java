@@ -21,34 +21,39 @@ import java.nio.file.Files;
  * @see TextParser
  */
 public class TextFileStemmer {
-
 	/** The default stemmer algorithm used by this class. */
 	public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
-    public static Set<String> QuerySet;
-
+	
 	/**
 	 * @param queryfile
 	 * @param stemmer
 	 * @return Returns a set of cleaned and stemmed words parsed from the provided line.
 	 */
-	public static ArrayList<Set<String>> QuerystemLine(Path queryfile, Stemmer stemmer) {
+	public static ArrayList<Set<String>>QuerystemLine(Path queryfile, Stemmer stemmer) {
 		ArrayList<Set<String>> answer = new ArrayList<>();
-		
+
 		try (BufferedReader readline = Files.newBufferedReader(queryfile)) {
 			String line = null;
+			Set<String> QuerySet = null;
+//			Set<String> SetQuery = new TreeSet<>();
 			while ((line = readline.readLine()) != null) {
-				for (String words : TextParser.parse(line)) {
-					QuerySet = new TreeSet<String>();
-					QuerySet.add(words);
+//				System.out.println("Line: " + line);
+				String string2 = TextParser.clean(line);
+//				System.out.println("string2: " + string2);
+				QuerySet = new TreeSet<>();
+				QuerySet.add(string2);
+				if(!QuerySet.isEmpty()) {
+					answer.add(QuerySet);
 				}
-				answer.add(QuerySet);
 			}
+//			System.out.println("ArrayList: " + answer);
+//			System.exit(2);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return answer;
 	}
-	public static ArrayList<Set<String>>QuerystemLine2(Path queryfile) {
+	public static ArrayList<Set<String>> QuerystemLine2(Path queryfile) {
 		// THIS IS PROVIDED FOR YOU; NO NEED TO MODIFY
 		return QuerystemLine(queryfile, new SnowballStemmer(DEFAULT));
 	}
@@ -86,7 +91,7 @@ public class TextFileStemmer {
 			answer.add((String) stemmer.stem(words));
 		}
 		return answer;
-//		throw new UnsupportedOperationException("Not yet implemented.");
+
 	}
 
 	/**

@@ -57,7 +57,7 @@ public class WordIndex implements Index<String> {
 	 * @return getQueryword(file)
 	 * @throws IOException
 	 */
-	public TreeSet<String>getQuery(Path file) throws IOException {
+	public Set<String>getQuery(Path file) throws IOException {
 		return getQueryword(file);
 	}
 	
@@ -66,13 +66,13 @@ public class WordIndex implements Index<String> {
 	 * @return a tree set of stem query words
 	 * @throws IOException
 	 */
-	public TreeSet<String> getQueryword(Path file) throws IOException{
+	public Set<String> getQueryword(Path file) throws IOException{
 		querywords = new TreeSet<>();
-		for (Set<String> words : TextFileStemmer.QuerystemLine2(file)){
+		for (Set<String>words : TextFileStemmer.QuerystemLine2(file)){
 			if(!words.isEmpty()) {
-				for(String Querywords : words) {
-					querywords.add(Querywords);
-				}
+					for(String Querywords: words) {
+						querywords.add(Querywords);
+					}
 			}
 		}
 		return querywords;

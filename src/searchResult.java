@@ -10,29 +10,32 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class searchResult implements Comparable<searchResult> {
-	private float score = 1;
+	private String score;
 	private int count;
 	private String location;
 	public String Queryword;
-	public TreeMap<String, String> whereMap;
-	public TreeMap<String, Integer> countMap;
-	public TreeMap<String, Float> scoreMap;
+	private TreeMap<String, Map[]> Result ;
+	public static TreeMap<String, String> whereMap = new TreeMap<>();
+	public static TreeMap<String, String> countMap = new TreeMap<>();
+	public static TreeMap<String, String> scoreMap = new TreeMap<>();
 	static WordIndex wordindex = new WordIndex();
 	static int totalword;
 	static String textname;
-	public searchResult() {}
-	public searchResult(Path queryfile, Path pathfile) {
-		try {
-			this.location = pathfile.getFileName().toString();
-			this.score = getScore(queryfile, pathfile);
-			this.count = getMatch(queryfile, pathfile);
-			this.location = pathfile.getFileName().toString();
-			this.Queryword = Queryword;
-			toString();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public searchResult() {
+		Result = new TreeMap<>();
 	}
+//	public searchResult(Path queryfile, Path pathfile) {
+//		try {
+//			this.location = pathfile.getFileName().toString();
+////			this.score = getScore(queryfile, pathfile);
+////			this.count = getMatch(queryfile, pathfile);
+//			this.location = pathfile.getFileName().toString();
+//			this.Queryword = Queryword;
+//			toString();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	/**
 	 * @param file
@@ -47,22 +50,48 @@ public class searchResult implements Comparable<searchResult> {
 //		System.out.println("Total: "+ total);
 		return total;
 	}
-	public TreeMap<String,Map[]> SearchResult(Path queryfile, Path pathfile) throws IOException {
-		TreeMap<String,Map[]>Result = new TreeMap<>();
+	
+	public TreeMap<String, Map[]> getSearchResult(Path queryfile, Path pathfile) throws IOException{
+		return SearchResult(queryfile,pathfile);
+	}
+	/**
+	 * @param queryfile
+	 * @param pathfile
+	 * @return the result of Search 
+	 * @throws IOException
+	 */
+	public TreeMap<String, Map[]> SearchResult(Path queryfile, Path pathfile) throws IOException {
+		DecimalFormat df = new DecimalFormat("0.00000000");
+//		TreeMap<String, Map[]> Result = new TreeMap<>();
 		ArrayList<String> wordlist = TextFileStemmer.stemFile(pathfile);
 		for (Set<String> words : TextFileStemmer.QuerystemLine2(queryfile)) {
-			System.out.println("Query words: " + words.toString());
+//			System.out.println("Words: "+ words);
+			count = 0;
 			if (!words.isEmpty()) {
-				for (String Querywords : words) {
-					count += Collections.frequency(wordlist, Querywords);
+				for (String SearchWords : words) {
+					if (!SearchWords.isBlank()) {
+						for (String WordsString : TextParser.parse(SearchWords)) {
+							System.out.println("Search Words: " + WordsString);
+							count += Collections.frequency(wordlist, WordsString);
+							System.out.println("Count: " + count);
+							String score = df.format((float) count / getTotal(pathfile));
+							System.out.println("Score: " + score);
+							scoreMap.put("score", score);
+						}
+					}
 				}
+				whereMap.put("where", pathfile.toString());
+				System.out.println("WhereMap: " + whereMap);
+				countMap.put("count", (String.valueOf(count)));
+				System.out.println("countMap: " + countMap);
+//				scoreMap.put("score", score);
+				System.out.println("scoreMap: " + scoreMap);
+				Map[] ResultSearch = { whereMap, countMap, scoreMap };
+				System.out.println("ResultSearch: " + ResultSearch);
+				Result.put((words).toString(), ResultSearch);
+				System.out.println("words: " + words);
+				System.exit(2);
 			}
-			float score = count / this.getTotal(pathfile);
-			whereMap.put("where", pathfile.toString());
-			countMap.put("count", count);
-			scoreMap.put("score",score);
-			Map[]ResultSearch = {whereMap,countMap,scoreMap};
-			Result.put(words.toString(), ResultSearch);
 		}
 		return Result;
 	}
@@ -74,23 +103,23 @@ public class searchResult implements Comparable<searchResult> {
 	 * @return total match
 	 * @throws IOException
 	 */
-	public int getMatch(Path queryfile, Path pathfile) throws IOException {
-////		System.out.println("Path file name: " + pathfile.getFileName());
-		ArrayList<String> wordlist = TextFileStemmer.stemFile(pathfile);
-		System.out.println("File name: " + pathfile.getFileName().toString());
-		System.out.println("Query file name: " + queryfile.getFileName().toString());
-		for (Set<String> words : TextFileStemmer.QuerystemLine2(queryfile)) {
-			System.out.println("Query words: " + words.toString());
-			if (!words.isEmpty()) {
-				for (String Querywords : words) {
-					count += Collections.frequency(wordlist, Querywords);
-				}
-			}
-
-		}
-		System.out.println("Match: " + count);
-		return count;
-	}
+//	public int getMatch(Path queryfile, Path pathfile) throws IOException {
+//////		System.out.println("Path file name: " + pathfile.getFileName());
+//		ArrayList<String> wordlist = TextFileStemmer.stemFile(pathfile);
+//		System.out.println("File name: " + pathfile.getFileName().toString());
+//		System.out.println("Query file name: " + queryfile.getFileName().toString());
+//		for (String words : TextFileStemmer.QuerystemLine2(queryfile)) {
+//			System.out.println("Query words: " + words.toString());
+//			if (!words.isEmpty()) {
+////				for (String Querywords : words) {
+//					count += Collections.frequency(wordlist, words);
+////				}
+//			}
+//
+//		}
+//		System.out.println("Match: " + count);
+//		return count;
+//	}
 
 	/**
 	 * @param Queryword
@@ -100,7 +129,7 @@ public class searchResult implements Comparable<searchResult> {
 	 */
 	public float getScore(Path queryfile, Path pathfile) throws IOException {
 		DecimalFormat df = new DecimalFormat("0.00000000");
-		int count = getMatch(queryfile, pathfile);
+//		int count = getMatch(queryfile, pathfile);
 //		System.out.println("Count score: "+count);
 		int total = getTotal(pathfile);
 //		System.out.println("Total score: "+total);
@@ -117,6 +146,6 @@ public class searchResult implements Comparable<searchResult> {
 
 	@Override
 	public int compareTo(searchResult other) {
-		return Float.compare(other.score, this.score);
+		return this.score.compareTo(other.score);
 	}
 }
