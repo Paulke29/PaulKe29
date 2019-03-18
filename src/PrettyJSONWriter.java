@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -48,42 +49,80 @@ public class PrettyJSONWriter {
 		writer.write(']');
 	}
 
-	public static void asResultArray(Map[]result, Writer writer, int level) throws IOException {
+	public static void asResultArray(ArrayList<TreeMap[]>result, Writer writer, int level) throws IOException {
 		// TODO FILL IN. You may modify everything INSIDE this method as needed!
 		writer.write('[');
 		writer.write('\n');
-		for (Map map : result) {
+		for(int x = 0; x<= result.size()-1;x++) {
 			indent(writer, level + 2);
 			writer.write("{");
 			writer.write("\n");
-			indent(map.toString(), writer, level + 4);
-			writer.write(",\n");
-			indent(map.toString(), writer, level + 4);
-			indent(writer, level + 2);
-			writer.write("}");
+			for(int y =0; y<2; y++) {
+				quote(result.get(x)[y].firstKey().toString(),writer,level+1);
+				writer.write(": ");
+				if(result.get(x)[y].get(result.get(x)[y].firstKey()) instanceof String) {
+					quote(result.get(x)[y].get(result.get(x)[y].firstKey()).toString(),writer,level+1);
+				}
+				else {
+					result.get(x)[y].get(result.get(x)[y].firstKey());
+				}
+				writer.write(",");
+			}
+			quote(result.get(x)[2].firstKey().toString(),writer,level+1);
+			writer.write(": ");
+			if(result.get(x)[2].get(result.get(x)[2].firstKey()) instanceof String) {
+				quote(result.get(x)[2].get(result.get(x)[2].firstKey()).toString(),writer);
+			}
+			else {
+				result.get(x)[2].get(result.get(x)[2].firstKey());
+			}
+			writer.write("\n");
+			indent(writer, level+2);
+			writer.write("},");
+		}
+		for(int y =0; y<2; y++) {
+			quote(result.get(result.size())[y].firstKey().toString(),writer,level+1);
+			writer.write(": ");
+			if(result.get(result.size())[y].get(result.get(result.size())[y].firstKey()) instanceof String) {
+				quote(result.get(result.size())[y].get(result.get(result.size())[y].firstKey()).toString(),writer,level+1);
+			}
+			else {
+				result.get(result.size())[y].get(result.get(result.size())[y].firstKey());
+			}
+			writer.write(",");
+		}
+		quote(result.get(result.size())[2].firstKey().toString(),writer,level+1);
+		writer.write(": ");
+		if(result.get(result.size())[2].get(result.get(result.size())[2].firstKey()) instanceof String) {
+			quote(result.get(result.size())[2].get(result.get(result.size())[2].firstKey()).toString(),writer);
+		}
+		else {
+			result.get(result.size())[2].get(result.get(result.size())[2].firstKey());
 		}
 		writer.write("\n");
-		indent(writer, level);
+		indent(writer, level+2);
+		writer.write("}");
+		writer.write("\n");
+		indent(writer, level+1);
 		writer.write(']');
 	}
 
-	public static void FormatSearch(TreeMap<String,Map[]> result,Writer writer, int level) throws IOException{
+	public static void FormatSearch(TreeMap<TreeSet<String>,ArrayList<TreeMap[]>> result,Writer writer, int level) throws IOException{
 		writer.write('{');
-		writer.write('\n'); 
+		writer.write('\n');
 		if(!result.isEmpty()) {
-			for(String keys: result.headMap(result.lastKey()).keySet()) {
-				quote(keys,writer,level+1);
+			for(TreeSet<String> SearchWords: result.headMap(result.lastKey()).keySet()) {
+				quote(SearchWords.toString(),writer,level+1);
 				writer.write(": ");
-				 asResultArray(result.get(keys),writer,level+1);
-		    	  writer.write(",\n");
+				 asResultArray(result.get(SearchWords),writer,level+1);
 			}
-			quote(result.lastKey(),writer,level+1);
+			quote(result.lastKey().toString(),writer,level+1);
 			writer.write(": ");
 			asResultArray(result.get(result.lastKey()),writer,level+1);
-			
 		}
+		writer.write('}');
 	}
-	public static void Rearchformat(TreeMap<String,Map[]> result,Path path) throws IOException {
+	public static void Rearchformat(TreeMap<TreeSet<String>,ArrayList<TreeMap[]>> result,Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			FormatSearch(result, writer, 1);
 		}

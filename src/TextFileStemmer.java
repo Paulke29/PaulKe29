@@ -38,7 +38,7 @@ public class TextFileStemmer {
 //			Set<String> SetQuery = new TreeSet<>();
 			while ((line = readline.readLine()) != null) {
 //				System.out.println("Line: " + line);
-				String string2 = TextParser.clean(line);
+				String string2 = TextParser.clean(line.trim());
 //				System.out.println("string2: " + string2);
 				QuerySet = new TreeSet<>();
 				QuerySet.add(string2);
@@ -46,7 +46,7 @@ public class TextFileStemmer {
 					answer.add(QuerySet);
 				}
 			}
-//			System.out.println("ArrayList: " + answer);
+			System.out.println("ArrayList: " + answer);
 //			System.exit(2);
 		} catch (IOException e) {
 			e.printStackTrace();

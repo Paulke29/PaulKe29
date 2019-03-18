@@ -108,7 +108,7 @@ public class Driver {
 		TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex = new TreeMap<>();
 		TreeSet<String> queryfile = new TreeSet<>();
 		ArrayList<searchResult>resultRearch = new ArrayList<>();
-		TreeMap<String,Map[]> SearchResult = new TreeMap<>();
+		TreeMap<TreeSet<String>,ArrayList<TreeMap[]>> SearchResult = new TreeMap<>();
 		if (argumentMap.hasFlag("-path")) {
 			if (argumentMap.hasValue("-path")) {
 				path = argumentMap.getPath("-path");
@@ -183,7 +183,6 @@ public class Driver {
 					queryfile.addAll(wordindex.getQuery(query));
 					for(Path file : TextFileFinder.list(path)) {
 						SearchResult =  Search.getSearchResult(query, file);
-//						Search.getMatch(query, file);
 					}
 				} catch (IOException e) {
 					System.out.println(e);
