@@ -14,7 +14,7 @@ public class searchResult implements Comparable<searchResult> {
 	private int count;
 	private String location;
 	public String Queryword;
-	private TreeMap<TreeSet<String>, ArrayList<TreeMap[]>> Result ;
+	private TreeMap<String, ArrayList<TreeMap[]>> Result ;
 	public static TreeMap<String, String> whereMap = new TreeMap<>();
 	public static TreeMap<String, Integer> countMap = new TreeMap<>();
 	public static TreeMap<String, Float> scoreMap = new TreeMap<>();
@@ -38,7 +38,7 @@ public class searchResult implements Comparable<searchResult> {
 		return total;
 	}
 	
-	public TreeMap<TreeSet<String>, ArrayList<TreeMap[]>> getSearchResult(Path queryfile, Path pathfile) throws IOException{
+	public TreeMap<String, ArrayList<TreeMap[]>> getSearchResult(Path queryfile, Path pathfile) throws IOException{
 		return SearchResult(queryfile,pathfile);
 	}
 	/**
@@ -47,7 +47,7 @@ public class searchResult implements Comparable<searchResult> {
 	 * @return the result of Search 
 	 * @throws IOException
 	 */
-	public TreeMap<TreeSet<String>, ArrayList<TreeMap[]>> SearchResult(Path queryfile, Path pathfile) throws IOException {
+	public TreeMap<String, ArrayList<TreeMap[]>> SearchResult(Path queryfile, Path pathfile) throws IOException {
 		DecimalFormat df = new DecimalFormat("0.00000000");
 //		TreeMap<String, Map[]> Result = new TreeMap<>();
 		ArrayList<String> wordlist = TextFileStemmer.stemFile(pathfile);	
@@ -89,13 +89,13 @@ public class searchResult implements Comparable<searchResult> {
 					ResultSearch[1] = countMap;
 					ResultSearch[2] = scoreMap;
 					SearchResultList.add(ResultSearch);
-					Result.put(QueryOrder, SearchResultList);
+					Result.put(words.toString(), SearchResultList);
 					System.out.println("New File and New Words");
 
-					if (Result.containsKey(words)) {
-						Result.get(QueryOrder);
+					if (Result.containsKey(words.toString())) {
+						Result.get(words.toString());
 					} else {
-						Result.putIfAbsent(QueryOrder, SearchResultList);
+						Result.putIfAbsent(words.toString(), SearchResultList);
 					}
 				}
 			}

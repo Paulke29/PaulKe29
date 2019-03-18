@@ -51,22 +51,23 @@ public class PrettyJSONWriter {
 
 	public static void asResultArray(ArrayList<TreeMap[]>result, Writer writer, int level) throws IOException {
 		// TODO FILL IN. You may modify everything INSIDE this method as needed!
-		writer.write('[');
-		writer.write('\n');
-		for(int x = 0; x<= result.size()-1;x++) {
-			indent(writer, level + 2);
+//		writer.write('[');
+//		writer.write('\n');
+		for(int x = 0; x<= result.size()-2;x++) {
+			indent(writer, 2);
 			writer.write("{");
 			writer.write("\n");
 			for(int y =0; y<2; y++) {
 				quote(result.get(x)[y].firstKey().toString(),writer,level+1);
 				writer.write(": ");
 				if(result.get(x)[y].get(result.get(x)[y].firstKey()) instanceof String) {
-					quote(result.get(x)[y].get(result.get(x)[y].firstKey()).toString(),writer,level+1);
+					quote(result.get(x)[y].get(result.get(x)[y].firstKey()).toString(),writer);
 				}
 				else {
-					result.get(x)[y].get(result.get(x)[y].firstKey());
+					writer.write(result.get(x)[2].get(result.get(x)[2].firstKey()).toString());
 				}
-				writer.write(",");
+				result.get(x)[y].get(result.get(x)[y].firstKey());
+				writer.write(",\n");
 			}
 			quote(result.get(x)[2].firstKey().toString(),writer,level+1);
 			writer.write(": ");
@@ -74,57 +75,75 @@ public class PrettyJSONWriter {
 				quote(result.get(x)[2].get(result.get(x)[2].firstKey()).toString(),writer);
 			}
 			else {
-				result.get(x)[2].get(result.get(x)[2].firstKey());
+				writer.write(result.get(x)[2].get(result.get(x)[2].firstKey()).toString());
 			}
 			writer.write("\n");
-			indent(writer, level+2);
+			indent(writer, 2);
 			writer.write("},");
 		}
-		for(int y =0; y<2; y++) {
-			quote(result.get(result.size())[y].firstKey().toString(),writer,level+1);
+		writer.write("\n");
+		indent(writer, 2);
+		writer.write("{");
+		writer.write("\n");
+		for(int y =0; y <2; y++) {
+			quote(result.get(result.size()-1)[y].firstKey().toString(),writer,level+1);
 			writer.write(": ");
-			if(result.get(result.size())[y].get(result.get(result.size())[y].firstKey()) instanceof String) {
-				quote(result.get(result.size())[y].get(result.get(result.size())[y].firstKey()).toString(),writer,level+1);
+			if(result.get(result.size()-1)[y].get(result.get(result.size()-1)[y].firstKey()) instanceof String) {
+				quote(result.get(result.size()-1)[y].get(result.get(result.size()-1)[y].firstKey()).toString(),writer);
 			}
 			else {
-				result.get(result.size())[y].get(result.get(result.size())[y].firstKey());
+				writer.write(result.get(result.size()-1)[y].get(result.get(result.size()-1)[y].firstKey()).toString());
 			}
 			writer.write(",");
+			writer.write("\n");
 		}
-		quote(result.get(result.size())[2].firstKey().toString(),writer,level+1);
+		quote(result.get(result.size()-1)[2].firstKey().toString(),writer,3);
 		writer.write(": ");
-		if(result.get(result.size())[2].get(result.get(result.size())[2].firstKey()) instanceof String) {
-			quote(result.get(result.size())[2].get(result.get(result.size())[2].firstKey()).toString(),writer);
+		if(result.get(result.size()-1)[2].get(result.get(result.size()-1)[2].firstKey()) instanceof String) {
+			quote(result.get(result.size()-1)[2].get(result.get(result.size()-1)[2].firstKey()).toString(),writer);
 		}
 		else {
-			result.get(result.size())[2].get(result.get(result.size())[2].firstKey());
+			writer.write(result.get(result.size()-1)[2].get(result.get(result.size()-1)[2].firstKey()).toString());
 		}
 		writer.write("\n");
-		indent(writer, level+2);
+		indent(writer, 2);
 		writer.write("}");
+//		writer.write("\n");
+		indent(writer, 1);
+//		writer.write(']');
+//		writer.write(",");
 		writer.write("\n");
-		indent(writer, level+1);
-		writer.write(']');
+		
 	}
 
-	public static void FormatSearch(TreeMap<TreeSet<String>,ArrayList<TreeMap[]>> result,Writer writer, int level) throws IOException{
+	public static void FormatSearch(TreeMap<String, ArrayList<TreeMap[]>> result, Writer writer, int level)throws IOException {
 		writer.write('{');
 		writer.write('\n');
-		if(!result.isEmpty()) {
-			for(TreeSet<String> SearchWords: result.headMap(result.lastKey()).keySet()) {
-				quote(SearchWords.toString(),writer,level+1);
+		if (!result.isEmpty()) {
+			for (String SearchWords : result.headMap(result.lastKey()).keySet()) {
+				quote(SearchWords.toString(), writer, level + 1);
 				writer.write(": ");
-				 asResultArray(result.get(SearchWords),writer,level+1);
+				writer.write('[');
+				asResultArray(result.get(SearchWords), writer, level + 1);
+				indent(writer, 1);
+				writer.write(']');
+				writer.write(",");
+				writer.write("\n");
 			}
-			quote(result.lastKey().toString(),writer,level+1);
+			quote(result.lastKey().toString(), writer, 1);
 			writer.write(": ");
-			asResultArray(result.get(result.lastKey()),writer,level+1);
+			writer.write('[');
+			writer.write('\n');
+			asResultArray(result.get(result.lastKey()), writer, level + 1);
+			indent(writer, 1);
+			writer.write(']');
 		}
+		writer.write('\n');
 		writer.write('}');
 	}
-	public static void Rearchformat(TreeMap<TreeSet<String>,ArrayList<TreeMap[]>> result,Path path) throws IOException {
+	public static void Rearchformat(TreeMap<String,ArrayList<TreeMap[]>> result,Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-			FormatSearch(result, writer, 1);
+			FormatSearch(result, writer, 0);
 		}
 	}
 	/**
