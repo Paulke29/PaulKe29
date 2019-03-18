@@ -34,12 +34,8 @@ public class TextFileStemmer {
 	 * @see #DEFAULT
 	 * @see #stemLine(String, Stemmer)
 	 */
-//	public static TreeSet<String> stemLine(String line) {
-//		// THIS IS PROVIDED FOR YOU; NO NEED TO MODIFY
-//		return stemLine(line, new SnowballStemmer(DEFAULT));
-//	}
+
 	public static ArrayList<String> stemLine2(String line) {
-		// THIS IS PROVIDED FOR YOU; NO NEED TO MODIFY
 		return stemLine(line, new SnowballStemmer(DEFAULT));
 	}
 
@@ -54,13 +50,11 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static ArrayList<String> stemLine(String line, Stemmer stemmer) {
-		// TODO Fill in
 		ArrayList<String>answer = new ArrayList<>();
 		for(String words: TextParser.parse(line)) {
 			answer.add((String) stemmer.stem(words));
 		}
 		return answer;
-//		throw new UnsupportedOperationException("Not yet implemented.");
 	}
 
 	/**
@@ -75,7 +69,6 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static ArrayList<String> stemFile(Path inputFile) throws IOException {
-		// TODO Fill in
 		ArrayList<String> answer = new ArrayList<>();
 		try (BufferedReader read_line = Files.newBufferedReader(inputFile)){
 		    String line = null;
@@ -89,8 +82,6 @@ public class TextFileStemmer {
 			 e.printStackTrace();
 		}
 		return answer;
-		
-//		throw new UnsupportedOperationException("Not yet implemented.");
 	}
 
 	/**
@@ -100,7 +91,6 @@ public class TextFileStemmer {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		// TODO Modify (or remove) this method as necessary to debug.
 
 		String text = "practic practical practice practiced practicer practices "
 				+ "practicing practis practisants practise practised practiser "
@@ -108,10 +98,5 @@ public class TextFileStemmer {
 
 		System.out.println(stemLine2(text));
 
-//		Path inputPath = Paths.get("test", "animals.text");
-//		Path inputPath = Paths.get("test", "rfc475.txt");
-//		ArrayList<String> actual = TextFileStemmer.stemFile(inputPath);
-//		
-//		System.out.println(actual);
 	}
 }

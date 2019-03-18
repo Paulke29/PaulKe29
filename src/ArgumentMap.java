@@ -133,9 +133,6 @@ public class ArgumentMap {
 	 * @return {@code true} if the flag is mapped to a non-null value
 	 */
 	public boolean hasValue(String flag) {
-		// TODO return (map.get(flag) == null);
-
-		// TODO Fill in (modify as necessary)
 		if (map.containsKey(flag)) {
 			if (map.get(flag) == null) {
 				return false;

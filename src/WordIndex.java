@@ -7,14 +7,6 @@ import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-// TODO Rename to InvertedIndex
-// TODO Can remove the Index interface and the generic types, since an inverted index and an index are slightly different
-
-/*
- * TODO Be wary of using static data, especially for mutable objects.
- * Usually mutable private data is final but not static.
- */
-
 /**
  * A special type of {@link Index} that indexes the locations words were found.
  */
@@ -22,7 +14,7 @@ import java.util.TreeSet;
 public class WordIndex implements Index<String> {
 	HashMap<String, HashSet<Integer>> answer = new HashMap<>();
 	HashSet<Integer> index;
-	private  TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordsindex;
+	private TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordsindex;
 
 	/**
 	 *
@@ -121,7 +113,6 @@ public class WordIndex implements Index<String> {
 
 	@Override
 	public boolean add(String element, int position) {
-		// TODO Auto-generated method stub
 		if (!answer.containsKey(element)) {
 			index = new HashSet<>();
 			index.add(position);
@@ -139,12 +130,9 @@ public class WordIndex implements Index<String> {
 
 	@Override
 	public int numPositions(String element) {
-//		int number = 0;
 		if (!answer.containsKey(element)) {
 			return 0;
-		}
-		// TODO Auto-generated method stub
-		else {
+		} else {
 			if (answer.get(element) == null) {
 				return 0;
 			} else {
@@ -158,14 +146,12 @@ public class WordIndex implements Index<String> {
 
 	@Override
 	public int numElements() {
-		// TODO Auto-generated method stub
 
 		return answer.keySet().size();
 	}
 
 	@Override
 	public boolean contains(String element) {
-		// TODO Auto-generated method stub
 		if (answer.containsKey(element)) {
 			return true;
 		}
@@ -174,7 +160,6 @@ public class WordIndex implements Index<String> {
 
 	@Override
 	public boolean contains(String element, int position) {
-		// TODO Auto-generated method stub
 		if (!answer.containsKey(element)) {
 			return false;
 		} else {
@@ -191,7 +176,6 @@ public class WordIndex implements Index<String> {
 
 	@Override
 	public Collection<String> getElements() {
-		// TODO Auto-generated method stub
 		try {
 			HashSet<String> elements = new HashSet<>();
 			elements.addAll(answer.keySet());
@@ -206,7 +190,7 @@ public class WordIndex implements Index<String> {
 
 	@Override
 	public Collection<Integer> getPositions(String element) {
-		// TODO Auto-generated method stub
+
 		try {
 			HashSet<Integer> position = new HashSet<>();
 			if (!answer.containsKey(element)) {
@@ -226,10 +210,5 @@ public class WordIndex implements Index<String> {
 			return e2;
 		}
 	}
-
-	/*
-	 * TODO Modify anything within this class as necessary. This includes the class
-	 * declaration; you need to implement the Index interface!
-	 */
 
 }

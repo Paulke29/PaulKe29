@@ -25,7 +25,6 @@ public class TextFileFinder {
 	 *
 	 * @see Files#isRegularFile(Path, java.nio.file.LinkOption...)
 	 */
-	// TODO YOU MUST USE LAMBDA FUNCTIONS HERE
 	public static final Predicate<Path> TEXT_EXT = (Path path) -> {return (path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".text"))&& Files.isRegularFile(path);};
 
 	/**
@@ -45,11 +44,8 @@ public class TextFileFinder {
 	 * @see Integer#MAX_VALUE
 	 */
 	public static Stream<Path> find(Path start) throws IOException {
-		// TODO YOU MUST USE STREAMS HERE
 		BiPredicate<Path, BasicFileAttributes> same = (path, b) -> TEXT_EXT.test(path);
-		return Files.find(start,Integer.MAX_VALUE,same, FileVisitOption.FOLLOW_LINKS);
-//		throw new UnsupportedOperationException("Not yet implemented");
-		
+		return Files.find(start,Integer.MAX_VALUE,same, FileVisitOption.FOLLOW_LINKS);		
 	}
 
 	/**
@@ -62,8 +58,6 @@ public class TextFileFinder {
 	 * @see #find(Path)
 	 */
 	public static List<Path> list(Path start) throws IOException {
-		// TODO REUSE THE STREAM FROM FIND(...) HERE!
-//		throw new UnsupportedOperationException("Not yet implemented");
 		Stream<Path> pathlist = find(start);
 		ArrayList<Path> result = new ArrayList<>();
 		for(Object a : pathlist.toArray()) {
