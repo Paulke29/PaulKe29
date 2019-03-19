@@ -29,24 +29,36 @@ public class TextFileStemmer {
 	 * @param stemmer
 	 * @return Returns a set of cleaned and stemmed words parsed from the provided line.
 	 */
-	public static ArrayList<Set<String>>QuerystemLine(Path queryfile, Stemmer stemmer) {
+	public static ArrayList<Set<String>> QuerystemLine(Path queryfile, Stemmer stemmer) {
 		ArrayList<Set<String>> answer = new ArrayList<>();
 
 		try (BufferedReader readline = Files.newBufferedReader(queryfile)) {
 			String line = null;
 			Set<String> QuerySet = null;
-//			Set<String> SetQuery = new TreeSet<>();
+			Set<String> SetQuery = null;
 			while ((line = readline.readLine()) != null) {
 //				System.out.println("Line: " + line);
 				String string2 = TextParser.clean(line.trim());
 //				System.out.println("string2: " + string2);
 				QuerySet = new TreeSet<>();
 				QuerySet.add(string2);
-				if(!QuerySet.isEmpty()) {
-					answer.add(QuerySet);
+				if (!QuerySet.isEmpty()) {
+					for (String string3 : QuerySet) {
+						if (!string3.isBlank()) {
+							SetQuery = new TreeSet<>();
+							for (String String4 : TextParser.parse(string3)) {
+								SetQuery.addAll(stemLine2(String4));
+							}
+							answer.add(SetQuery);
+						}
+					}
+//					answer.add(QuerySet);
 				}
 			}
 			System.out.println("ArrayList: " + answer);
+//			for(Set<String> ABC : answer) {
+//				System.out.println("Set<String>ABC: "+ ABC);
+//			}
 //			System.exit(2);
 		} catch (IOException e) {
 			e.printStackTrace();

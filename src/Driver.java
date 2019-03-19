@@ -11,67 +11,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-/*
- * TODO Exception Handling...
- * When Driver.main throws an exception, the user will see a stack trace.
- * All output to the user should be (1) user friendly and (2) informative.
- * -- a stack trace is not something we consider user friendly
- * -- a message like "Something went wrong." is not informative
- *
- * Output a message so that the user can fix the issue before running your code again.
- *
- * Driver.main should never throw an exception.
- *
- * Throw all checked exceptions (the exceptions that Eclipse forces you to do something with)
- * to Driver.main, and catch them there.
- *
- * Judgement call for any unchecked exception (like a NullPointerException) whether
- * you should throw or catch.
- */
 
-/*
- * Driver classes are the only class you do not share with other developers, and
- * the only project-specific class.
- *
- * All other classes have to be general and will be shared with other developers.
- * Anything "generally useful" should not be in Driver. Might move your directory
- * traversal into another class.
- *
- * You want to simplify main() to make future projects easier.
-
-	public static void main(String[] args) {
-
-		ArgumentMap map = new ArgumentMap(args);
-		...
-
-		if (map.hasFlag(-path)) {
-			if (map.hasValue(-path)) {
-				try {
-					call code to biuld index
-				}
-				catch ( ... ) {
-					output error to user
-				}
-			}
-			else {
-				warn user the value was missing
-			}
-		}
-
-		if (map.hasFlag(-index)) {
-
-		}
-
-		if (map.hasFlag(-locations)) {
-
-		}
-
-	}
-
-
- *
- *
- */
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -181,14 +121,31 @@ public class Driver {
 				query = argumentMap.getPath("-query");
 				try {
 					queryfile.addAll(wordindex.getQuery(query));
-					for(Path file : TextFileFinder.list(path)) {
-						SearchResult =  Search.getSearchResult(query, file);
-					}
+					System.out.println("queryfile; "+ queryfile);
+//					for(String queryWords : queryfile) {
+//						for(String keys : filesindex.keySet()) {
+//							if(keys.equals(queryWords)){
+//								for(String filename : filesindex.get(keys).keySet()) {
+//									TreeMap<String,String> whereMap = new TreeMap<>();
+//									whereMap.put("where", filename);
+//									TreeMap<String,Integer> countMap = new TreeMap<>();
+//									countMap.put("count", filesindex.get(keys).get(filename).size());
+//								}
+//							}
+//						}
+//					}
+					
+//					for(Path file : TextFileFinder.list(path)) {
+//						System.out.println("Path file: "+ file.toString());
+////						SearchResult =  Search.getSearchResult(query, file);
+//					}
+					
 				} catch (IOException e) {
 					System.out.println(e);
 				}
 			}
 		}
+		System.exit(0);
 		if (argumentMap.hasFlag("-results")) {
 			System.out.println("Result");
 			if (argumentMap.hasValue("-results")) {

@@ -58,6 +58,7 @@ public class PrettyJSONWriter {
 			writer.write("{");
 			writer.write("\n");
 			for(int y =0; y<2; y++) {
+				indent(writer, 1);
 				quote(result.get(x)[y].firstKey().toString(),writer,level+1);
 				writer.write(": ");
 				if(result.get(x)[y].get(result.get(x)[y].firstKey()) instanceof String) {
@@ -69,6 +70,7 @@ public class PrettyJSONWriter {
 				result.get(x)[y].get(result.get(x)[y].firstKey());
 				writer.write(",\n");
 			}
+			indent(writer, 1);
 			quote(result.get(x)[2].firstKey().toString(),writer,level+1);
 			writer.write(": ");
 			if(result.get(x)[2].get(result.get(x)[2].firstKey()) instanceof String) {
@@ -80,12 +82,14 @@ public class PrettyJSONWriter {
 			writer.write("\n");
 			indent(writer, 2);
 			writer.write("},");
+			writer.write("\n");
 		}
 		writer.write("\n");
 		indent(writer, 2);
 		writer.write("{");
 		writer.write("\n");
 		for(int y =0; y <2; y++) {
+			indent(writer, 1);
 			quote(result.get(result.size()-1)[y].firstKey().toString(),writer,level+1);
 			writer.write(": ");
 			if(result.get(result.size()-1)[y].get(result.get(result.size()-1)[y].firstKey()) instanceof String) {
@@ -97,6 +101,7 @@ public class PrettyJSONWriter {
 			writer.write(",");
 			writer.write("\n");
 		}
+//		indent(writer, 1);
 		quote(result.get(result.size()-1)[2].firstKey().toString(),writer,3);
 		writer.write(": ");
 		if(result.get(result.size()-1)[2].get(result.get(result.size()-1)[2].firstKey()) instanceof String) {
@@ -109,7 +114,7 @@ public class PrettyJSONWriter {
 		indent(writer, 2);
 		writer.write("}");
 //		writer.write("\n");
-		indent(writer, 1);
+//		indent(writer, 1);
 //		writer.write(']');
 //		writer.write(",");
 		writer.write("\n");
@@ -124,6 +129,7 @@ public class PrettyJSONWriter {
 				quote(SearchWords.toString(), writer, level + 1);
 				writer.write(": ");
 				writer.write('[');
+				writer.write("\n");
 				asResultArray(result.get(SearchWords), writer, level + 1);
 				indent(writer, 1);
 				writer.write(']');

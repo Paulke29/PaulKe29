@@ -15,12 +15,15 @@ public class searchResult implements Comparable<searchResult> {
 	private String location;
 	public String Queryword;
 	private TreeMap<String, ArrayList<TreeMap[]>> Result ;
-	public static TreeMap<String, String> whereMap = new TreeMap<>();
-	public static TreeMap<String, Integer> countMap = new TreeMap<>();
-	public static TreeMap<String, Float> scoreMap = new TreeMap<>();
+	private TreeMap[] ResultSearch;
+	private ArrayList<TreeMap[]> SearchResultList;
+	public static TreeMap<String, String> whereMap;
+	public static TreeMap<String, Integer> countMap;
+	public static TreeMap<String, Float> scoreMap;
 	static WordIndex wordindex = new WordIndex();
 	static int totalword;
 	static String textname;
+	private String QueryWord;
 	public searchResult() {
 		Result = new TreeMap<>();
 	}
@@ -41,62 +44,55 @@ public class searchResult implements Comparable<searchResult> {
 	public TreeMap<String, ArrayList<TreeMap[]>> getSearchResult(Path queryfile, Path pathfile) throws IOException{
 		return SearchResult(queryfile,pathfile);
 	}
+	
 	/**
 	 * @param queryfile
 	 * @param pathfile
-	 * @return the result of Search 
+	 * @return the result of Search
 	 * @throws IOException
 	 */
 	public TreeMap<String, ArrayList<TreeMap[]>> SearchResult(Path queryfile, Path pathfile) throws IOException {
 		DecimalFormat df = new DecimalFormat("0.00000000");
-//		TreeMap<String, Map[]> Result = new TreeMap<>();
-		ArrayList<String> wordlist = TextFileStemmer.stemFile(pathfile);	
-		ArrayList<TreeMap[]>SearchResultList = new ArrayList<>();
+		ArrayList<String> wordlist = TextFileStemmer.stemFile(pathfile);
 		for (Set<String> words : TextFileStemmer.QuerystemLine2(queryfile)) {
-//			System.out.println("Words: "+ words);
-			TreeSet<String>QueryOrder = new TreeSet<>();
+			TreeSet<String> QueryOrder = new TreeSet<>();
 			count = 0;
 			if (!words.isEmpty()) {
+				QueryWord = " ";
+				SearchResultList = new ArrayList<>();
 				for (String SearchWords : words) {
-					if (!SearchWords.isBlank()) {
+					if (!SearchWords.isEmpty()) {
 						for (String WordsString : TextParser.parse(SearchWords)) {
-							QueryOrder.add(WordsString);
+							QueryWord = QueryWord + " " + WordsString;
 							System.out.println("Search Words: " + WordsString);
 							count += Collections.frequency(wordlist, WordsString);
 //							System.out.println("Count: " + count);
 							String score = df.format((float) count / getTotal(pathfile));
 							float score2 = Float.parseFloat(score);
 //							System.out.println("Score: " + score);
+							scoreMap = new TreeMap<>();
 							scoreMap.put("score", score2);
 						}
+						System.out.println("QueryWord: " + QueryWord.trim());
 					}
-					
 				}
-				System.out.println("Query Order: "+ QueryOrder);
-//				System.exit(2);
-				ArrayList<TreeMap<String,String>>SearchResult = new ArrayList<>();
-				if (this.count > 0) {
-					System.out.println("words: " + words.toString());
-					whereMap.put("where", pathfile.toString());
-					System.out.println("WhereMap: " + whereMap);
-					countMap.put("count", count);
-					System.out.println("countMap: " + countMap);
-//				scoreMap.put("score", score);
-					System.out.println("scoreMap: " + scoreMap);
-					TreeMap[] ResultSearch = new TreeMap[3];
-					System.out.println("ResultSearch: " + ResultSearch);
-					ResultSearch[0] = whereMap;
-					ResultSearch[1] = countMap;
-					ResultSearch[2] = scoreMap;
+//				System.exit(0);
+				whereMap = new TreeMap<>();
+				whereMap.put("where", pathfile.toString());
+			    countMap = new TreeMap<>();
+				countMap.put("count", count);
+				ResultSearch = new TreeMap[3];
+				System.out.println("ResultSearch: " + ResultSearch);
+				ResultSearch[0] = whereMap;
+				ResultSearch[1] = countMap;
+				ResultSearch[2] = scoreMap;
+				System.out.println("Words: " + words);
+				if (Result.containsKey(QueryWord.stripLeading())) {
+					Result.get(QueryWord).add(ResultSearch);
+				}
+				if (!Result.containsKey(QueryWord.stripLeading())) {
 					SearchResultList.add(ResultSearch);
-					Result.put(words.toString(), SearchResultList);
-					System.out.println("New File and New Words");
-
-					if (Result.containsKey(words.toString())) {
-						Result.get(words.toString());
-					} else {
-						Result.putIfAbsent(words.toString(), SearchResultList);
-					}
+					Result.put(QueryWord, SearchResultList);
 				}
 			}
 		}
