@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-
-
 /**
  * Class responsible for running this project based on the provided command-line
  * arguments. See the README for details.
@@ -46,23 +44,27 @@ public class Driver {
 		Path query = null;
 		Path result = null;
 		TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex = new TreeMap<>();
+		TreeMap<String, Integer> WordsCount = new TreeMap<>();
 		TreeSet<String> queryfile = new TreeSet<>();
-		ArrayList<searchResult>resultRearch = new ArrayList<>();
-		TreeMap<String,ArrayList<TreeMap[]>> SearchResult = new TreeMap<>();
+		ArrayList<searchResult> resultRearch = new ArrayList<>();
+		TreeMap<String, ArrayList<TreeMap<Object,Object>>> SearchResult = new TreeMap<>();
 		if (argumentMap.hasFlag("-path")) {
 			if (argumentMap.hasValue("-path")) {
 				path = argumentMap.getPath("-path");
 				try {
 					if (Files.isDirectory(path) == false) {
 						filesindex.putAll(wordindex.getWordsindex(path));
+						WordsCount = wordindex.getWordcount(path);
 
 					} else {
 						for (Path file : traversefile.getDirectory(path)) {
 							filesindex.putAll(wordindex.getWordsindex(file));
+							WordsCount = wordindex.getWordcount(path);
 						}
 					}
 				} catch (IOException e) {
-					System.out.println(e);
+					e.printStackTrace();
+
 				}
 			} else {
 				try {
@@ -120,32 +122,19 @@ public class Driver {
 			if (argumentMap.hasValue("-query")) {
 				query = argumentMap.getPath("-query");
 				try {
-					queryfile.addAll(wordindex.getQuery(query));
-					System.out.println("queryfile; "+ queryfile);
-//					for(String queryWords : queryfile) {
-//						for(String keys : filesindex.keySet()) {
-//							if(keys.equals(queryWords)){
-//								for(String filename : filesindex.get(keys).keySet()) {
-//									TreeMap<String,String> whereMap = new TreeMap<>();
-//									whereMap.put("where", filename);
-//									TreeMap<String,Integer> countMap = new TreeMap<>();
-//									countMap.put("count", filesindex.get(keys).get(filename).size());
-//								}
-//							}
-//						}
-//					}
-					
-//					for(Path file : TextFileFinder.list(path)) {
-//						System.out.println("Path file: "+ file.toString());
-////						SearchResult =  Search.getSearchResult(query, file);
-//					}
+					if (argumentMap.hasFlag("-exact")) {
+							SearchResult = Search.getSearchResult(true, query, WordsCount, filesindex);
+					}else {
+						SearchResult = Search.getSearchResult(false, query, WordsCount, filesindex);
+					}
 					
 				} catch (IOException e) {
-					System.out.println(e);
+//					System.out.println(e);
+					e.printStackTrace();
 				}
 			}
 		}
-		System.exit(0);
+//		System.exit(0);
 		if (argumentMap.hasFlag("-results")) {
 			System.out.println("Result");
 			if (argumentMap.hasValue("-results")) {
@@ -160,10 +149,17 @@ public class Driver {
 				try {
 					PrettyJSONWriter.Rearchformat(SearchResult, result);
 				} catch (IOException e) {
-					System.out.println(e); 
+					System.out.println(e);
 				}
 			}
 		}
+//		if (argumentMap.hasFlag("-exact")) {
+//			try {
+//				SearchResult = Search.getSearchResult(true, query, WordsCount, filesindex);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
 
 		System.out.println(Arrays.toString(args));
 

@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
@@ -125,20 +126,34 @@ public class WordIndex implements Index<String> {
 	public static TreeMap<String, Integer> wordcount(Path file) throws IOException {
 		TreeMap<String, Integer> counting = new TreeMap<>();
 		HashSet<Path> files = new HashSet<>();
-		files.addAll(TraverseDirectory.traversefiles(file));
-		for (Path counting_words : files) {
+		System.out.println("File name: " + file.getFileName().toString());
+		if (Files.isDirectory(file) == false) {
 			int number = 0;
-			if (counting_words.getFileName().toString().toLowerCase().endsWith("text")
-					|| counting_words.getFileName().toString().toLowerCase().endsWith("txt")) {
-				for (String words : TextFileStemmer.stemFile(counting_words)) {
+			if (file.getFileName().toString().toLowerCase().endsWith("text")
+					|| file.getFileName().toString().toLowerCase().endsWith("txt")) {
+				for (String words : TextFileStemmer.stemFile(file)) {
 					number++;
 				}
 				if (number != 0) {
-					counting.put(counting_words.toString(), number);
+					counting.put(file.toString(), number);
+				}
+			}
+		} else {
+			files.addAll(TraverseDirectory.traversefiles(file));
+			for (Path counting_words : files) {
+				int number = 0;
+				if (counting_words.getFileName().toString().toLowerCase().endsWith("text")
+						|| counting_words.getFileName().toString().toLowerCase().endsWith("txt")) {
+					for (String words : TextFileStemmer.stemFile(counting_words)) {
+						number++;
+					}
+					if (number != 0) {
+						counting.put(counting_words.toString(), number);
+					}
+
 				}
 
 			}
-
 		}
 
 		return counting;
