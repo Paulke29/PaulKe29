@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-
+// TODO Address warnings, including Javadoc. I won't keep reviewing code with warnings.
+// TODO Still too much code in Driver
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -44,7 +45,7 @@ public class Driver {
 			if (argumentMap.hasValue("-path")) {
 				path = argumentMap.getPath("-path");
 				try {
-					if (Files.isDirectory(path) == false) {
+					if (Files.isDirectory(path) == false) { // TODO Some of this might move into your builder class
 						filesindex.putAll(wordindex.getWordsindex(path));
 					} else {
 						for (Path file : traversefile.getDirectory(path)) {
@@ -52,7 +53,7 @@ public class Driver {
 						}
 					}
 				} catch (IOException e) {
-					System.out.println(e);
+					System.out.println(e); // TODO Fix exception handling
 				}
 			} else {
 				try {
@@ -68,7 +69,7 @@ public class Driver {
 			if (argumentMap.hasValue("-index")) {
 				index = argumentMap.getPath("-index");
 				try {
-					format.asNestedObject_file(filesindex, index);
+					format.asNestedObject_file(filesindex, index); // TODO Not naming things properly in Java
 				} catch (IOException e) {
 					System.out.println(e);
 				}
