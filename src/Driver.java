@@ -37,7 +37,7 @@ public class Driver {
 		WordIndex wordindex = new WordIndex();
 		TraverseDirectory traversefile = new TraverseDirectory();
 		PrettyJSONWriter format = new PrettyJSONWriter();
-		searchResult Search = new searchResult();
+		searchResult Search;
 		Path path = null;
 		Path index = null;
 		Path location = null;
@@ -47,7 +47,7 @@ public class Driver {
 		TreeMap<String, Integer> WordsCount = new TreeMap<>();
 		TreeSet<String> queryfile = new TreeSet<>();
 		ArrayList<searchResult> resultRearch = new ArrayList<>();
-		TreeMap<String, ArrayList<TreeMap<Object,Object>>> SearchResult = new TreeMap<>();
+		TreeMap<String, ArrayList<Result>>SearchResult = new TreeMap<>();
 		if (argumentMap.hasFlag("-path")) {
 			if (argumentMap.hasValue("-path")) {
 				path = argumentMap.getPath("-path");
@@ -123,11 +123,13 @@ public class Driver {
 				query = argumentMap.getPath("-query");
 				try {
 					if (argumentMap.hasFlag("-exact")) {
-							SearchResult = Search.getSearchResult(true, query, WordsCount, filesindex);
-					}else {
-						SearchResult = Search.getSearchResult(false, query, WordsCount, filesindex);
+						searchResult ResultSeatch = new searchResult(true, query, WordsCount, filesindex);
+						SearchResult = ResultSeatch.getSearchResult(true, query, WordsCount, filesindex);
+					} else {
+						searchResult ResultSeatch = new searchResult(true, query, WordsCount, filesindex);
+						SearchResult = ResultSeatch.getSearchResult(false, query, WordsCount, filesindex);
 					}
-					
+
 				} catch (IOException e) {
 //					System.out.println(e);
 					e.printStackTrace();
@@ -140,6 +142,7 @@ public class Driver {
 			if (argumentMap.hasValue("-results")) {
 				result = argumentMap.getPath("-results");
 				try {
+					System.out.println("Format result: "+ SearchResult.toString());
 					PrettyJSONWriter.Rearchformat(SearchResult, result);
 				} catch (IOException e) {
 					System.out.println(e);
@@ -153,14 +156,6 @@ public class Driver {
 				}
 			}
 		}
-//		if (argumentMap.hasFlag("-exact")) {
-//			try {
-//				SearchResult = Search.getSearchResult(true, query, WordsCount, filesindex);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
-
 		System.out.println(Arrays.toString(args));
 
 		// calculate time elapsed and output
