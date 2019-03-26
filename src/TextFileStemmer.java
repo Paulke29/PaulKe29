@@ -7,6 +7,8 @@ import java.util.TreeSet;
 import java.io.BufferedReader;
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
+
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 
@@ -32,12 +34,12 @@ public class TextFileStemmer {
 	public static ArrayList<Set<String>> QuerystemLine(Path queryfile, Stemmer stemmer) {
 		ArrayList<Set<String>> answer = new ArrayList<>();
 
-		try (BufferedReader readline = Files.newBufferedReader(queryfile)) {
+		try (BufferedReader readline = Files.newBufferedReader(queryfile,StandardCharsets.UTF_8)) {
 			String line = null;
 			Set<String> QuerySet = null;
 			Set<String> SetQuery = null;
 			while ((line = readline.readLine()) != null) {
-//				System.out.println("Line: " + line);
+				System.out.println("Line: " + line);
 				String string2 = TextParser.clean(line.trim());
 //				System.out.println("string2: " + string2);
 				QuerySet = new TreeSet<>();
@@ -51,18 +53,15 @@ public class TextFileStemmer {
 							}
 							answer.add(SetQuery);
 						}
-					}
-//					answer.add(QuerySet);
+					}//					answer.add(QuerySet);
 				}
 			}
-			System.out.println("ArrayList: " + answer);
-//			for(Set<String> ABC : answer) {
-//				System.out.println("Set<String>ABC: "+ ABC);
-//			}
-//			System.exit(2);
+        
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+//		System.out.println("Answer: "+ answer.toString());
+//		System.exit(0);
 		return answer;
 	}
 	public static ArrayList<Set<String>> QuerystemLine2(Path queryfile) {

@@ -37,47 +37,78 @@ public class searchResult {
 	 * @param where
 	 * @param score
 	 * @param count
+	 * @param TotalWords 
 	 * @return WordsResult
 	 */
-	public Result WordsResult(String where, String score, int count,int TotalWords) {
-		float score2 = Float.parseFloat(score);
-		return new Result(where, score2, count, TotalWords);
+	public Result WordsResult(String where, double score, int count,int TotalWords) {
+//		double score2 = Double.parseDouble(score);
+		return new Result(where, score , count, TotalWords);
 	}
 	/**
 	 * @param Result1
 	 * @param Result2
-	 * @return True if successfully update the count  False if not find the specific Object to update the count
+	 * @return true if find the same file
 	 */
-	public boolean updateCount(ArrayList<Result> Result1, ArrayList<Result> Result2) {
-		DecimalFormat df = new DecimalFormat("0.00000000");
+	public boolean find(ArrayList<Result> Result1, ArrayList<Result> Result2) {
+		for(Result result : Result1) {
+			for (Result result2 : Result2) {
+				if (result.getWhere().equals(result2.getWhere())) {
+					return true;
+				}
+			}
+		}
+		return false;	
+	}
+	/**
+	 * @param Result1
+	 * @param Result2
+	 */
+	public void updateCount(ArrayList<Result> Result1, ArrayList<Result> Result2) {
 		int TotalWords = 0;
 		for (Result result : Result1) {
 			for (Result result2 : Result2) {
+				Double score1;
 				if (result.getWhere().equals(result2.getWhere())) {
 					count = result.getCount();
 					count += result2.getCount();
 					result.setCount(count);
 					TotalWords = result.getTotalWords();
-					score = df.format((float) count / TotalWords);
-					float score2 = Float.parseFloat(score);
-					result.setScore(score2);
-					System.out.println("New count: " + result.getCount());
-					System.out.println("New score: " + result.getScore());
-					return true;
+					score1 = (double) count / TotalWords;
+//					System.out.println("Score Double: "+ score1);
+					result.setScore(score1);					
 				}
 			}
 		}
-		return false;
 	}
+	/**
+	 * @param Result1
+	 * @param Result2
+	 */
+	public void addnew(ArrayList<Result> Result1, ArrayList<Result> Result2) {
+		System.out.println("xxxx");
+		for(Result result2 : Result2) {
+			for(Result result : Result1) {
+				if(!result.getWhere().equals(result2.getWhere())) {
+					Result1.add(result2);
+				}
+			}
+		}	
+	}
+	/**
+	 * @param getResultList
+	 * @param result2
+	 * @param TotalWords
+	 * @return true if paritailUpdatae 
+	 */
 	public boolean partialUpdate(ArrayList<Result> getResultList,Result result2,int TotalWords) {
 		for(Result result: getResultList) {
-			DecimalFormat df = new DecimalFormat("0.00000000");
+			double score;
 			if(result.getWhere().equals(result2.getWhere())) {
 				count = result.getCount();
-				count += result.getCount();
-				score = df.format((float) count / TotalWords);
-				float score2 = Float.parseFloat(score);
-				result.setScore(score2);
+				count += result2.getCount();
+				result.setCount(count);
+				score = (double) count / TotalWords;
+				result.setScore(score);
 				return true;
 			}	
 		}
@@ -92,10 +123,9 @@ public class searchResult {
 	 */
 	public ArrayList<Result> getResult(boolean isExact, String QueryWords, TreeMap<String, Integer> wordcounts,
 			TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex) {
-		DecimalFormat df = new DecimalFormat("0.00000000");
 		ArrayList<Result> getResultList = new ArrayList<>();
 		String where;
-		String score = null;
+		double score;
 		int count = 0;
 		int TotalWords = 0;
 		System.out.println("QueryWord: "+ QueryWords);
@@ -105,7 +135,7 @@ public class searchResult {
 					where = file;
 					count = filesindex.get(QueryWords).get(file).size();
 					TotalWords = wordcounts.get(file);
-					score = df.format((float) count / TotalWords);
+					score = (double) count / TotalWords;
 					getResultList.add(WordsResult(where, score, count,TotalWords));
 				}
 			}
@@ -117,20 +147,26 @@ public class searchResult {
 						where = file;
 						count = filesindex.get(Keys).get(file).size();
 						TotalWords = wordcounts.get(file);
-						score = df.format((float) count / TotalWords);	
+						score = (double)count / TotalWords;
+//						System.out.println("Partial score: "+ score);
 						if(getResultList.isEmpty()) {
-							getResultList.add(WordsResult(where, score, count,TotalWords));
+							getResultList.add(WordsResult(where, score, count,TotalWords));	
+//							System.out.println("Partial GetResultList is empty");
+//							System.out.println("Partial GetResultList1: "+getResultList.toString());
 						}
-						else{
-							if(partialUpdate(getResultList,WordsResult(where, score, count,TotalWords),TotalWords) == false) {
-								getResultList.add(WordsResult(where, score, count,TotalWords));
+						else {
+							Result result2 = WordsResult(where, score, count,TotalWords);
+							if(partialUpdate(getResultList,result2,TotalWords) == false) {
+								getResultList.add(WordsResult(where, score, count,TotalWords));	
+//								System.out.println("Partial GetResultList3: "+getResultList.toString());
 							}
+//							System.out.println("Partial GetResultList2: "+getResultList.toString());
 						}
-							
-					}		
-					System.out.println("Partial Search: "+ getResultList);
+//						getResultList.add(WordsResult(where, score, count,TotalWords));	
+					}
 				}
 			}
+//			System.out.println("Partial Search: "+ getResultList);
 		}
 		return getResultList;
 	}
@@ -166,30 +202,30 @@ public class searchResult {
 		String QueryWord = null;
 		for (Set<String> words : TextFileStemmer.QuerystemLine2(queryfile)) {
 			if (!words.isEmpty()) {
+				System.out.println("QueryLine: " + words.toString());
 				SearchResultList = new ArrayList<>();
 				QueryWord = String.join(" ", words);
 				for (String SearchWords : words) {
-					if(SearchResultList.isEmpty()) {
-						System.out.println("SearchResultList is Empty");
-						SearchResultList.addAll(getResult(isExact, SearchWords, wordcounts, filesindex));
-						System.out.println("Empty SearchResultList is: "+ SearchResultList.toString());
-					}
-					else {
-						if(updateCount(SearchResultList,getResult(isExact, SearchWords, wordcounts, filesindex)) == false) {
-							System.out.println("UpdateCount is false");
-							SearchResultList.addAll(getResult(isExact, SearchWords, wordcounts, filesindex));
-							System.out.println("False SearchResultList is: "+ SearchResultList.toString());
+					{
+						ArrayList<Result> SingleResult = getResult(isExact, SearchWords, wordcounts, filesindex);
+						if (find(SearchResultList, SingleResult) == false) {
+							SearchResultList.addAll(SingleResult);
+//							System.out.println("After update SearchAResultList: "+ SearchResultList.toString());
+						} else {
+							addnew(SearchResultList, SingleResult);
+							updateCount(SearchResultList, SingleResult);
 						}
-						System.out.println("True SearchResultList is: "+ SearchResultList.toString());
 					}
 					Collections.sort(SearchResultList);
 				}
-				System.out.println("Query SearchResultList is: "+ SearchResultList.toString());
+//				System.out.println("Query SearchResultList is: "+ SearchResultList.toString());
 				Result.put(QueryWord, SearchResultList);
 			}
+
 		}
-		System.out.println("Final Result: "+Result.toString());
+//		System.out.println("Final Result: " + Result.toString());
 		return Result;
+
 	}
 
 }

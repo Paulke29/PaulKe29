@@ -1,11 +1,15 @@
+import java.text.DecimalFormat;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class Result  implements Comparable<Result>  {
 	private String where;
 	private int count;
-	private float score;
+	private double score;
 	private int TotalWords;
+	
+	DecimalFormat df = new DecimalFormat("0.00000000");
+
 	/**
 	 * Create constructor
 	 * @param where
@@ -13,7 +17,7 @@ public class Result  implements Comparable<Result>  {
 	 * @param score
 	 * @param TotalWords 
 	 */
-	public Result(String where, float score, int count, int TotalWords) {
+	public Result(String where, double score, int count, int TotalWords) {
 		this.where = where;
 		this.count = count;
 		this.score = score;
@@ -49,14 +53,19 @@ public class Result  implements Comparable<Result>  {
 	 * get score
 	 * @return score
 	 */
-	public float getScore(){
+	public Double getScore(){
 		return this.score;
+	}
+	
+	public String getFormattedScore(){
+//		System.out.println("Format score: "+ this.score);
+		return df.format(this.score);
 	}
 	/**
 	 * Set up score
 	 * @param score
 	 */
-	public void setScore(float score) {
+	public void setScore(double score) {
 		this.score = score;
 	}
 	public String toString () {
@@ -65,7 +74,7 @@ public class Result  implements Comparable<Result>  {
 	}
 	@Override
 	public int compareTo(Result other) {
-		int result = Float.compare(other.getScore(), this.getScore());
+		int result = Double.compare(other.getScore(), this.getScore());
 		if (result == 0) {
 			result = Integer.compare(other.getCount(), this.getCount());
 			if (result == 0) {

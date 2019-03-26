@@ -9,13 +9,13 @@ import java.util.HashSet;
  *
  */
 public class TraverseDirectory {
-	private static HashSet<Path> file;
+//	private static HashSet<Path> file;
 	
 	/**
 	 * initial the class
 	 */
 	public TraverseDirectory() {
-		file = new HashSet<>();
+//		file = new HashSet<>();
 	
 	}
 
@@ -34,6 +34,7 @@ public class TraverseDirectory {
 	 * @throws IOException
 	 */
 	public static HashSet<Path> traversefiles(Path path) throws IOException {
+		HashSet<Path> file = new HashSet<>();
 		try (DirectoryStream<Path> listing = Files.newDirectoryStream(path)) {
 
 			for (Path files : listing) {
