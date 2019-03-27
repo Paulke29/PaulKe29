@@ -29,28 +29,30 @@ public class searchResult {
 	 * @param where
 	 * @param score
 	 * @param count
-	 * @param TotalWords 
+	 * @param TotalWords
 	 * @return WordsResult
 	 */
-	public Result WordsResult(String where, double score, int count,int TotalWords) {
+	public Result WordsResult(String where, double score, int count, int TotalWords) {
 //		double score2 = Double.parseDouble(score);
-		return new Result(where, score , count, TotalWords);
+		return new Result(where, score, count, TotalWords);
 	}
+
 	/**
 	 * @param Result1
 	 * @param Result2
 	 * @return true if find the same file
 	 */
 	public boolean find(ArrayList<Result> Result1, ArrayList<Result> Result2) {
-		for(Result result : Result1) {
+		for (Result result : Result1) {
 			for (Result result2 : Result2) {
 				if (result.getWhere().equals(result2.getWhere())) {
 					return true;
 				}
 			}
 		}
-		return false;	
+		return false;
 	}
+
 	/**
 	 * @param Result1
 	 * @param Result2
@@ -69,49 +71,68 @@ public class searchResult {
 					TotalWords = result.getTotalWords();
 					score1 = (double) count / TotalWords;
 //					System.out.println("Score Double: "+ score1);
-					result.setScore(score1);					
+					result.setScore(score1);
 				}
 			}
 		}
 	}
+	public void updateCount2(Result Result1, Result Result2) {
+		int TotalWords = 0;
+		int count;
+		Double score1;
+		count = Result1.getCount();
+		count += Result2.getCount();
+		Result1.setCount(count);
+		TotalWords = Result1.getTotalWords();
+		score1 = (double) count / TotalWords;
+		Result1.setScore(score1);
+	}
+
 	/**
 	 * @param Result1
 	 * @param Result2
-	 * @return  addnew 
+	 * @return addnew
 	 */
 	public ArrayList<Result> addnew(ArrayList<Result> Result1, ArrayList<Result> Result2) {
 		ArrayList<Result> addnew = new ArrayList<>();
 		System.out.println("xxxx");
-		for(Result result2 : Result2) {
-			for(Result result : Result1) {
-				if(!result.getWhere().equals(result2.getWhere())) {
-					addnew.add(result2);
+		for (Result result2 : Result2) {
+			boolean notfind = false;
+			for (Result result : Result1) {
+				if (result.getWhere().equals(result2.getWhere())) {
+					updateCount2(result, result2);
+					notfind = true;
 				}
 			}
+			if (notfind == false) {
+				addnew.add(result2);
+			}
 		}
-		return addnew;	
+		return addnew;
 	}
+
 	/**
 	 * @param getResultList
 	 * @param result2
 	 * @param TotalWords
-	 * @return true if paritailUpdatae 
+	 * @return true if paritailUpdatae
 	 */
-	public boolean partialUpdate(ArrayList<Result> getResultList,Result result2,int TotalWords) {
-		for(Result result: getResultList) {
+	public boolean partialUpdate(ArrayList<Result> getResultList, Result result2, int TotalWords) {
+		for (Result result : getResultList) {
 			int count;
 			double score;
-			if(result.getWhere().equals(result2.getWhere())) {
+			if (result.getWhere().equals(result2.getWhere())) {
 				count = result.getCount();
 				count += result2.getCount();
 				result.setCount(count);
 				score = (double) count / TotalWords;
 				result.setScore(score);
 				return true;
-			}	
+			}
 		}
 		return false;
 	}
+
 	/**
 	 * @param isExact
 	 * @param QueryWords
@@ -126,7 +147,7 @@ public class searchResult {
 		double score;
 		int count = 0;
 		int TotalWords = 0;
-		System.out.println("QueryWord: "+ QueryWords);
+		System.out.println("QueryWord: " + QueryWords);
 		if (isExact == true) {
 			if (filesindex.containsKey(QueryWords)) {
 				for (String file : filesindex.get(QueryWords).keySet()) {
@@ -134,37 +155,34 @@ public class searchResult {
 					count = filesindex.get(QueryWords).get(file).size();
 					TotalWords = wordcounts.get(file);
 					score = (double) count / TotalWords;
-					getResultList.add(WordsResult(where, score, count,TotalWords));
+					getResultList.add(WordsResult(where, score, count, TotalWords));
 				}
 			}
 		} else {
 			for (String Keys : filesindex.keySet()) {
 				if (Keys.startsWith(QueryWords)) {
-					System.out.println("Key: "+Keys);
+					System.out.println("Key: " + Keys);
 					for (String file : filesindex.get(Keys).keySet()) {
 						where = file;
 						count = filesindex.get(Keys).get(file).size();
 						TotalWords = wordcounts.get(file);
-						score = (double)count / TotalWords;
+						score = (double) count / TotalWords;
 //						System.out.println("Partial score: "+ score);
-						if(getResultList.isEmpty()) {
-							getResultList.add(WordsResult(where, score, count,TotalWords));	
+						if (getResultList.isEmpty()) {
+							getResultList.add(WordsResult(where, score, count, TotalWords));
 //							System.out.println("Partial GetResultList is empty");
 //							System.out.println("Partial GetResultList1: "+getResultList.toString());
-						}
-						else {
-							Result result2 = WordsResult(where, score, count,TotalWords);
-							if(partialUpdate(getResultList,result2,TotalWords) == false) {
-								getResultList.add(WordsResult(where, score, count,TotalWords));	
+						} else {
+							Result result2 = WordsResult(where, score, count, TotalWords);
+							if (partialUpdate(getResultList, result2, TotalWords) == false) {
+								getResultList.add(WordsResult(where, score, count, TotalWords));
 //								System.out.println("Partial GetResultList3: "+getResultList.toString());
 							}
 //							System.out.println("Partial GetResultList2: "+getResultList.toString());
 						}
-//						getResultList.add(WordsResult(where, score, count,TotalWords));	
 					}
 				}
 			}
-//			System.out.println("Partial Search: "+ getResultList);
 		}
 		return getResultList;
 	}
@@ -210,8 +228,8 @@ public class searchResult {
 							SearchResultList.addAll(SingleResult);
 //							System.out.println("After update SearchAResultList: "+ SearchResultList.toString());
 						} else {
-							updateCount(SearchResultList, SingleResult);
-//							SearchResultList.addAll(addnew(SearchResultList, SingleResult));
+//							updateCount(SearchResultList, SingleResult);
+							SearchResultList.addAll(addnew(SearchResultList, SingleResult));
 						}
 					}
 					Collections.sort(SearchResultList);

@@ -45,8 +45,6 @@ public class Driver {
 		Path result = null;
 		TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex = new TreeMap<>();
 		TreeMap<String, Integer> WordsCount = new TreeMap<>();
-		TreeSet<String> queryfile = new TreeSet<>();
-		ArrayList<searchResult> resultRearch = new ArrayList<>();
 		TreeMap<String, ArrayList<Result>>SearchResult = new TreeMap<>();
 		if (argumentMap.hasFlag("-path")) {
 			if (argumentMap.hasValue("-path")) {
