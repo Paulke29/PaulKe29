@@ -45,6 +45,8 @@ public class PrettyJSONWriter {
 		indent(writer,level);
 		writer.write(']');
 	}
+	
+	// TODO This is the same data structure as asObject, should not need a new method
 	/**
 	 * @param counting
 	 * @param writer
@@ -219,6 +221,8 @@ public class PrettyJSONWriter {
 			asNestedObject_file(elements, writer, 0);
 		}
 	}
+	
+	// TODO Reuse asNestedObject
 	/**
 	 * @param elements
 	 * @param writer

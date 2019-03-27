@@ -4,12 +4,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 
+// TODO Either fix this class, or delete and use your TextFileFinder
+
 /**
  * @author paulke
  *
  */
 public class TraverseDirectory {
-	private static HashSet<Path> file;
+	// TODO You return this, breaking encapsulation
+	private static HashSet<Path> file; // TODO Static, which causes issues.
 	
 	/**
 	 * initial the class
@@ -33,14 +36,14 @@ public class TraverseDirectory {
 	 * @return files which is stored the location 
 	 * @throws IOException
 	 */
-	public static HashSet<Path> traversefiles(Path path) throws IOException {
+	public static HashSet<Path> traversefiles(Path path) throws IOException { // TODO Refactor method name
 		try (DirectoryStream<Path> listing = Files.newDirectoryStream(path)) {
 
 			for (Path files : listing) {
 
 				if (Files.isDirectory(files) == false && (files.getFileName().toString().toLowerCase().endsWith("text")
 						|| files.getFileName().toString().toLowerCase().endsWith("txt")
-						|| files.getFileName().toString().toLowerCase().endsWith("html")
+						|| files.getFileName().toString().toLowerCase().endsWith("html") // TODO ????
 						|| !files.getFileName().toString().toLowerCase().contains("."))) {
 
 					file.add(files);

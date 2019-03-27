@@ -7,17 +7,21 @@ import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+// TODO Refactor this to InvertedIndex and remove the Index interface (or modify to be inverted)
+
 /**
  * A special type of {@link Index} that indexes the locations words were found.
  */
 
 public class WordIndex implements Index<String> {
+	// TODO Need to fix these members
 	HashMap<String, HashSet<Integer>> answer = new HashMap<>();
 	HashSet<Integer> index;
-	private TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordsindex;
+	
+	private TreeMap<String, TreeMap<String, TreeSet<Integer>>> wordsindex; // TODO final, refactor to just index
 
 	/**
-	 *
+	 * TODO
 	 * @param words
 	 * @param file
 	 */
@@ -33,6 +37,16 @@ public class WordIndex implements Index<String> {
 	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> getWordsindex(Path file) throws IOException {
 		return index(file);
 	}
+	
+	/*
+	 * TODO Separate out data structore/storage logic from building logic.
+	 * 
+	 * Create an InvertedIndexBuilder that parses files and adds the words to an index.
+	 * 
+	 * create a add(String text, String location, int position)
+	 * 
+	 * Hopefully this allows you to avoid breaking encapsulation, but if still breaks its okay just ask for help.
+	 */
 
 	/**
 	 * @param file

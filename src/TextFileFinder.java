@@ -9,6 +9,8 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+// TODO Formatting
+
 /**
  * A utility class for finding all text files in a directory using lambda
  * functions and streams.
@@ -45,7 +47,7 @@ public class TextFileFinder {
 	 */
 	public static Stream<Path> find(Path start) throws IOException {
 		BiPredicate<Path, BasicFileAttributes> same = (path, b) -> TEXT_EXT.test(path);
-		return Files.find(start,Integer.MAX_VALUE,same, FileVisitOption.FOLLOW_LINKS);		
+		return Files.find(start,Integer.MAX_VALUE,same, FileVisitOption.FOLLOW_LINKS);
 	}
 
 	/**
@@ -58,6 +60,8 @@ public class TextFileFinder {
 	 * @see #find(Path)
 	 */
 	public static List<Path> list(Path start) throws IOException {
+		// TODO Need to fix this method... find(start).SOMETHING HERE to convert the stream to a list
+		// TODO Look for Collectors.toList() if can't find post on Piazza
 		Stream<Path> pathlist = find(start);
 		ArrayList<Path> result = new ArrayList<>();
 		for(Object a : pathlist.toArray()) {
