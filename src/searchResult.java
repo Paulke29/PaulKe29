@@ -10,14 +10,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class searchResult {
-	private TreeMap<String, Integer> wordcounts;
-	private Path query;
-	private boolean isExact;
-	private String where;
-	private int count;
-	private String score;
-	private TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex;
-
 	/**
 	 * @param isExact
 	 * @param query
@@ -27,10 +19,10 @@ public class searchResult {
 	 */
 	public searchResult(boolean isExact, Path query, TreeMap<String, Integer> wordcounts,
 			TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex) throws IOException {
-		this.isExact = isExact;
-		this.query = query;
-		this.wordcounts = wordcounts;
-		this.filesindex = filesindex;
+//		this.isExact = isExact;
+//		this.query = query;
+//		this.wordcounts = wordcounts;
+//		this.filesindex = filesindex;
 	}
 
 	/**
@@ -64,7 +56,9 @@ public class searchResult {
 	 * @param Result2
 	 */
 	public void updateCount(ArrayList<Result> Result1, ArrayList<Result> Result2) {
+//		ArrayList<Result> addnew = new ArrayList<>();
 		int TotalWords = 0;
+		int count;
 		for (Result result : Result1) {
 			for (Result result2 : Result2) {
 				Double score1;
@@ -83,16 +77,19 @@ public class searchResult {
 	/**
 	 * @param Result1
 	 * @param Result2
+	 * @return  addnew 
 	 */
-	public void addnew(ArrayList<Result> Result1, ArrayList<Result> Result2) {
+	public ArrayList<Result> addnew(ArrayList<Result> Result1, ArrayList<Result> Result2) {
+		ArrayList<Result> addnew = new ArrayList<>();
 		System.out.println("xxxx");
 		for(Result result2 : Result2) {
 			for(Result result : Result1) {
 				if(!result.getWhere().equals(result2.getWhere())) {
-					Result1.add(result2);
+					addnew.add(result2);
 				}
 			}
-		}	
+		}
+		return addnew;	
 	}
 	/**
 	 * @param getResultList
@@ -102,6 +99,7 @@ public class searchResult {
 	 */
 	public boolean partialUpdate(ArrayList<Result> getResultList,Result result2,int TotalWords) {
 		for(Result result: getResultList) {
+			int count;
 			double score;
 			if(result.getWhere().equals(result2.getWhere())) {
 				count = result.getCount();
@@ -212,8 +210,8 @@ public class searchResult {
 							SearchResultList.addAll(SingleResult);
 //							System.out.println("After update SearchAResultList: "+ SearchResultList.toString());
 						} else {
-							addnew(SearchResultList, SingleResult);
 							updateCount(SearchResultList, SingleResult);
+//							SearchResultList.addAll(addnew(SearchResultList, SingleResult));
 						}
 					}
 					Collections.sort(SearchResultList);
