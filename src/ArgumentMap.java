@@ -16,7 +16,6 @@ public class ArgumentMap {
 	 */
 	private final Map<String, String> map;
 
-
 	/**
 	 * Initializes this argument map.
 	 */
@@ -93,11 +92,10 @@ public class ArgumentMap {
 	 * @see String#isBlank()
 	 * @see String#length()
 	 */
-	public static boolean isValue(String arg) {	
-		if(arg == null || arg.startsWith("-") || arg.trim().length()< 1) {
+	public static boolean isValue(String arg) {
+		if (arg == null || arg.startsWith("-") || arg.trim().length() < 1) {
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
@@ -118,10 +116,9 @@ public class ArgumentMap {
 	 * @return {@code true} if the flag exists
 	 */
 	public boolean hasFlag(String flag) {
-		if(map.containsKey(flag)) {
+		if (map.containsKey(flag)) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -153,7 +150,7 @@ public class ArgumentMap {
 	 *         there is no mapping for the flag
 	 */
 	public String getString(String flag) {
-			return map.get(flag);
+		return map.get(flag);
 	}
 
 	/**
@@ -171,7 +168,6 @@ public class ArgumentMap {
 		return value == null ? defaultValue : value;
 	}
 
-
 	/**
 	 * Returns the value to which the specified flag is mapped as a {@link Path}, or
 	 * {@code null} if unable to retrieve this mapping for any reason (including
@@ -188,10 +184,9 @@ public class ArgumentMap {
 	 */
 	public Path getPath(String flag) {
 
-		if(map.get(flag)!= null) {
+		if (map.get(flag) != null) {
 			return Paths.get(map.get(flag));
-		}
-		else {
+		} else {
 			return null;
 		}
 	}

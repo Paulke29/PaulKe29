@@ -22,8 +22,8 @@ import java.util.stream.Stream;
 public class TextFileFinder {
 
 	/**
-	 * A lambda function that returns true if the path is a file that ends in a .txt or .text extension
-	 * (case-insensitive).
+	 * A lambda function that returns true if the path is a file that ends in a .txt
+	 * or .text extension (case-insensitive).
 	 *
 	 * @see Files#isRegularFile(Path, java.nio.file.LinkOption...)
 	 */
@@ -56,6 +56,7 @@ public class TextFileFinder {
 
 	/**
 	 * Returns a list of text files.
+	 * 
 	 * @param start the initial path to search
 	 * @return list of text files
 	 * @throws IOException

@@ -186,10 +186,10 @@ public class PrettyJSONWriter {
 	 * @param path
 	 * @throws IOException
 	 */
-	public void asNestedObject_file(TreeMap<String, TreeMap<String, TreeSet<Integer>>> elements, Path path)
+	public static void asNestedStructure(TreeMap<String, TreeMap<String, TreeSet<Integer>>> elements, Path path)
 			throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-			asNestedObject_file(elements, writer, 0);
+			asNestedStructure(elements, writer, 0);
 		}
 	}
 
@@ -200,7 +200,7 @@ public class PrettyJSONWriter {
 	 * @param level
 	 * @throws IOException
 	 */
-	public static void asNestedObject_file(TreeMap<String, TreeMap<String, TreeSet<Integer>>> elements, Writer writer,
+	public static void asNestedStructure(TreeMap<String, TreeMap<String, TreeSet<Integer>>> elements, Writer writer,
 			int level) throws IOException {
 		if (!elements.isEmpty()) {
 			writer.write('{');
@@ -210,7 +210,6 @@ public class PrettyJSONWriter {
 				quote(keys, writer, level + 1);
 				writer.write(": ");
 				asNestedObject(elements.get(keys), writer, level + 1);
-
 				writer.write('\n');
 				indent(writer, level + 1);
 				writer.write('}');
@@ -219,7 +218,6 @@ public class PrettyJSONWriter {
 			}
 			quote(elements.lastKey(), writer, level + 1);
 			writer.write(": ");
-
 			writer.write('{');
 			writer.write('\n');
 			indent(writer, level + 1);

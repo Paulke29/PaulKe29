@@ -1,15 +1,10 @@
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
-// TODO Address warnings, including Javadoc. I won't keep reviewing code with warnings.
-// TODO Still too much code in Driver
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -32,22 +27,15 @@ public class Driver {
 		// store initial start time
 		Instant start = Instant.now();
 		// TODO Modify this method as necessary.
-
 		ArgumentMap argumentMap = new ArgumentMap(args);
 		InvertedIndex wordindex = new InvertedIndex();
-		TraverseDirectory traversefile = new TraverseDirectory();
-		PrettyJSONWriter format = new PrettyJSONWriter();
 		Path path = null;
 		Path index = null;
 		Path location = null;
-		TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex = new TreeMap<>();
-		InvertedIndexBuilder  invertedIndexBuilder = new InvertedIndexBuilder();
-		if (argumentMap.hasFlag("-path")) {
+		InvertedIndexBuilder  invertedIndexBuilder = new InvertedIndexBuilder(wordindex);
+		if (argumentMap.hasFlag("-path")){
 			try {
 				if (argumentMap.hasValue("-path")) {
-					path = argumentMap.getPath("-path");
-					invertedIndexBuilder.filesIndex(TextFileFinder.list(path));
-				} else {
 					path = argumentMap.getPath("-path");
 					invertedIndexBuilder.filesIndex(TextFileFinder.list(path));
 				}
@@ -60,10 +48,10 @@ public class Driver {
 			try {
 				if (argumentMap.hasValue("-index")) {
 					index = argumentMap.getPath("-index");
-					format.asNestedObject_file(filesindex, index); // TODO Not naming things properly in Java
+					wordindex.toJSON(index);
 				} else {
 					index = Paths.get("index.json");
-					format.asNestedObject_file(filesindex, index);
+					wordindex.toJSON(index);
 				}
 			} catch (IOException e) {
 				System.out.println("Invalide index");
@@ -74,16 +62,10 @@ public class Driver {
 			try {
 				if (argumentMap.hasValue("-locations")) {
 					location = argumentMap.getPath("-locations");
-					PrettyJSONWriter.location_format(wordindex.getWordcount(path), location);
+					wordindex.locationsJSON(location);
 				} else {
 					location = argumentMap.getPath("locations.json");
-					if (Files.isDirectory(path) == false) {
-						PrettyJSONWriter.location_format(wordindex.getWordcount(path), location);
-					} else {
-						for (Path file : traversefile.getDirectory(path)) {
-							PrettyJSONWriter.location_format(wordindex.getWordcount(file), location);
-						}
-					}
+					wordindex.locationsJSON(location);
 				}
 			} catch (IOException e) {
 				System.out.println("Invalid location");

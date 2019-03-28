@@ -3,32 +3,37 @@ import java.nio.file.Path;
 
 import java.util.List;
 
+/**
+ * @author paulke
+ *
+ */
 public class InvertedIndexBuilder {
+	private final InvertedIndex index;
+
 	/**
-	 * Build up constructor
+	 * Build up InvertedIndex Object Build up constructor
+	 * 
+	 * @param index
 	 */
-	public InvertedIndexBuilder() {
+	public InvertedIndexBuilder(InvertedIndex index) {
+		this.index = index;
 	}
 
 	/**
 	 * @param file
 	 * @param invertedindex
-	 * @return Object invertedIndex
 	 * @throws IOException
 	 */
-	public InvertedIndex index(Path file, InvertedIndex invertedindex) throws IOException {
+	public void index(Path file) throws IOException {
 		int number = 0;
-		InvertedIndex SingleinvertedIndex = new InvertedIndex();
 		if (file != null && (file.getFileName().toString().toLowerCase().endsWith("text")
 				|| file.getFileName().toString().toLowerCase().endsWith("txt"))) {
 			for (String words : TextFileStemmer.stemFile(file)) {
-				SingleinvertedIndex.add(words, file.toString(), number + 1);
+				index.add(words, file.toString(), number + 1);
 				number++;
 			}
-			SingleinvertedIndex.wordcount(file.toString(), number);
+			index.wordcount(file.toString(), number);
 		}
-		invertedindex.addAll(SingleinvertedIndex);
-		return invertedindex;
 	}
 
 	/**
@@ -36,18 +41,9 @@ public class InvertedIndexBuilder {
 	 * @throws IOException
 	 */
 	public void filesIndex(List<Path> files) throws IOException {
-		InvertedIndex invertedindex = new InvertedIndex();
 		for (Path file : files) {
-			index(file, invertedindex);
+			index(file);
 		}
-	}
-
-	/**
-	 * @return the number of words for every single file
-	 */
-	public InvertedIndex wordcount() {
-		return null;
-
 	}
 
 }

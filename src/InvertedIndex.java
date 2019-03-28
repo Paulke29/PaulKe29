@@ -1,26 +1,18 @@
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
-// TODO Refactor this to InvertedIndex and remove the Index interface (or modify to be inverted)
 
 /**
  * A special type of {@link Index} that indexes the locations words were found.
  */
 
 public class InvertedIndex {
-	// TODO Need to fix these members
-//	private TreeMap<String, TreeSet<Integer>> answer;
-//	private TreeSet<Integer> wordindex;
 	private TreeMap<String, TreeMap<String, TreeSet<Integer>>> finalindex;
 	private TreeMap<String, Integer> wordcount;
+
 	/**
-	 * TODO
+	 * initial TreeMap
 	 * @param words
 	 * @param file
 	 */
@@ -29,10 +21,9 @@ public class InvertedIndex {
 		wordcount = new TreeMap<>();
 	}
 
-
 	/**
-	 * @param words  String words
-	 * @param location filename 
+	 * @param words    String words
+	 * @param location filename
 	 * @param position index for every words
 	 * @return true or false
 	 */
@@ -59,51 +50,34 @@ public class InvertedIndex {
 			}
 		}
 	}
+
 	/**
+	 * Calculating the number of words for every single file
 	 * @param file
 	 * @param number
 	 */
-	public void wordcount(String file,int number) {
-		if(number >0) {
-			wordcount.put(file, number); 	
-		}	
+	public void wordcount(String file, int number) {
+		if (number > 0) {
+			wordcount.put(file, number);
+		}
 	}
+
+
 	/**
-	 * @param SingleInvertedIndex
-	 * @param keys
+	 * Output finalIndex 
+	 * @param path
+	 * @throws IOException
 	 */
-	public void updateWordcount(InvertedIndex SingleInvertedIndex,String keys) {
-		for(String filename : SingleInvertedIndex.finalindex.get(keys).keySet()) {
-			for(String files : wordcount.keySet()) {
-				int number = 0;
-				if(filename.equals(files)){
-					number = wordcount.get(filename);
-					number += finalindex.get(keys).get(filename).size();
-					wordcount.put(filename, number);
-				}
-			}
-		}
-	}
-    /**
-     * update the InvertedIndex Object
-     * @param SingleInvertedIndex
-     */
-	public void addAll(InvertedIndex SingleInvertedIndex) {
-		for (String keys : SingleInvertedIndex.finalindex.keySet()) {
-			boolean same = true;
-			for (String OldKey : this.finalindex.keySet()) {
-				if (!keys.equals(OldKey)) {
-					same = false;
-				}
-				if (keys.equals(OldKey)) {
-				}
-			}
-			if (same == false) {
-				this.finalindex.putAll(SingleInvertedIndex.finalindex);
-			}
-		}
+	public void toJSON(Path path) throws IOException {
+		PrettyJSONWriter.asNestedStructure(this.finalindex, path);
 	}
 
-
-
+	/**
+	 * Output location format
+	 * @param path
+	 * @throws IOException
+	 */
+	public void locationsJSON(Path path) throws IOException {
+		PrettyJSONWriter.asObject(this.wordcount, path);
+	}
 }
