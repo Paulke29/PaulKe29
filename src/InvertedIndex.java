@@ -68,30 +68,41 @@ public class InvertedIndex {
 			wordcount.put(file, number); 	
 		}	
 	}
+	/**
+	 * @param SingleInvertedIndex
+	 * @param keys
+	 */
+	public void updateWordcount(InvertedIndex SingleInvertedIndex,String keys) {
+		for(String filename : SingleInvertedIndex.finalindex.get(keys).keySet()) {
+			for(String files : wordcount.keySet()) {
+				int number = 0;
+				if(filename.equals(files)){
+					number = wordcount.get(filename);
+					number += finalindex.get(keys).get(filename).size();
+					wordcount.put(filename, number);
+				}
+			}
+		}
+	}
     /**
      * update the InvertedIndex Object
      * @param SingleInvertedIndex
      */
-    public void addAll(InvertedIndex SingleInvertedIndex) {
-    	for(String keys: SingleInvertedIndex.finalindex.keySet()) {
-    		boolean same = true;
-    		for(String OldKey: this.finalindex.keySet()) {
-    			if(!keys.equals(OldKey)){
-    				same = false;
-    			}
-    			if(keys.equals(OldKey)) {
-    				for(String filename : SingleInvertedIndex.finalindex.get(keys).keySet()) {
-    					for(String files : wordcount.keySet()) {
-    						
-    					}
-    				}
-    			}
-    		}
-    		if(same == false){
-    			this.finalindex.putAll(SingleInvertedIndex.finalindex);
-    		}
-    	}
-    }
+	public void addAll(InvertedIndex SingleInvertedIndex) {
+		for (String keys : SingleInvertedIndex.finalindex.keySet()) {
+			boolean same = true;
+			for (String OldKey : this.finalindex.keySet()) {
+				if (!keys.equals(OldKey)) {
+					same = false;
+				}
+				if (keys.equals(OldKey)) {
+				}
+			}
+			if (same == false) {
+				this.finalindex.putAll(SingleInvertedIndex.finalindex);
+			}
+		}
+	}
 
 
 

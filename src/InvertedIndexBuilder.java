@@ -36,7 +36,6 @@ public class InvertedIndexBuilder {
 	 * @throws IOException
 	 */
 	public void filesIndex(List<Path> files) throws IOException {
-
 		InvertedIndex invertedindex = new InvertedIndex();
 		for (Path file : files) {
 			index(file, invertedindex);

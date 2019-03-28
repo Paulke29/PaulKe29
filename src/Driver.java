@@ -46,12 +46,10 @@ public class Driver {
 			try {
 				if (argumentMap.hasValue("-path")) {
 					path = argumentMap.getPath("-path");
-					for (Path files : TextFileFinder.list(path)) {
-						filesindex.putAll(invertedIndexBuilder.filesIndex(TextFileFinder.list(path))));
-					}
+					invertedIndexBuilder.filesIndex(TextFileFinder.list(path));
 				} else {
 					path = argumentMap.getPath("-path");
-					filesindex = wordindex.getWordsindex(path);
+					invertedIndexBuilder.filesIndex(TextFileFinder.list(path));
 				}
 			} catch (IOException e) {
 				System.out.println("Invalid path");
