@@ -3,10 +3,10 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 // TODO Formatting
@@ -27,7 +27,10 @@ public class TextFileFinder {
 	 *
 	 * @see Files#isRegularFile(Path, java.nio.file.LinkOption...)
 	 */
-	public static final Predicate<Path> TEXT_EXT = (Path path) -> {return (path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".text"))&& Files.isRegularFile(path);};
+	public static final Predicate<Path> TEXT_EXT = (Path path) -> {
+		return (path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".text"))
+				&& Files.isRegularFile(path);
+	};
 
 	/**
 	 * Returns a stream of text files, following any symbolic links encountered.
@@ -41,36 +44,26 @@ public class TextFileFinder {
 	 * @see FileVisitOption#FOLLOW_LINKS
 	 *
 	 * @see Files#walk(Path, FileVisitOption...)
-	 * @see Files#find(Path, int, java.util.function.BiPredicate, FileVisitOption...)
+	 * @see Files#find(Path, int, java.util.function.BiPredicate,
+	 *      FileVisitOption...)
 	 *
 	 * @see Integer#MAX_VALUE
 	 */
 	public static Stream<Path> find(Path start) throws IOException {
 		BiPredicate<Path, BasicFileAttributes> same = (path, b) -> TEXT_EXT.test(path);
-		return Files.find(start,Integer.MAX_VALUE,same, FileVisitOption.FOLLOW_LINKS);
+		return Files.find(start, Integer.MAX_VALUE, same, FileVisitOption.FOLLOW_LINKS);
 	}
 
 	/**
 	 * Returns a list of text files.
-	 *
 	 * @param start the initial path to search
 	 * @return list of text files
 	 * @throws IOException
-	 *
 	 * @see #find(Path)
 	 */
 	public static List<Path> list(Path start) throws IOException {
-		// TODO Need to fix this method... find(start).SOMETHING HERE to convert the stream to a list
-		// TODO Look for Collectors.toList() if can't find post on Piazza
 		Stream<Path> pathlist = find(start);
-		ArrayList<Path> result = new ArrayList<>();
-		for(Object a : pathlist.toArray()) {
-			result.add((Path)a);
-		}
-		result.stream().filter(x -> TEXT_EXT.test(start)).findFirst();
-		
-			
-		
+		List<Path> result = pathlist.collect(Collectors.toList());
 		return result;
 	}
 

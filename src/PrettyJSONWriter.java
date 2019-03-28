@@ -31,55 +31,32 @@ public class PrettyJSONWriter {
 	 */
 	public static void asArray(TreeSet<Integer> elements, Writer writer, int level) throws IOException {
 		writer.write('[');
-		writer.write('\n'); 
+		writer.write('\n');
 		var iterator = elements.iterator();
-		if(iterator.hasNext()) {
-			indent(iterator.next().toString(),writer,level+1);
-			while(iterator.hasNext()) {
+		if (iterator.hasNext()) {
+			indent(iterator.next().toString(), writer, level + 1);
+			while (iterator.hasNext()) {
 				writer.write(",\n");
-				indent(iterator.next().toString(),writer,level+1);
-			} 
+				indent(iterator.next().toString(), writer, level + 1);
+			}
 			writer.write("\n");
-			
+
 		}
-		indent(writer,level);
+		indent(writer, level);
 		writer.write(']');
 	}
-	
-	// TODO This is the same data structure as asObject, should not need a new method
-	/**
-	 * @param counting
-	 * @param writer
-	 * @param level
-	 * @throws IOException
-	 */
-	public static void location_format(TreeMap<String,Integer> counting, Writer writer, int level) throws IOException{
-		writer.write('{');
-		writer.write('\n'); 
-		if(!counting.isEmpty()) {
-			for(String keys: counting.headMap(counting.lastKey()).keySet()) {
-				 quote(keys,writer,level+1);
-				 writer.write(": ");
-				 writer.write(counting.get(keys).toString());
-				 writer.write(",\n"); 
-			}
-		}
-		quote(counting.lastKey(),writer,level+1);
-    	writer.write(": ");
-    	writer.write(counting.get(counting.lastKey()).toString());
-    	writer.write('\n'); 
-    	writer.write('}');
-	}
+
 	/**
 	 * @param counting
 	 * @param path
 	 * @throws IOException
 	 */
-	public static void location_format(TreeMap<String,Integer> counting, Path path) throws IOException {
+	public static void location_format(TreeMap<String, Integer> counting, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-			location_format(counting, writer, 0);
+			asObject(counting, writer, 0);
 		}
 	}
+
 	/**
 	 * Writes the elements as a pretty JSON array to file.
 	 *
@@ -108,8 +85,7 @@ public class PrettyJSONWriter {
 			StringWriter writer = new StringWriter();
 			asArray(elements, writer, 0);
 			return writer.toString();
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			return null;
 		}
 	}
@@ -124,25 +100,23 @@ public class PrettyJSONWriter {
 	 */
 	public static void asObject(TreeMap<String, Integer> elements, Writer writer, int level) throws IOException {
 		writer.write('{');
-		writer.write('\n'); 
-		
-      
-      if(elements != null) {
-	      for(String keys : elements.headMap(elements.lastKey()).keySet()) {
-	    	  quote(keys,writer,level+1);
-	    	  writer.write(": ");
-	    	  indent(elements.get(keys),writer,level); 
-	    	  writer.write(",\n");
-	      		}
-	      quote(elements.lastKey(),writer,level+1);
-    	  writer.write(": ");
-    	  indent(elements.get(elements.lastKey()),writer,level); 
-    	  writer.write("\n");
-	 }
-      
-	indent(writer,level);
-      writer.write('}');
-		
+		writer.write('\n');
+		if (elements != null) {
+			for (String keys : elements.headMap(elements.lastKey()).keySet()) {
+				quote(keys, writer, level + 1);
+				writer.write(": ");
+				indent(elements.get(keys), writer, level);
+				writer.write(",\n");
+			}
+			quote(elements.lastKey(), writer, level + 1);
+			writer.write(": ");
+			indent(elements.get(elements.lastKey()), writer, level);
+			writer.write("\n");
+		}
+
+		indent(writer, level);
+		writer.write('}');
+
 	}
 
 	/**
@@ -173,8 +147,7 @@ public class PrettyJSONWriter {
 			StringWriter writer = new StringWriter();
 			asObject(elements, writer, 0);
 			return writer.toString();
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			return null;
 		}
 	}
@@ -187,41 +160,39 @@ public class PrettyJSONWriter {
 	 * @param level    the initial indent level
 	 * @throws IOException
 	 */
-	public static void asNestedObject(TreeMap<String, TreeSet<Integer>> elements, Writer writer, int level) throws IOException {
-		
-		writer.write('{');
-		writer.write('\n'); 
-		
-		
-		
-		if(elements != null) {
-			for(String keys : elements.headMap(elements.lastKey()).keySet()) {
-		    	  quote(keys,writer,level+1);
-		    	  writer.write(": ");
-		    	  asArray(elements.get(keys),writer,level+1);
-		    	  writer.write(",\n");
-		    	  
-		      	}
-			 quote(elements.lastKey(),writer,level+1);
-	    	 writer.write(": ");
-	    	 asArray(elements.get(elements.lastKey()),writer,level+1);
-	    	
+	public static void asNestedObject(TreeMap<String, TreeSet<Integer>> elements, Writer writer, int level)
+			throws IOException {
 
-		}		
+		writer.write('{');
+		writer.write('\n');
+
+		if (elements != null) {
+			for (String keys : elements.headMap(elements.lastKey()).keySet()) {
+				quote(keys, writer, level + 1);
+				writer.write(": ");
+				asArray(elements.get(keys), writer, level + 1);
+				writer.write(",\n");
+
+			}
+			quote(elements.lastKey(), writer, level + 1);
+			writer.write(": ");
+			asArray(elements.get(elements.lastKey()), writer, level + 1);
+
+		}
 	}
-	
-	
+
 	/**
 	 * @param elements
 	 * @param path
 	 * @throws IOException
 	 */
-	public  void asNestedObject_file(TreeMap<String,TreeMap<String, TreeSet<Integer>>> elements, Path path) throws IOException {
+	public void asNestedObject_file(TreeMap<String, TreeMap<String, TreeSet<Integer>>> elements, Path path)
+			throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asNestedObject_file(elements, writer, 0);
 		}
 	}
-	
+
 	// TODO Reuse asNestedObject
 	/**
 	 * @param elements
@@ -229,52 +200,55 @@ public class PrettyJSONWriter {
 	 * @param level
 	 * @throws IOException
 	 */
-	public static void asNestedObject_file(TreeMap<String, TreeMap<String, TreeSet<Integer>>> elements,Writer writer, int level)throws IOException{
-		if(!elements.isEmpty()){
+	public static void asNestedObject_file(TreeMap<String, TreeMap<String, TreeSet<Integer>>> elements, Writer writer,
+			int level) throws IOException {
+		if (!elements.isEmpty()) {
 			writer.write('{');
-			writer.write('\n'); 
-			
-			for(String keys : elements.headMap(elements.lastKey()).keySet()) {
-		    	  quote(keys,writer,level+1);
-		    	  writer.write(": ");
-		    	  asNestedObject(elements.get(keys),writer,level+1);
+			writer.write('\n');
 
-		    		  writer.write('\n');
-		    		  indent(writer,level+ 1);
-		    		  writer.write('}');
-		    		  writer.write(",\n");
-		    	  
-		      }
-			 quote(elements.lastKey(),writer,level+1);
-	    	 writer.write(": ");
-	    	
-	    		  writer.write('{');
-	    		  writer.write('\n'); 
-	    		  indent(writer,level+1);
-	    	for(String filename: elements.get(elements.lastKey()).keySet()) {
-	    		  quote(filename,writer,level+1); 
-	    		  writer.write(": ");
-	    		  
-	    		  asArray(elements.get(elements.lastKey()).get(filename),writer,level+3);
-	    	}
-	    		  writer.write('\n'); 
-	    		  indent(writer,level+1);
-	    		  writer.write("}");
-	              writer.write("\n");
-	              writer.write('}');
-			
+			for (String keys : elements.headMap(elements.lastKey()).keySet()) {
+				quote(keys, writer, level + 1);
+				writer.write(": ");
+				asNestedObject(elements.get(keys), writer, level + 1);
+
+				writer.write('\n');
+				indent(writer, level + 1);
+				writer.write('}');
+				writer.write(",\n");
+
+			}
+			quote(elements.lastKey(), writer, level + 1);
+			writer.write(": ");
+
+			writer.write('{');
+			writer.write('\n');
+			indent(writer, level + 1);
+			for (String filename : elements.get(elements.lastKey()).keySet()) {
+				quote(filename, writer, level + 1);
+				writer.write(": ");
+
+				asArray(elements.get(elements.lastKey()).get(filename), writer, level + 3);
+			}
+			writer.write('\n');
+			indent(writer, level + 1);
+			writer.write("}");
+			writer.write("\n");
+			writer.write('}');
+
 		}
 
 	}
+
 	/**
 	 * @param path
 	 * @throws IOException
 	 */
-	public  void empty_file( Path path) throws IOException {
+	public void empty_file(Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-			empty_file( writer);
+			empty_file(writer);
 		}
 	}
+
 	/**
 	 * @param writer
 	 * @throws IOException
@@ -313,8 +287,7 @@ public class PrettyJSONWriter {
 			StringWriter writer = new StringWriter();
 			asNestedObject(elements, writer, 0);
 			return writer.toString();
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			return null;
 		}
 	}
@@ -392,7 +365,6 @@ public class PrettyJSONWriter {
 		indent(writer, times);
 		quote(element, writer);
 	}
-
 
 	/**
 	 * A simple main method that demonstrates this class.

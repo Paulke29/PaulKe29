@@ -41,73 +41,56 @@ public class Driver {
 		Path index = null;
 		Path location = null;
 		TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex = new TreeMap<>();
+		InvertedIndexBuilder  invertedIndexBuilder = new InvertedIndexBuilder();
 		if (argumentMap.hasFlag("-path")) {
-			if (argumentMap.hasValue("-path")) {
-				path = argumentMap.getPath("-path");
-				try {
-					if (Files.isDirectory(path) == false) { // TODO Some of this might move into your builder class
-						filesindex.putAll(wordindex.getWordsindex(path));
-					} else {
-						for (Path file : traversefile.getDirectory(path)) {
-							filesindex.putAll(wordindex.getWordsindex(file));
-						}
+			try {
+				if (argumentMap.hasValue("-path")) {
+					path = argumentMap.getPath("-path");
+					for (Path files : TextFileFinder.list(path)) {
+						filesindex.putAll(invertedIndexBuilder.filesIndex(TextFileFinder.list(path))));
 					}
-				} catch (IOException e) {
-					System.out.println(e); // TODO Fix exception handling
-				}
-			} else {
-				try {
+				} else {
 					path = argumentMap.getPath("-path");
 					filesindex = wordindex.getWordsindex(path);
-				} catch (IOException e) {
-					System.out.println(e);
 				}
-
+			} catch (IOException e) {
+				System.out.println("Invalid path");
 			}
+
 		}
 		if (argumentMap.hasFlag("-index")) {
-			if (argumentMap.hasValue("-index")) {
-				index = argumentMap.getPath("-index");
-				try {
+			try {
+				if (argumentMap.hasValue("-index")) {
+					index = argumentMap.getPath("-index");
 					format.asNestedObject_file(filesindex, index); // TODO Not naming things properly in Java
-				} catch (IOException e) {
-					System.out.println(e);
-				}
-			} else {
-				index = Paths.get("index.json");
-				try {
+				} else {
+					index = Paths.get("index.json");
 					format.asNestedObject_file(filesindex, index);
-				} catch (IOException e) {
-					System.out.println(e);
 				}
+			} catch (IOException e) {
+				System.out.println("Invalide index");
 			}
+
 		}
-		if(argumentMap.hasFlag("-locations")) {
-			if(argumentMap.hasValue("-locations")) {
-				location = argumentMap.getPath("-locations");
-				try {
-					PrettyJSONWriter.location_format(wordindex.getWordcount(path),location);
-				}catch (IOException e) {
-					System.out.println(e);
-				}
-			}
-			else {
-				try {
+		if (argumentMap.hasFlag("-locations")) {
+			try {
+				if (argumentMap.hasValue("-locations")) {
+					location = argumentMap.getPath("-locations");
+					PrettyJSONWriter.location_format(wordindex.getWordcount(path), location);
+				} else {
 					location = argumentMap.getPath("locations.json");
-					if(Files.isDirectory(path) == false) {
-						PrettyJSONWriter.location_format(wordindex.getWordcount(path),location);
+					if (Files.isDirectory(path) == false) {
+						PrettyJSONWriter.location_format(wordindex.getWordcount(path), location);
+					} else {
+						for (Path file : traversefile.getDirectory(path)) {
+							PrettyJSONWriter.location_format(wordindex.getWordcount(file), location);
+						}
 					}
-					else {
-						for(Path file : traversefile.getDirectory(path)){
-			        		PrettyJSONWriter.location_format(wordindex.getWordcount(file),location);
-			        	}
-					}
-					
-				}catch (IOException e) {
-					System.out.println(e);
 				}
-				
+			} catch (IOException e) {
+				System.out.println("Invalid location");
 			}
+
 		}
 
 

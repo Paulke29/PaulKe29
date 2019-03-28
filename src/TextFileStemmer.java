@@ -7,7 +7,6 @@ import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 import java.nio.file.Files;
 
-
 /**
  * Utility class for parsing and stemming text and text files into sets of
  * stemmed words.
@@ -50,8 +49,8 @@ public class TextFileStemmer {
 	 * @see TextParser#parse(String)
 	 */
 	public static ArrayList<String> stemLine(String line, Stemmer stemmer) {
-		ArrayList<String>answer = new ArrayList<>();
-		for(String words: TextParser.parse(line)) {
+		ArrayList<String> answer = new ArrayList<>();
+		for (String words : TextParser.parse(line)) {
 			answer.add((String) stemmer.stem(words));
 		}
 		return answer;
@@ -61,7 +60,7 @@ public class TextFileStemmer {
 	 * Reads a file line by line, parses each line into cleaned and stemmed words,
 	 * and then adds those words to a set.
 	 *
-	 * @param inputFile  the input file to parse
+	 * @param inputFile the input file to parse
 	 * @return a sorted set of stems from file
 	 * @throws IOException if unable to read or parse file
 	 *
@@ -70,16 +69,16 @@ public class TextFileStemmer {
 	 */
 	public static ArrayList<String> stemFile(Path inputFile) throws IOException {
 		ArrayList<String> answer = new ArrayList<>();
-		try (BufferedReader read_line = Files.newBufferedReader(inputFile)){
-		    String line = null;
+		try (BufferedReader read_line = Files.newBufferedReader(inputFile)) {
+			String line = null;
 			while ((line = read_line.readLine()) != null) {
-				for(String words: TextParser.parse(line)) {
+				for (String words : TextParser.parse(line)) {
 					answer.addAll(stemLine2(words));
-					}
-				
 				}
-			}catch(IOException e) {
-			 e.printStackTrace();
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return answer;
 	}
