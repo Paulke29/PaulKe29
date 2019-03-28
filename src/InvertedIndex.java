@@ -13,7 +13,7 @@ import java.util.TreeSet;
  * A special type of {@link Index} that indexes the locations words were found.
  */
 
-public class WordIndex implements Index<String> {
+public class InvertedIndex {
 	// TODO Need to fix these members
 	HashMap<String, HashSet<Integer>> answer = new HashMap<>();
 	HashSet<Integer> index;
@@ -25,7 +25,7 @@ public class WordIndex implements Index<String> {
 	 * @param words
 	 * @param file
 	 */
-	public WordIndex() {
+	public InvertedIndex() {
 		wordsindex = new TreeMap<>();
 	}
 
@@ -96,36 +96,35 @@ public class WordIndex implements Index<String> {
 		return wordsindex;
 	}
 
-	/**
-	 * @param file
-	 * @return the number of words
-	 * @throws IOException
-	 */
-	public TreeMap<String, Integer> wordcount(Path file) throws IOException {
-		TreeMap<String, Integer> counting = new TreeMap<>();
-		HashSet<Path> files = new HashSet<>();
-		files.addAll(TraverseDirectory.traversefiles(file));
+//	/**
+//	 * @param file
+//	 * @return the number of words
+//	 * @throws IOException
+//	 */
+//	public TreeMap<String, Integer> wordcount(Path file) throws IOException {
+//		TreeMap<String, Integer> counting = new TreeMap<>();
+//		HashSet<Path> files = new HashSet<>();
+//		files.addAll(TraverseDirectory.traversefiles(file));
+//
+//		for (Path counting_words : files) {
+//			int number = 0;
+//			if (counting_words.getFileName().toString().toLowerCase().endsWith("text")
+//					|| counting_words.getFileName().toString().toLowerCase().endsWith("txt")) {
+//				for (String words : TextFileStemmer.stemFile(counting_words)) {
+//					number++;
+//				}
+//				if (number != 0) {
+//					counting.put(counting_words.toString(), number);
+//				}
+//
+//			}
+//
+//		}
+//
+//		return counting;
+//
+//	}
 
-		for (Path counting_words : files) {
-			int number = 0;
-			if (counting_words.getFileName().toString().toLowerCase().endsWith("text")
-					|| counting_words.getFileName().toString().toLowerCase().endsWith("txt")) {
-				for (String words : TextFileStemmer.stemFile(counting_words)) {
-					number++;
-				}
-				if (number != 0) {
-					counting.put(counting_words.toString(), number);
-				}
-
-			}
-
-		}
-
-		return counting;
-
-	}
-
-	@Override
 	public boolean add(String element, int position) {
 		if (!answer.containsKey(element)) {
 			index = new HashSet<>();
@@ -142,7 +141,7 @@ public class WordIndex implements Index<String> {
 		}
 	}
 
-	@Override
+
 	public int numPositions(String element) {
 		if (!answer.containsKey(element)) {
 			return 0;
@@ -158,13 +157,13 @@ public class WordIndex implements Index<String> {
 
 	}
 
-	@Override
+
 	public int numElements() {
 
 		return answer.keySet().size();
 	}
 
-	@Override
+
 	public boolean contains(String element) {
 		if (answer.containsKey(element)) {
 			return true;
@@ -172,7 +171,12 @@ public class WordIndex implements Index<String> {
 		return false;
 	}
 
-	@Override
+	
+	/**
+	 * @param element
+	 * @param position
+	 * @return
+	 */
 	public boolean contains(String element, int position) {
 		if (!answer.containsKey(element)) {
 			return false;
@@ -188,7 +192,10 @@ public class WordIndex implements Index<String> {
 
 	}
 
-	@Override
+	
+	/**
+	 * @return get elements
+	 */
 	public Collection<String> getElements() {
 		try {
 			HashSet<String> elements = new HashSet<>();
@@ -202,7 +209,11 @@ public class WordIndex implements Index<String> {
 		}
 	}
 
-	@Override
+	
+	/**
+	 * @param element
+	 * @return the position as collection
+	 */
 	public Collection<Integer> getPositions(String element) {
 
 		try {

@@ -34,7 +34,7 @@ public class Driver {
 		// TODO Modify this method as necessary.
 
 		ArgumentMap argumentMap = new ArgumentMap(args);
-		WordIndex wordindex = new WordIndex();
+		InvertedIndex wordindex = new InvertedIndex();
 		TraverseDirectory traversefile = new TraverseDirectory();
 		PrettyJSONWriter format = new PrettyJSONWriter();
 		Path path = null;
