@@ -48,10 +48,10 @@ public class Driver {
 			try {
 				if (argumentMap.hasValue("-index")) {
 					index = argumentMap.getPath("-index");
-					wordindex.toJSON(index);
+					wordindex.nestJSON(index);
 				} else {
 					index = Paths.get("index.json");
-					wordindex.toJSON(index);
+					wordindex.nestJSON(index);
 				}
 			} catch (IOException e) {
 				System.out.println("Invalide index");

@@ -68,7 +68,7 @@ public class InvertedIndex {
 	 * @param path
 	 * @throws IOException
 	 */
-	public void toJSON(Path path) throws IOException {
+	public void nestJSON(Path path) throws IOException {
 		PrettyJSONWriter.asNestedStructure(this.finalindex, path);
 	}
 
