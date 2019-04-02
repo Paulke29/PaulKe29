@@ -3,18 +3,24 @@ import java.nio.file.Path;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-/**
- * A special type of {@link Index} that indexes the locations words were found.
- */
 
+
+/**
+ * @author paulke
+ *
+ */
 public class InvertedIndex {
+	/**
+	 * creating a dataStructure for index
+	 */
 	private TreeMap<String, TreeMap<String, TreeSet<Integer>>> finalindex;
+	/**
+	 * creating a dataStructure for word count
+	 */
 	private TreeMap<String, Integer> wordcount;
 
 	/**
 	 * initial TreeMap
-	 * @param words
-	 * @param file
 	 */
 	public InvertedIndex() {
 		finalindex = new TreeMap<>();

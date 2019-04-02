@@ -64,7 +64,6 @@ public class TextFileStemmer {
 	 * @return a sorted set of stems from file
 	 * @throws IOException if unable to read or parse file
 	 *
-	 * @see #stemLine(String)
 	 * @see TextParser#parse(String)
 	 */
 	public static ArrayList<String> stemFile(Path inputFile) throws IOException {

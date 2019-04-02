@@ -8,6 +8,10 @@ import java.util.List;
  *
  */
 public class InvertedIndexBuilder {
+	
+	/**
+	 * creating InvertedIndex Object
+	 */
 	private final InvertedIndex index;
 
 	/**
@@ -21,7 +25,6 @@ public class InvertedIndexBuilder {
 
 	/**
 	 * @param file
-	 * @param invertedindex
 	 * @throws IOException
 	 */
 	public void index(Path file) throws IOException {
