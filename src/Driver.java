@@ -22,7 +22,7 @@ public class Driver {
 	 * inverted index.
 	 *
 	 * @param args flag/value pairs used to start this program
-	 * 
+	 *   
 	 */
 	public static void main(String[] args) {
 		// store initial start time
