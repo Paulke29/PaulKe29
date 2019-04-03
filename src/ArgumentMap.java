@@ -3,8 +3,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO Format consistently (especially use of blank lines)
-
 /**
  * Parses and stores command-line arguments into simple key = value pairs.
  *
@@ -12,7 +10,6 @@ import java.util.Map;
  * @author University of San Francisco
  */
 public class ArgumentMap {
-  
 	/**
 	 * Stores command-line arguments in key = value pairs.
 	 */
@@ -95,12 +92,7 @@ public class ArgumentMap {
 	 * @see String#length()
 	 */
 	public static boolean isValue(String arg) {
-		// TODO Try to condense into a single return method.
-		if (arg == null || arg.startsWith("-") || arg.trim().length() < 1) {
-			return false;
-		} else {
-			return true;
-		}
+		return arg != null && !arg.startsWith("-") && arg.trim().length() > 1;
 	}
 
 	/**
@@ -119,12 +111,7 @@ public class ArgumentMap {
 	 * @return {@code true} if the flag exists
 	 */
 	public boolean hasFlag(String flag) {
-		// TODO Same, condense into single return
-		if (map.containsKey(flag)) {
-			return true;
-		} else {
-			return false;
-		}
+		return map.containsKey(flag);
 	}
 
 	/**
@@ -134,15 +121,7 @@ public class ArgumentMap {
 	 * @return {@code true} if the flag is mapped to a non-null value
 	 */
 	public boolean hasValue(String flag) {
-		if (map.containsKey(flag)) {
-			if (map.get(flag) == null) {
-				return false;
-			} else {
-				return true;
-			}
-		}
-		return (map.get(flag) == null); // TODO Only line you need, delete the rest
-
+		return map.get(flag) != null;
 	}
 
 	/**

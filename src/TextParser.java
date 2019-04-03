@@ -65,7 +65,6 @@ public class TextParser {
 		System.out.printf(" Text: %s%n", text);
 		System.out.printf("Clean: %s%n%n", clean(text));
 
-		// demonstrate the impact of cleaning before or after split
 		String[] afterSplit = split(text);
 		String[] afterParse = parse(text);
 

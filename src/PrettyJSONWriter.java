@@ -8,11 +8,6 @@ import java.nio.file.Path;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-// TODO Old TODO comments in this code. Use the "Tasks" view in Eclipse to see them all.
-// TODO If there are old comments again, I'll reject the review until they are cleaned up! 
-
-// TODO Use of blank lines is inconsistent in this file. Decide on a strategy and stick to it!
-
 /**
  * Outputs several tree-based data structures in "pretty" JSON format where
  * newlines are used to separate elements, and nested elements are indented.
@@ -52,6 +47,8 @@ public class PrettyJSONWriter {
 	}
 
 	/**
+	 * Output location format
+	 * 
 	 * @param counting
 	 * @param path
 	 * @throws IOException
@@ -178,7 +175,7 @@ public class PrettyJSONWriter {
 				asArray(elements.get(keys), writer, level + 1);
 				writer.write(",\n");
 			}
-			
+
 			quote(elements.lastKey(), writer, level + 1);
 			writer.write(": ");
 			asArray(elements.get(elements.lastKey()), writer, level + 1);
@@ -187,6 +184,8 @@ public class PrettyJSONWriter {
 	}
 
 	/**
+	 * Output nested Structure
+	 * 
 	 * @param elements
 	 * @param path
 	 * @throws IOException
@@ -198,8 +197,9 @@ public class PrettyJSONWriter {
 		}
 	}
 
-	// TODO Reuse asNestedObject
 	/**
+	 * create nested structure
+	 * 
 	 * @param elements
 	 * @param writer
 	 * @param level
@@ -243,20 +243,24 @@ public class PrettyJSONWriter {
 	}
 
 	/**
+	 * Output a empty file
+	 * 
 	 * @param path
 	 * @throws IOException
 	 */
-	public void empty_file(Path path) throws IOException {
+	public void emptyFile(Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-			empty_file(writer);
+			emptyFile(writer);
 		}
 	}
 
 	/**
+	 * create a empty file
+	 * 
 	 * @param writer
 	 * @throws IOException
 	 */
-	public void empty_file(Writer writer) throws IOException {
+	public void emptyFile(Writer writer) throws IOException {
 		writer.write('{');
 		writer.write('\n');
 		writer.write("}");
@@ -320,7 +324,6 @@ public class PrettyJSONWriter {
 	 * @see #indent(Writer, int)
 	 */
 	public static void indent(Integer element, Writer writer, int times) throws IOException {
-		// THIS IS PROVIDED FOR YOU; DO NOT MODIFY
 		indent(element.toString(), writer, times);
 	}
 

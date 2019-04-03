@@ -9,9 +9,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-// TODO There is an old TODO comment below...
-// TODO Formatting
-
 /**
  * A utility class for finding all text files in a directory using lambda
  * functions and streams.
@@ -29,9 +26,8 @@ public class TextFileFinder {
 	 * @see Files#isRegularFile(Path, java.nio.file.LinkOption...)
 	 */
 	public static final Predicate<Path> TEXT_EXT = (Path path) -> {
-		// TODO Avoid calling toString().toLowerCase() twice. Save the result and reuse it.
-		return (path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".text"))
-				&& Files.isRegularFile(path);
+		String paths = path.toString().toLowerCase();
+		return (paths.endsWith(".txt") || paths.endsWith(".text")) && Files.isRegularFile(path);
 	};
 
 	/**

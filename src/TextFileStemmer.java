@@ -1,5 +1,4 @@
 import java.io.IOException;
-
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.io.BufferedReader;
@@ -33,7 +32,7 @@ public class TextFileStemmer {
 	 * @see #DEFAULT
 	 * @see #stemLine(String, Stemmer)
 	 */
-	public static ArrayList<String> stemLine2(String line) { // TODO Why is this called stemLine2? Refactor to stemLine
+	public static ArrayList<String> stemLine(String line) {
 		return stemLine(line, new SnowballStemmer(DEFAULT));
 	}
 
@@ -50,8 +49,7 @@ public class TextFileStemmer {
 	public static ArrayList<String> stemLine(String line, Stemmer stemmer) {
 		ArrayList<String> answer = new ArrayList<>();
 		for (String words : TextParser.parse(line)) {
-			// TODO Don't downcast, try: stemmer.stem(words).toString()
-			answer.add((String) stemmer.stem(words));
+			answer.add(stemmer.stem(words).toString());
 		}
 		return answer;
 	}
@@ -68,17 +66,12 @@ public class TextFileStemmer {
 	 */
 	public static ArrayList<String> stemFile(Path inputFile) throws IOException {
 		ArrayList<String> answer = new ArrayList<>();
-		try (BufferedReader read_line = Files.newBufferedReader(inputFile)) {
-			String line = null;
-			while ((line = read_line.readLine()) != null) {
-				for (String words : TextParser.parse(line)) {
-					answer.addAll(stemLine2(words));
-				}
+		BufferedReader read_line = Files.newBufferedReader(inputFile);
+		String line = null;
+		while ((line = read_line.readLine()) != null) {
+			for (String words : TextParser.parse(line)) {
+				answer.addAll(stemLine(words));
 			}
-		} catch (IOException e) {
-			// TODO Cannot print stack traces in production-ready code
-			// TODO Also this method throws exception, should just remove this catch block
-			e.printStackTrace();
 		}
 		return answer;
 	}
@@ -95,7 +88,7 @@ public class TextFileStemmer {
 				+ "practicing practis practisants practise practised practiser "
 				+ "practisers practises practising practitioner practitioners";
 
-		System.out.println(stemLine2(text));
+		System.out.println(stemLine(text));
 
 	}
 }
