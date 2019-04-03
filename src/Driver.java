@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 
+// TODO Fix formatting and old comments---don't resubmit until that is done.
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -30,9 +31,9 @@ public class Driver {
 		// TODO Modify this method as necessary.
 		ArgumentMap argumentMap = new ArgumentMap(args);
 		InvertedIndex wordindex = new InvertedIndex();
-		Path path = null;
-		Path index = null;
-		Path location = null;
+		Path path = null; // TODO Declare this where you define it
+		Path index = null; // TODO Declare this where you define it
+		Path location = null; // TODO Declare this where you define it
 		InvertedIndexBuilder  invertedIndexBuilder = new InvertedIndexBuilder(wordindex);
 		if (argumentMap.hasFlag("-path")){
 			try {
@@ -41,12 +42,15 @@ public class Driver {
 					invertedIndexBuilder.filesIndex(TextFileFinder.list(path));
 				}
 			} catch (IOException e) {
+				// TODO Need to be more descriptive
 				System.out.println("Invalid path");
 			}
 
 		}
 		if (argumentMap.hasFlag("-index")) {
 			try {
+				// TODO Use argumentMap methods to simplify this...
+				// Path path = argumentMap.getPath("-index", Path.of("index.json"));
 				if (argumentMap.hasValue("-index")) {
 					index = argumentMap.getPath("-index");
 					wordindex.nestJSON(index);
@@ -55,11 +59,13 @@ public class Driver {
 					wordindex.nestJSON(index);
 				}
 			} catch (IOException e) {
+			// TODO Need to be more descriptive
 				System.out.println("Invalide index");
 			}
 
 		}
 		if (argumentMap.hasFlag("-locations")) {
+			// TODO Same comments as above.
 			try {
 				if (argumentMap.hasValue("-locations")) {
 					location = argumentMap.getPath("-locations");
@@ -75,7 +81,7 @@ public class Driver {
 		}
 
 
-		System.out.println(Arrays.toString(args));
+		System.out.println(Arrays.toString(args)); // TODO Remove
 
 		Duration elapsed = Duration.between(start, Instant.now());
 		double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
