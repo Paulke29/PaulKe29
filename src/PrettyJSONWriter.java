@@ -8,6 +8,11 @@ import java.nio.file.Path;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+// TODO Old TODO comments in this code. Use the "Tasks" view in Eclipse to see them all.
+// TODO If there are old comments again, I'll reject the review until they are cleaned up! 
+
+// TODO Use of blank lines is inconsistent in this file. Decide on a strategy and stick to it!
+
 /**
  * Outputs several tree-based data structures in "pretty" JSON format where
  * newlines are used to separate elements, and nested elements are indented.
@@ -172,8 +177,8 @@ public class PrettyJSONWriter {
 				writer.write(": ");
 				asArray(elements.get(keys), writer, level + 1);
 				writer.write(",\n");
-
 			}
+			
 			quote(elements.lastKey(), writer, level + 1);
 			writer.write(": ");
 			asArray(elements.get(elements.lastKey()), writer, level + 1);

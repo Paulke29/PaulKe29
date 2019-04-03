@@ -10,6 +10,10 @@ import java.util.TreeSet;
  *
  */
 public class InvertedIndex {
+	// TODO Fix variable names, use camelCase or change to 1 word names
+	// TODO For example, finalindex becomes "finalIndex" or just "index"
+	// TODO Make both of these members final.
+	
 	/**
 	 * creating a dataStructure for index
 	 */
@@ -34,6 +38,18 @@ public class InvertedIndex {
 	 * @return true or false
 	 */
 	public boolean add(String words, String location, int position) {
+		/*
+		 * TODO This method can be simplified... notice the repeated code?
+		 * You are adding a position in all of the if/else if/else blocks below.
+		 * 
+		 * So, to simplify, try working backwards. Start with this:
+		 * 
+		 * finalindex.get(words).get(location).add(position);
+		 * 
+		 * And then work backwards to make sure that code will always work. For example,
+		 * if finalindex.get(words).get(location) is null, then you need to init the
+		 * inner tree set.
+		 */
 		if (!finalindex.containsKey(words)) {
 			TreeMap<String, TreeSet<Integer>> answer = new TreeMap<>();
 			TreeSet<Integer> wordindex = new TreeSet<>();
@@ -68,6 +84,17 @@ public class InvertedIndex {
 		}
 	}
 
+	/*
+	 * TODO Can't actually have add and wordcount as separate methods. Then it is
+	 * possible for the word count to not match what you have stored in your index.
+	 * For example, nothing is stopping other code from doing something like:
+	 * 
+	 * wordcount("hello.txt", -12);
+	 * 
+	 * So I suggest you embed updating the word count in the add method for data
+	 * integrity. So if you actually add something to your index (i.e. it is not a
+	 * duplicate), then increase the count for that location by 1.
+	 */
 
 	/**
 	 * Output finalIndex 
@@ -86,4 +113,7 @@ public class InvertedIndex {
 	public void locationsJSON(Path path) throws IOException {
 		PrettyJSONWriter.asObject(this.wordcount, path);
 	}
+	
+	// TODO See Piazza for the additional type of methods to add to this class 
+	// to make it more generally useful.
 }
