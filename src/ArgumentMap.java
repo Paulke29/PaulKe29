@@ -3,6 +3,9 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO Go through and consistently use blank lines. I'll point out a few places it is inconsistent.
+// TODO I already warned you about this: https://github.com/usf-cs212-spring2019/project-Paulke29/blob/081fa8f0a286ad3592322b2859c60691b63a0cfe/src/ArgumentMap.java#L6
+
 /**
  * Parses and stores command-line arguments into simple key = value pairs.
  *
@@ -18,7 +21,7 @@ public class ArgumentMap {
 	/**
 	 * Initializes this argument map.
 	 */
-	public ArgumentMap() {
+	public ArgumentMap() { // TODO Fix blank lines here
 
 		this.map = new HashMap<>();
 
@@ -43,7 +46,7 @@ public class ArgumentMap {
 	 * @param args the command line arguments to parse
 	 */
 	public void parse(String[] args) {
-		for (int x = 0; x < args.length; x++) {
+		for (int x = 0; x < args.length; x++) { // TODO Fix blank line here
 
 			if (isFlag(args[x])) {
 				if (args.length > x + 1 && isValue(args[x + 1])) {
@@ -68,7 +71,7 @@ public class ArgumentMap {
 	 * @see String#isBlank()
 	 * @see String#length()
 	 */
-	public static boolean isFlag(String arg) {
+	public static boolean isFlag(String arg) { // TODO Fix blank line here
 
 		if (arg == null) {
 			return false;

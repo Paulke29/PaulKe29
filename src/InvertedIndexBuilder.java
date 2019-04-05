@@ -21,13 +21,14 @@ public class InvertedIndexBuilder {
 	/**
 	 * add single object of index
 	 * 
-	 * @param file
+	 * @param file TODO Add description
 	 * @param index InvertedIndex object
 	 * @throws IOException
 	 */
 	public void singleIndex(Path file, InvertedIndex index) throws IOException {
 		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
 		if (TextFile.test(file)) {
+			// TODO Not using try-with-resources.
 			BufferedReader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8);
 			String line;
 			int number = 0;
@@ -44,6 +45,7 @@ public class InvertedIndexBuilder {
 	}
 
 	/**
+	 * TODO You are missing descriptions for this method and the below parameters.
 	 * @param files
 	 * @param index InvertedIndex object
 	 * @throws IOException
