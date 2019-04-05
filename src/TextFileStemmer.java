@@ -66,6 +66,9 @@ public class TextFileStemmer {
 	 */
 	public static ArrayList<String> stemFile(Path inputFile) throws IOException {
 		ArrayList<String> answer = new ArrayList<>();
+		// TODO Must use try-with-resources, you had this right before:
+		// https://github.com/usf-cs212-spring2019/project-Paulke29/blob/1fe050ebea7cb49a890f586b164d33c1ac91fb9f/src/TextFileStemmer.java#L71
+		// Just don't have the CATCH block, still keep the TRY block
 		BufferedReader read_line = Files.newBufferedReader(inputFile);
 		String line = null;
 		while ((line = read_line.readLine()) != null) {
