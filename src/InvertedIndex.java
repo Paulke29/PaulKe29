@@ -72,6 +72,16 @@ public class InvertedIndex {
 	}
 
 	/**
+	 * Tests whether the index contains the specified word.
+	 *
+	 * @param word key word to look for
+	 * @return true if the word is stored in the index
+	 */
+	public boolean contains(String word) {
+		return this.finalIndex.containsKey(word);
+	}
+
+	/**
 	 * Get the number of words found for a specific location
 	 * 
 	 * @param location
@@ -89,13 +99,8 @@ public class InvertedIndex {
 	 * @return the number of times the word was found at that location from
 	 *         finalIndex
 	 */
-	public int wordCount(String word, String location) {
-		/*
-		 * TODO There is a null pointer exception that happens if either
-		 * word or location are not in finalIndex. When those two aren't in the
-		 * index, you should return 0 instead of cause a null pointer exception.
-		 */
-		return finalIndex.get(word).get(location).size();
+	public boolean wordCount(String word, String location) {
+		return this.finalIndex.containsKey(word) && this.finalIndex.get(word).containsKey(location);
 	}
 
 	/**
@@ -114,14 +119,11 @@ public class InvertedIndex {
 	 * @return the number of locations stored by finalIndex for that specific word
 	 */
 	public int locationCount(String word) {
-		// TODO Null pointer.
-		return finalIndex.get(word).size();
+		if (this.finalIndex.containsKey(word)) {
+			return this.finalIndex.get(word).size();
+		} else {
+			return 0;
+		}
 	}
-	
-	/*
-	 * TODO You have some of the count methods I suggested here, but none of the
-	 * other types of methods I suggested in the Piazza post. If you are unclear
-	 * ASK FOR HELP. But this class needs more general methods to be fully 
-	 * reusable.
-	 */
+
 }
