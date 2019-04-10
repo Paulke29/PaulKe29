@@ -9,7 +9,7 @@ import java.util.TreeSet;
 /**
  * @author Paulke
  *
- */
+ */  
 public class searchResult {
 	/**
 	 * QuerySearch 

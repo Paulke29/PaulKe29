@@ -73,7 +73,7 @@ public class Result implements Comparable<Result> {
 	public void setCount(int count) {
 		this.count = count;
 	}
-
+ 
 	/**
 	 * get score
 	 * 

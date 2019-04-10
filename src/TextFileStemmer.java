@@ -44,7 +44,7 @@ public class TextFileStemmer {
 	 * @param queryfile
 	 * @param stemmer
 	 * @return a list of query words 
-	 */
+	 */ 
 	public static ArrayList<Set<String>> QuerystemLine(Path queryfile, Stemmer stemmer) {
 		ArrayList<Set<String>> answer = new ArrayList<>();
 

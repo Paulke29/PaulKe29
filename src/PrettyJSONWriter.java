@@ -87,7 +87,7 @@ public class PrettyJSONWriter {
 			indent(writer, 2);
 			writer.write('}');
 			writer.write('\n');
-		} 
+		}  
 		else {
 			for (int x = 0; x <= beforeLast; x++) {
 				writer.write('\n');
@@ -161,6 +161,12 @@ public class PrettyJSONWriter {
 		writer.write('\n');
 		writer.write('}');
 	}
+	/**
+	 * JSN format of QuerySearch
+	 * @param result
+	 * @param path
+	 * @throws IOException
+	 */
 	public static void Rearchformat(TreeMap<String,ArrayList<Result>> result,Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			FormatSearch(result, writer, 0);
