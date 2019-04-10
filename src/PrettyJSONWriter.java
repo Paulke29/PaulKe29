@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -58,7 +59,113 @@ public class PrettyJSONWriter {
 			asObject(counting, writer, 0);
 		}
 	}
+	public static void asResultArray(ArrayList<Result> result, Writer writer, int level) throws IOException {
+		int lastKey = result.size() - 1;
+		int beforeLast = result.size() - 2;
+		if(result.size() <1) {
+			writer.write("\n");
+		}
+		else if (result.size() == 1) {
+			writer.write('\n');
+			indent(writer, 2);
+			writer.write('{');
+			writer.write('\n');
+			quote("where", writer, 3);
+			writer.write(": ");
+			quote(result.get(0).getWhere(), writer);
+			writer.write(",");
+			writer.write('\n');
+			quote("count", writer, 3);
+			writer.write(": ");
+			writer.write(Integer.toString(result.get(lastKey).getCount()));
+			writer.write(",");
+			writer.write('\n');
+			quote("score", writer, 3);
+			writer.write(": ");
+			writer.write(result.get(lastKey).getFormattedScore());
+			writer.write('\n');
+			indent(writer, 2);
+			writer.write('}');
+			writer.write('\n');
+		} 
+		else {
+			for (int x = 0; x <= beforeLast; x++) {
+				writer.write('\n');
+				indent(writer, 2);
+				writer.write('{');
+				writer.write('\n');
+				quote("where", writer, 3);
+				writer.write(": ");
+				quote(result.get(x).getWhere(), writer);
+				writer.write(",");
+				writer.write('\n');
+				quote("count", writer, 3);
+				writer.write(": ");
+				writer.write(Integer.toString(result.get(x).getCount()));
+//				writer.write(2);
+				writer.write(",");
+				writer.write('\n');
+				quote("score", writer, 3);
+				writer.write(": ");
+				writer.write(result.get(x).getFormattedScore());
+				writer.write('\n');
+				indent(writer, 2);
+				writer.write('}');
+				writer.write(",");			
+			}
+			writer.write('\n');
+			indent(writer, 2);
+			writer.write('{');
+			writer.write('\n');
+			quote("where", writer, 3);
+			writer.write(": ");
+			quote(result.get(lastKey).getWhere(), writer);
+			writer.write(",");
+			writer.write('\n');
+			quote("count", writer, 3);
+			writer.write(": ");
+			writer.write(Integer.toString(result.get(lastKey).getCount()));
+			writer.write(",");
+			writer.write('\n');
+			quote("score", writer, 3);
+			writer.write(": ");
+			writer.write(result.get(lastKey).getFormattedScore());
+			writer.write('\n');
+			indent(writer, 2);
+			writer.write('}');
+			writer.write('\n');
+		}
 
+	}
+	public static void FormatSearch(TreeMap<String, ArrayList<Result>> result, Writer writer, int level)throws IOException {
+		writer.write('{');
+		writer.write('\n');
+		if (!result.isEmpty()) {
+			for (String SearchWords : result.headMap(result.lastKey()).keySet()) {
+				quote(SearchWords.toString(), writer, level + 1);
+				writer.write(": ");
+				writer.write('[');
+				asResultArray(result.get(SearchWords), writer, level + 1);
+				indent(writer, 1);
+				writer.write(']');
+				writer.write(",");
+				writer.write("\n");
+			}
+			quote(result.lastKey().toString(), writer, 1);
+			writer.write(": ");
+			writer.write('[');
+			asResultArray(result.get(result.lastKey()), writer, level + 1);
+			indent(writer, 1);
+			writer.write(']');
+		}
+		writer.write('\n');
+		writer.write('}');
+	}
+	public static void Rearchformat(TreeMap<String,ArrayList<Result>> result,Path path) throws IOException {
+		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+			FormatSearch(result, writer, 0);
+		}
+	}
 	/**
 	 * Writes the elements as a pretty JSON array to file.
 	 *

@@ -3,6 +3,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 
+
 /**
  * Class responsible for running this project based on the provided command-line
  * arguments. See the README for details.
@@ -27,6 +28,7 @@ public class Driver {
 		ArgumentMap argumentMap = new ArgumentMap(args);
 		InvertedIndex wordindex = new InvertedIndex();
 		InvertedIndexBuilder invertedIndexBuilder = new InvertedIndexBuilder();
+		searchResult ResultSearch = new searchResult();
 
 		if (argumentMap.hasFlag("-path")) {
 
@@ -57,6 +59,29 @@ public class Driver {
 			} catch (IOException e) {
 				System.out.println("Couldn't get anything  from path: " + locationPath);
 			}
+		}
+		if (argumentMap.hasFlag("-query")) {
+			if (argumentMap.hasValue("-query")) {
+				Path query = argumentMap.getPath("-query");
+				try {
+					if (argumentMap.hasFlag("-exact")) {
+						ResultSearch.SearchResult(true, query,wordindex.getwordCount(), wordindex.getfinalIndex());
+					} else {
+						ResultSearch.SearchResult(false, query, wordindex.getwordCount(), wordindex.getfinalIndex());
+					}
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		if (argumentMap.hasFlag("-results")) {
+				Path result = argumentMap.getPath("-results",Path.of("results.json"));
+				try {
+					ResultSearch.toJSON(result);
+				} catch (IOException e) {
+					System.out.println(e);
+				}
 		}
 		Duration elapsed = Duration.between(start, Instant.now());
 		double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
