@@ -28,7 +28,7 @@ public class Driver {
 		ArgumentMap argumentMap = new ArgumentMap(args);
 		InvertedIndex wordindex = new InvertedIndex();
 		InvertedIndexBuilder invertedIndexBuilder = new InvertedIndexBuilder();
-		searchResult ResultSearch = new searchResult();
+		searchResult ResultSearch = new searchResult(wordindex);
 
 		if (argumentMap.hasFlag("-path")) {
 
@@ -64,11 +64,11 @@ public class Driver {
 			if (argumentMap.hasValue("-query")) {
 				Path query = argumentMap.getPath("-query");
 				try {
-					if (argumentMap.hasFlag("-exact")) {
-						ResultSearch.SearchResult(true, query,wordindex.getwordCount(), wordindex.getfinalIndex());
-					} else {
-						ResultSearch.SearchResult(false, query, wordindex.getwordCount(), wordindex.getfinalIndex());
+					boolean exact = false;
+					if(argumentMap.hasFlag("-exact")) {
+						exact = true;
 					}
+					ResultSearch.SearchResult(exact, query);
 
 				} catch (IOException e) {
 					e.printStackTrace();

@@ -16,10 +16,16 @@ public class searchResult {
 	 */
 	TreeMap<String, ArrayList<Result>> Result;
 	/**
-	 * initial new QuerySearch 
+	 * initial InvertedIndex object
 	 */
-	public searchResult(){
+	private final InvertedIndex index;
+	/**
+	 * initial new QuerySearch 
+	 * @param index 
+	 */
+	public searchResult(InvertedIndex index){
 		this.Result = new TreeMap<>();
+		this.index = index;
 	}
 
 	/**
@@ -63,7 +69,7 @@ public class searchResult {
 		Result1.setCount(count);
 		TotalWords = Result1.getTotalWords();
 		score1 = (double) count / TotalWords;
-		Result1.setScore(score1);
+//		Result1.setScore(score1);
 	}
 
 	/**
@@ -104,7 +110,7 @@ public class searchResult {
 				count += result2.getCount();
 				result.setCount(count);
 				score = (double) count / TotalWords;
-				result.setScore(score);
+//				result.setScore(score);
 				return true;
 			}
 		}
@@ -166,26 +172,19 @@ public class searchResult {
 	 * @param filesindex
 	 * @throws IOException
 	 */
-	public void SearchResult(boolean isExact, Path queryfile, TreeMap<String, Integer> wordcounts,
-			TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex) throws IOException {
-		ArrayList<Result> SearchResultList;
-		String QueryWord = null;
+	public void SearchResult(boolean isExact, Path queryfile) throws IOException {
 		for (Set<String> words : TextFileStemmer.QuerystemLine2(queryfile)) {
-			if (!words.isEmpty()) {
-				SearchResultList = new ArrayList<>();
-				QueryWord = String.join(" ", words);
-				for (String SearchWords : words) {
-					{
-						ArrayList<Result> SingleResult = getResult(isExact, SearchWords, wordcounts, filesindex);
-						if (find(SearchResultList, SingleResult) == false) {
-							SearchResultList.addAll(SingleResult);
-						} else {
-							SearchResultList.addAll(addnew(SearchResultList, SingleResult));
-						}
-					}
-					Collections.sort(SearchResultList);
+			String joined = String.join(" ", words);
+			if (!words.isEmpty() && !this.Result.containsKey(joined)) {
+				System.out.println("Join: "+joined);
+				if (isExact == true) {
+					System.out.println("Exact Search Search Result");
+					Result.put(joined, this.index.ExactSearch(words));
+				} 
+				if(isExact == false) {
+					System.out.println("Partial Search Search Result");
+					Result.put(joined, this.index.partialSearch(words));
 				}
-				this.Result.put(QueryWord, SearchResultList);
 			}
 
 		}
