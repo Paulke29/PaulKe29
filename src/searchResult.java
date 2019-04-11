@@ -125,7 +125,6 @@ public class searchResult {
 		double score;
 		int count = 0;
 		int TotalWords = 0;
-		System.out.println("QueryWord: " + QueryWords);
 		if (isExact == true) {
 			if (filesindex.containsKey(QueryWords)) {
 				for (String file : filesindex.get(QueryWords).keySet()) {
@@ -139,7 +138,6 @@ public class searchResult {
 		} else {
 			for (String Keys : filesindex.keySet()) {
 				if (Keys.startsWith(QueryWords)) {
-					System.out.println("Key: " + Keys);
 					for (String file : filesindex.get(Keys).keySet()) {
 						where = file;
 						count = filesindex.get(Keys).get(file).size();
@@ -168,9 +166,8 @@ public class searchResult {
 	 * @param filesindex
 	 * @throws IOException
 	 */
-	public void SearchResult(boolean isExact, Path queryfile,
-			TreeMap<String, Integer> wordcounts, TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex)
-			throws IOException {
+	public void SearchResult(boolean isExact, Path queryfile, TreeMap<String, Integer> wordcounts,
+			TreeMap<String, TreeMap<String, TreeSet<Integer>>> filesindex) throws IOException {
 		ArrayList<Result> SearchResultList;
 		String QueryWord = null;
 		for (Set<String> words : TextFileStemmer.QuerystemLine2(queryfile)) {

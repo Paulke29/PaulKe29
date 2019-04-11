@@ -83,6 +83,9 @@ public class Driver {
 					System.out.println(e);
 				}
 		}
+		if(argumentMap.hasFlag("-threads")) {
+			Path threads = argumentMap.getPath("-threads");
+		}
 		Duration elapsed = Duration.between(start, Instant.now());
 		double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
 		System.out.printf("Elapsed: %f seconds%n", seconds);

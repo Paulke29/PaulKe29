@@ -43,6 +43,25 @@ public class InvertedIndex {
 	}
 
 	/**
+	 * 
+	 * @param words
+	 * @param location
+	 * @param position
+	 */
+	public void MutileThreadAdd(String words, String location, int position) {
+		synchronized (this.finalIndex) {
+			while (this.finalIndex.isEmpty()) {
+				try {
+					this.finalIndex.wait();
+				} catch (InterruptedException e) {
+				}
+			}
+			add(words, location, position);
+			this.finalIndex.notifyAll();
+		}
+	}
+   
+	/**
 	 * Output finalIndex
 	 * 
 	 * @param path
@@ -102,20 +121,25 @@ public class InvertedIndex {
 	public boolean wordCount(String word, String location) {
 		return this.finalIndex.containsKey(word) && this.finalIndex.get(word).containsKey(location);
 	}
+
 	/**
 	 * Having wordCount
+	 * 
 	 * @return the wordCount structure
 	 */
-	public TreeMap<String, Integer> getwordCount(){
+	public TreeMap<String, Integer> getwordCount() {
 		return this.wordCount;
 	}
+
 	/**
 	 * Having the finalIndex
+	 * 
 	 * @return the finalIndex structure
 	 */
-	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> getfinalIndex(){
+	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> getfinalIndex() {
 		return this.finalIndex;
 	}
+
 	/**
 	 * the number of locations stored
 	 * 
