@@ -16,7 +16,7 @@ public class InvertedIndex {
 	/**
 	 * creating a dataStructure for index
 	 */
-	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> finalIndex;
+	protected final TreeMap<String, TreeMap<String, TreeSet<Integer>>> finalIndex;
 	/**
 	 * creating a dataStructure for word count
 	 */

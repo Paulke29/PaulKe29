@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import java.util.List;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 
 import opennlp.tools.stemmer.Stemmer;
@@ -17,6 +18,7 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
  */
 public class InvertedIndexBuilder {
 
+	
 	/**
 	 * add single object of index
 	 * 
@@ -24,7 +26,7 @@ public class InvertedIndexBuilder {
 	 * @param index InvertedIndex object
 	 * @throws IOException
 	 */
-	public void singleIndex(Path file, InvertedIndex index) throws IOException {
+	public static void singleIndex(Path file, InvertedIndex index) throws IOException {
 		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
 		if (TextFile.test(file)) {
 			try (BufferedReader read_line = Files.newBufferedReader(file)) {
@@ -42,7 +44,6 @@ public class InvertedIndexBuilder {
 			}
 		}
 	}
-
 	/**
 	 * add the index of words from list of files
 	 * 
@@ -50,10 +51,56 @@ public class InvertedIndexBuilder {
 	 * @param index InvertedIndex object
 	 * @throws IOException
 	 */
-	public void filesIndex(List<Path> files, InvertedIndex index) throws IOException {
+	public static void filesIndex(List<Path> files, InvertedIndex index) throws IOException {
 		for (Path file : files) {
 			singleIndex(file, index);
 		}
 	}
+	/**
+	 * Initial mulidIndex method
+	 * @param file
+	 * @param index
+	 * @param threads
+	 */
+	public void SafeIndex(Path file, ThreadSafeIndex index,int threads) {
+		WorkQueue task = new WorkQueue(threads);
+		task.execute(new Task(file, index));
+		task.finish();
+		task.shutdown();
+	}
+	/**
+	 * @author PaulKe 
+	 *
+	 */
+	private static class Task implements Runnable {
+		/**
+		 * 
+		 */
+		private Path file;
+		/**
+		 * 
+		 */
+		ThreadSafeIndex index = new ThreadSafeIndex();
+	
+		/**
+		 * @param file
+		 * @param index
+		 */
+		Task(Path file, ThreadSafeIndex index){
+			this.file = file;
+			this.index = index;
+		}
+		@Override
+		public void run() {
+			synchronized(index) {
+				try {
+					singleIndex(file, index);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}		
+		}
+	}
+
 
 }
