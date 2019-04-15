@@ -73,14 +73,14 @@ public class Result implements Comparable<Result> {
 	public void setCount(int count) {
 		this.count = count;
 	}
- 
+
 	/**
 	 * get score
 	 * 
 	 * @return score
 	 */
 	public Double getScore() {
-		return this.score;
+		return((double)this.count / this.TotalWords);
 	}
 
 	/**
@@ -89,17 +89,26 @@ public class Result implements Comparable<Result> {
 	 * @return the format of score
 	 */
 	public String getFormattedScore() {
-		return df.format(this.score);
+		return df.format(this.getScore());
 	}
 
 	/**
-	 * Set up score
+	 * Update the count in Result object
 	 * 
-	 * @param score
+	 * @param newCount
 	 */
-	public void setScore(double score) {
-		this.score = score;
+	public void updateCount(int newCount) {
+		this.count = this.count + newCount;
 	}
+
+//	/**
+//	 * Set up score
+//	 * 
+//	 * @param score
+//	 */
+//	public void setScore(double score) {
+//		this.score = score;
+//	}
 
 	public String toString() {
 		return "Where: " + where + " " + "Count: " + count + " " + "Score: " + score;

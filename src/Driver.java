@@ -3,7 +3,6 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 
-
 /**
  * Class responsible for running this project based on the provided command-line
  * arguments. See the README for details.
@@ -28,7 +27,7 @@ public class Driver {
 		ArgumentMap argumentMap = new ArgumentMap(args);
 		InvertedIndex wordindex = new InvertedIndex();
 		InvertedIndexBuilder invertedIndexBuilder = new InvertedIndexBuilder();
-		searchResult ResultSearch = new searchResult();
+		searchResult ResultSearch = new searchResult(wordindex);
 
 		if (argumentMap.hasFlag("-path")) {
 
@@ -64,24 +63,25 @@ public class Driver {
 			if (argumentMap.hasValue("-query")) {
 				Path query = argumentMap.getPath("-query");
 				try {
+					boolean exact = false;
 					if (argumentMap.hasFlag("-exact")) {
-						ResultSearch.SearchResult(true, query,wordindex.getwordCount(), wordindex.getfinalIndex());
-					} else {
-						ResultSearch.SearchResult(false, query, wordindex.getwordCount(), wordindex.getfinalIndex());
+						exact = true;
 					}
+					ResultSearch.SearchResult(exact, query);
 
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 		}
+
 		if (argumentMap.hasFlag("-results")) {
-				Path result = argumentMap.getPath("-results",Path.of("results.json"));
-				try {
-					ResultSearch.toJSON(result);
-				} catch (IOException e) {
-					System.out.println(e);
-				}
+			Path result = argumentMap.getPath("-results", Path.of("results.json"));
+			try {
+				ResultSearch.toJSON(result);
+			} catch (IOException e) {
+				System.out.println(e);
+			}
 		}
 		Duration elapsed = Duration.between(start, Instant.now());
 		double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();

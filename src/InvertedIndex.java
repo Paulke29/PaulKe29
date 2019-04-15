@@ -1,5 +1,10 @@
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -41,6 +46,81 @@ public class InvertedIndex {
 		}
 		return checking;
 	}
+	/**
+	 * Exact search for query words
+	 * 
+	 * @param QueryLine
+	 * @return exact search result
+	 */
+	public ArrayList<Result> ExactSearch(Set<String> QueryLine) {
+		ArrayList<Result> getResultList = new ArrayList<>();
+		Map<String, Result> findUp = new HashMap<>();
+		for (String queryWord : QueryLine) {
+			if (this.contains(queryWord)) {
+				this.searchProcess(queryWord, getResultList, findUp);
+			}
+		}
+		System.out.print("Exact Search\n");
+		Collections.sort(getResultList);
+		
+		
+		return getResultList;
+	}
+	/**
+	 * Process of Exact Search
+	 * 
+	 * @param queryWord
+	 * @param getResultList
+	 * @param findUp
+	 */
+	private void searchProcess(String queryWord, ArrayList<Result> getResultList, Map<String, Result> findUp) {
+		int count = 0;
+		int TotalWords = 0;
+		double score = 0;
+		for (String location : this.finalIndex.get(queryWord).keySet()) {
+			if (findUp.containsKey(location)) {
+				findUp.get(location).updateCount(this.wordCount(queryWord, location));
+			} else {
+				count = finalIndex.get(queryWord).get(location).size();
+				TotalWords = wordCount.get(location);
+				score = (double) count / TotalWords;
+				Result newResult = new Result(location, score, count, TotalWords);
+				getResultList.add(newResult);
+				findUp.put(location, newResult);
+			}
+		}
+	}
+	/**
+	 * Partial search for query word
+	 * 
+	 * @param queryLine
+	 * @return Partial Search for query words
+	 */
+	public ArrayList<Result> partialSearch(Set<String> queryLine) {
+		ArrayList<Result> getResultList = new ArrayList<>();
+		Map<String, Result> lookUp = new HashMap<>();
+		for (String queryWord : queryLine) {
+			this.partialSearchHelper(queryWord, getResultList, lookUp);
+		}
+		Collections.sort(getResultList);
+		return getResultList;
+	}
+	/**
+	 * Partial Search process 
+	 * @param word
+	 * @param result
+	 * @param lookUp
+	 */
+	private void partialSearchHelper(String word, ArrayList<Result> result, Map<String,Result> lookUp) {
+		System.out.print("Partial Search\n");
+		for(String exist : this.finalIndex.tailMap(word).keySet()) {
+			if(exist.startsWith(word)) {
+				this.searchProcess(exist, result, lookUp);
+			}else {
+				break;
+			}
+		}
+	}
 
 	/**
 	 * Output finalIndex
@@ -80,6 +160,16 @@ public class InvertedIndex {
 	public boolean contains(String word) {
 		return this.finalIndex.containsKey(word);
 	}
+	/**
+	 * Judge finalIndex contains this word with this specific location or not
+	 * 
+	 * @param word
+	 * @param location
+	 * @return true if finalIndex contains this word with this specific location
+	 */
+	public boolean contains(String word, String location) {
+		return this.finalIndex.containsKey(word) && this.finalIndex.get(word).containsKey(location);
+	}
 
 	/**
 	 * Get the number of words found for a specific location
@@ -99,9 +189,14 @@ public class InvertedIndex {
 	 * @return the number of times the word was found at that location from
 	 *         finalIndex
 	 */
-	public boolean wordCount(String word, String location) {
-		return this.finalIndex.containsKey(word) && this.finalIndex.get(word).containsKey(location);
+	public int wordCount(String word, String location) {
+		if (this.contains(word, location)) {
+			return this.finalIndex.get(word).get(location).size();
+		} else {
+			return 0;
+		}
 	}
+	
 	/**
 	 * Having wordCount
 	 * @return the wordCount structure
