@@ -59,13 +59,21 @@ public class PrettyJSONWriter {
 			asObject(counting, writer, 0);
 		}
 	}
+
+	/**
+	 * Formating the query result
+	 * 
+	 * @param result the result for query word
+	 * @param writer output the result
+	 * @param level  PrettyJson format
+	 * @throws IOException
+	 */
 	public static void asResultArray(ArrayList<Result> result, Writer writer, int level) throws IOException {
 		int lastKey = result.size() - 1;
 		int beforeLast = result.size() - 2;
-		if(result.size() <1) {
+		if (result.size() < 1) {
 			writer.write("\n");
-		}
-		else if (result.size() == 1) {
+		} else if (result.size() == 1) {
 			writer.write('\n');
 			indent(writer, 2);
 			writer.write('{');
@@ -87,8 +95,7 @@ public class PrettyJSONWriter {
 			indent(writer, 2);
 			writer.write('}');
 			writer.write('\n');
-		}  
-		else {
+		} else {
 			for (int x = 0; x <= beforeLast; x++) {
 				writer.write('\n');
 				indent(writer, 2);
@@ -102,7 +109,6 @@ public class PrettyJSONWriter {
 				quote("count", writer, 3);
 				writer.write(": ");
 				writer.write(Integer.toString(result.get(x).getCount()));
-//				writer.write(2);
 				writer.write(",");
 				writer.write('\n');
 				quote("score", writer, 3);
@@ -111,7 +117,7 @@ public class PrettyJSONWriter {
 				writer.write('\n');
 				indent(writer, 2);
 				writer.write('}');
-				writer.write(",");			
+				writer.write(",");
 			}
 			writer.write('\n');
 			indent(writer, 2);
@@ -137,7 +143,17 @@ public class PrettyJSONWriter {
 		}
 
 	}
-	public static void FormatSearch(TreeMap<String, ArrayList<Result>> result, Writer writer, int level)throws IOException {
+
+	/**
+	 * Output the Query words result
+	 * 
+	 * @param result the result for query words
+	 * @param writer write down the query words
+	 * @param level  PrettyJshon format
+	 * @throws IOException
+	 */
+	public static void FormatSearch(TreeMap<String, ArrayList<Result>> result, Writer writer, int level)
+			throws IOException {
 		writer.write('{');
 		writer.write('\n');
 		if (!result.isEmpty()) {
@@ -161,17 +177,20 @@ public class PrettyJSONWriter {
 		writer.write('\n');
 		writer.write('}');
 	}
+
 	/**
 	 * JSN format of QuerySearch
+	 * 
 	 * @param result
 	 * @param path
 	 * @throws IOException
 	 */
-	public static void Rearchformat(TreeMap<String,ArrayList<Result>> result,Path path) throws IOException {
+	public static void Rearchformat(TreeMap<String, ArrayList<Result>> result, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			FormatSearch(result, writer, 0);
 		}
 	}
+
 	/**
 	 * Writes the elements as a pretty JSON array to file.
 	 *

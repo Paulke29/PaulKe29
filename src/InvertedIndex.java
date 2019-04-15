@@ -46,6 +46,7 @@ public class InvertedIndex {
 		}
 		return checking;
 	}
+
 	/**
 	 * Exact search for query words
 	 * 
@@ -60,12 +61,10 @@ public class InvertedIndex {
 				this.searchProcess(queryWord, getResultList, findUp);
 			}
 		}
-		System.out.print("Exact Search\n");
 		Collections.sort(getResultList);
-		
-		
 		return getResultList;
 	}
+
 	/**
 	 * Process of Exact Search
 	 * 
@@ -90,6 +89,7 @@ public class InvertedIndex {
 			}
 		}
 	}
+
 	/**
 	 * Partial search for query word
 	 * 
@@ -105,18 +105,19 @@ public class InvertedIndex {
 		Collections.sort(getResultList);
 		return getResultList;
 	}
+
 	/**
-	 * Partial Search process 
+	 * Partial Search process
+	 * 
 	 * @param word
 	 * @param result
 	 * @param lookUp
 	 */
-	private void partialSearchHelper(String word, ArrayList<Result> result, Map<String,Result> lookUp) {
-		System.out.print("Partial Search\n");
-		for(String exist : this.finalIndex.tailMap(word).keySet()) {
-			if(exist.startsWith(word)) {
-				this.searchProcess(exist, result, lookUp);
-			}else {
+	private void partialSearchHelper(String word, ArrayList<Result> result, Map<String, Result> lookUp) {
+		for (String queryWord : this.finalIndex.tailMap(word).keySet()) {
+			if (queryWord.startsWith(word)) {
+				this.searchProcess(queryWord, result, lookUp);
+			} else {
 				break;
 			}
 		}
@@ -160,6 +161,7 @@ public class InvertedIndex {
 	public boolean contains(String word) {
 		return this.finalIndex.containsKey(word);
 	}
+
 	/**
 	 * Judge finalIndex contains this word with this specific location or not
 	 * 
@@ -196,21 +198,25 @@ public class InvertedIndex {
 			return 0;
 		}
 	}
-	
+
 	/**
 	 * Having wordCount
+	 * 
 	 * @return the wordCount structure
 	 */
-	public TreeMap<String, Integer> getwordCount(){
+	public TreeMap<String, Integer> getwordCount() {
 		return this.wordCount;
 	}
+
 	/**
 	 * Having the finalIndex
+	 * 
 	 * @return the finalIndex structure
 	 */
-	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> getfinalIndex(){
+	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> getfinalIndex() {
 		return this.finalIndex;
 	}
+
 	/**
 	 * the number of locations stored
 	 * 

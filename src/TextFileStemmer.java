@@ -39,21 +39,22 @@ public class TextFileStemmer {
 	public static ArrayList<String> stemLine(String line) {
 		return stemLine(line, new SnowballStemmer(DEFAULT));
 	}
+
 	/**
-	 * Output  a list of query words
+	 * Output a list of query words
+	 * 
 	 * @param queryfile
 	 * @param stemmer
-	 * @return a list of query words 
-	 */ 
+	 * @return a list of query words
+	 */
 	public static ArrayList<Set<String>> QuerystemLine(Path queryfile, Stemmer stemmer) {
 		ArrayList<Set<String>> answer = new ArrayList<>();
 
-		try (BufferedReader readline = Files.newBufferedReader(queryfile,StandardCharsets.UTF_8)) {
+		try (BufferedReader readline = Files.newBufferedReader(queryfile, StandardCharsets.UTF_8)) {
 			String line = null;
 			Set<String> QuerySet = null;
 			Set<String> SetQuery = null;
 			while ((line = readline.readLine()) != null) {
-				System.out.println("Line: " + line);
 				String string2 = TextParser.clean(line.trim());
 				QuerySet = new TreeSet<>();
 				QuerySet.add(string2);
@@ -69,20 +70,23 @@ public class TextFileStemmer {
 					}
 				}
 			}
-        
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return answer;
 	}
+
 	/**
-	 * Stem words to a set of query words 
+	 * Stem words to a set of query words
+	 * 
 	 * @param queryfile
-	 * @return a set of query words 
+	 * @return a set of query words
 	 */
 	public static ArrayList<Set<String>> QuerystemLine2(Path queryfile) {
 		return QuerystemLine(queryfile, new SnowballStemmer(DEFAULT));
 	}
+
 	/**
 	 * Returns a set of cleaned and stemmed words parsed from the provided line.
 	 *

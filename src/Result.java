@@ -80,7 +80,7 @@ public class Result implements Comparable<Result> {
 	 * @return score
 	 */
 	public Double getScore() {
-		return((double)this.count / this.TotalWords);
+		return ((double) this.count / this.TotalWords);
 	}
 
 	/**
@@ -101,15 +101,6 @@ public class Result implements Comparable<Result> {
 		this.count = this.count + newCount;
 	}
 
-//	/**
-//	 * Set up score
-//	 * 
-//	 * @param score
-//	 */
-//	public void setScore(double score) {
-//		this.score = score;
-//	}
-
 	public String toString() {
 		return "Where: " + where + " " + "Count: " + count + " " + "Score: " + score;
 
@@ -128,4 +119,3 @@ public class Result implements Comparable<Result> {
 		return result;
 	}
 }
-

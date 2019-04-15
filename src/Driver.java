@@ -70,7 +70,7 @@ public class Driver {
 					ResultSearch.SearchResult(exact, query);
 
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.out.println("Couldn't get anything  from path: " + query);
 				}
 			}
 		}
@@ -80,7 +80,7 @@ public class Driver {
 			try {
 				ResultSearch.toJSON(result);
 			} catch (IOException e) {
-				System.out.println(e);
+				System.out.println("Couldn't get anything  from path: " + result);
 			}
 		}
 		Duration elapsed = Duration.between(start, Instant.now());
