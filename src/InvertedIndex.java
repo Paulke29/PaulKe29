@@ -50,24 +50,6 @@ public class InvertedIndex {
 		return checking;
 	}
 
-	/**
-	 * 
-	 * @param words
-	 * @param location
-	 * @param position
-	 */
-	public void MutileThreadAdd(String words, String location, int position) {
-		synchronized (this.finalIndex) {
-			while (this.finalIndex.isEmpty()) {
-				try {
-					this.finalIndex.wait();
-				} catch (InterruptedException e) {
-				}
-			}
-			add(words, location, position);
-			this.finalIndex.notifyAll();
-		}
-	}
 
 	/**
 	 * Exact search for query words
