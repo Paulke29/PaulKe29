@@ -4,7 +4,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import java.util.List;
-import java.util.TreeSet;
 import java.util.function.Predicate;
 
 import opennlp.tools.stemmer.Stemmer;
@@ -45,13 +44,37 @@ public class InvertedIndexBuilder {
 		}
 	}
 	/**
+	 * add single object of index with  mutilt-threads
+	 * @param file
+	 * @param index
+	 * @throws IOException
+	 */
+	public static void MutileIndex(Path file, ThreadSafeIndex index) throws IOException {
+		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
+		if (TextFile.test(file)) {
+			try (BufferedReader read_line = Files.newBufferedReader(file)) {
+				String line;
+				int number = 0;
+				String files = file.toString();
+				Stemmer stemmer = new SnowballStemmer(SnowballStemmer.ALGORITHM.ENGLISH);
+				while ((line = read_line.readLine()) != null) {
+					for (String words : TextParser.parse(line)) {
+						String newWords = stemmer.stem(words).toString();
+						index. MutileThreadAdd(newWords, files, number + 1);
+						number++;
+					}
+				}
+			}
+		}
+	}
+	/**
 	 * add the index of words from list of files
 	 * 
 	 * @param files list of file
 	 * @param index InvertedIndex object
 	 * @throws IOException
 	 */
-	public static void filesIndex(List<Path> files, InvertedIndex index) throws IOException {
+	public void filesIndex(List<Path> files, InvertedIndex index) throws IOException {
 		for (Path file : files) {
 			singleIndex(file, index);
 		}
@@ -94,7 +117,7 @@ public class InvertedIndexBuilder {
 		public void run() {
 			synchronized(index) {
 				try {
-					singleIndex(file, index);
+					MutileIndex(file, index);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

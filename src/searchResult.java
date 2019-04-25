@@ -1,10 +1,9 @@
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
+
 
 /**
  * @author Paulke
@@ -48,6 +47,74 @@ public class searchResult {
 			}
 
 		}
+	}
+	/**
+	 * @param isExact
+	 * @param queryfile
+	 * @param index
+	 * @param threads
+	 * @throws IOException
+	 */
+	public void SafeSearchResult(boolean isExact, Path queryfile, ThreadSafeIndex index, int threads) throws IOException {
+		for (Set<String> words : TextFileStemmer.QuerystemLine2(queryfile)) {
+			SafeSearch(isExact,words,index, threads);
+		}
+	}
+	/**
+	 * @param Exact
+	 * @param Quryline
+	 * @param index
+	 * @param threads
+	 */
+	public void SafeSearch(Boolean Exact, Set<String> Quryline, ThreadSafeIndex index, int threads) {
+		WorkQueue task = new WorkQueue(threads);
+		task.execute(new Task(Exact, Quryline, index));
+		task.finish();
+		task.shutdown();
+	}
+
+	/**
+	 * @author Paulke
+	 *
+	 */
+	private static class Task implements Runnable {
+		/**
+		 * QueryLine which for search
+		 */
+		private Set<String> Queryline;
+		/**
+		 * initial ThreadSafeIndex
+		 */
+		ThreadSafeIndex index = new ThreadSafeIndex();
+		/**
+		 * whether Exact Search or not
+		 */
+		Boolean Exact = null;
+
+		/**
+		 * Initial Task
+		 * @param Exact
+		 * @param Queryline
+		 * @param index
+		 */
+		Task(Boolean Exact, Set<String> Queryline, ThreadSafeIndex index) {
+			this.Queryline = Queryline;
+			this.index = index;
+			this.Exact = Exact;
+		}
+
+		@Override
+		public void run() {
+			synchronized (index) {
+				if (Exact == true) {
+					index.MutileThreadExactSearch(Queryline);
+				} else {
+					index.MutileThreadPartialSearch(Queryline);
+				}
+			}
+
+		}
+
 	}
 	/**
 	 * Output JSON type for Query Result
