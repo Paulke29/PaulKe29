@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -30,11 +31,16 @@ public class ThreadSafeIndex extends InvertedIndex {
 	 * Mutli-thread exact search
 	 * 
 	 * @param QueryLine
+	 * @return 
 	 */
-	public void MutileThreadExactSearch(Set<String> QueryLine) {
+	public ArrayList<Result>  MutileThreadExactSearch(Set<String> QueryLine) {
+		ArrayList<Result> getResultList = new ArrayList<>();
 		synchronized (this.finalIndex) {
-			super.ExactSearch(QueryLine);
+			getResultList.addAll(super.ExactSearch(QueryLine));
+			System.out.println("Synchronized: "+ super.ExactSearch(QueryLine));
 		}
+		System.out.println("Thread exact: "+ getResultList);
+		return getResultList;
 	}
 
 	/**
@@ -42,9 +48,11 @@ public class ThreadSafeIndex extends InvertedIndex {
 	 * 
 	 * @param QueryLine
 	 */
-	public void MutileThreadPartialSearch(Set<String> QueryLine) {
+	public ArrayList<Result>  MutileThreadPartialSearch(Set<String> QueryLine) {
+		ArrayList<Result> getResultList = new ArrayList<>();
 		synchronized (this.finalIndex) {
-			super.partialSearch(QueryLine);
+			getResultList.addAll(super.partialSearch(QueryLine));
 		}
+		return getResultList;
 	}
 }

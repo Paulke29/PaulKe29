@@ -65,10 +65,9 @@ public class InvertedIndex {
 				this.searchProcess(queryWord, getResultList, findUp);
 			}
 		}
-		System.out.print("Exact Search\n");
 		Collections.sort(getResultList);
 		
-		
+		System.out.println("Exact Search: "+ getResultList);
 		return getResultList;
 	}
 

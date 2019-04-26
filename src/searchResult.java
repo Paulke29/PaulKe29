@@ -51,13 +51,22 @@ public class searchResult {
 	/**
 	 * @param isExact
 	 * @param queryfile
-	 * @param index
+	 * @param threadIndex
 	 * @param threads
 	 * @throws IOException
 	 */
-	public void SafeSearchResult(boolean isExact, Path queryfile, ThreadSafeIndex index, int threads) throws IOException {
+	public void SafeSearchResult(boolean isExact, Path queryfile, ThreadSafeIndex threadIndex, int threads)
+			throws IOException {
 		for (Set<String> words : TextFileStemmer.QuerystemLine2(queryfile)) {
-			SafeSearch(isExact,words,index, threads);
+			String joined = String.join(" ", words);
+			if (!words.isEmpty() && !this.Result.containsKey(joined)) {
+				if (isExact == true) {
+					Result.put(joined,threadIndex.MutileThreadExactSearch(words));
+				} 
+				if(isExact == false) {
+					Result.put(joined,threadIndex.MutileThreadPartialSearch(words));
+				}
+			}
 		}
 	}
 	/**
@@ -85,7 +94,7 @@ public class searchResult {
 		/**
 		 * initial ThreadSafeIndex
 		 */
-		ThreadSafeIndex index = new ThreadSafeIndex();
+		ThreadSafeIndex threadIndex = new ThreadSafeIndex();
 		/**
 		 * whether Exact Search or not
 		 */
@@ -95,21 +104,21 @@ public class searchResult {
 		 * Initial Task
 		 * @param Exact
 		 * @param Queryline
-		 * @param index
+		 * @param threadIndex
 		 */
-		Task(Boolean Exact, Set<String> Queryline, ThreadSafeIndex index) {
+		Task(Boolean Exact, Set<String> Queryline, ThreadSafeIndex threadIndex) {
 			this.Queryline = Queryline;
-			this.index = index;
+			this.threadIndex = threadIndex;
 			this.Exact = Exact;
 		}
 
 		@Override
 		public void run() {
-			synchronized (index) {
+			synchronized (threadIndex) {
 				if (Exact == true) {
-					index.MutileThreadExactSearch(Queryline);
+					threadIndex.MutileThreadExactSearch(Queryline);
 				} else {
-					index.MutileThreadPartialSearch(Queryline);
+					threadIndex.MutileThreadPartialSearch(Queryline);
 				}
 			}
 

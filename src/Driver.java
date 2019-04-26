@@ -71,17 +71,16 @@ public class Driver {
 			if (argumentMap.hasValue("-query")) {
 				Path query = argumentMap.getPath("-query");
 				try {
-					boolean exact = false;
-					if(argumentMap.hasFlag("-threads")) {
-						if(argumentMap.hasValue("-thread")) {
-							if(argumentMap.hasFlag("-exact")) {
-								exact = true;
-							}
-							String threads = argumentMap.getString("-threads","5");
-							int threads1 = Integer.valueOf(threads);
-							ResultSearch.SafeSearchResult(exact, query, safeIndex, threads1);
-						}					
+					if (argumentMap.hasFlag("-threads")) {
+						boolean exact = false;
+						if (argumentMap.hasFlag("-exact")) {
+							exact = true;
+						}
+						String threads = argumentMap.getString("-threads", "5");
+						int threads1 = Integer.valueOf(threads);
+						ResultSearch.SafeSearchResult(exact, query, safeIndex, threads1);
 					}
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
