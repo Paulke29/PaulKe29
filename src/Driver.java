@@ -30,7 +30,6 @@ public class Driver {
 		searchResult ResultSearch = new searchResult(wordindex);
 
 		if (argumentMap.hasFlag("-path")) {
-
 			try {
 				if (argumentMap.hasValue("-path")) {
 					Path path = argumentMap.getPath("-path");
@@ -40,18 +39,17 @@ public class Driver {
 				System.out.println("Couldn't to print index from path");
 			}
 		}
+		
 		if (argumentMap.hasFlag("-index")) {
-
 			Path indexPath = argumentMap.getPath("-index", Path.of("index.json"));
 			try {
 				wordindex.nestJSON(indexPath);
 			} catch (IOException e) {
 				System.out.println("Couldn't get anything from path: " + indexPath);
 			}
-
 		}
+		
 		if (argumentMap.hasFlag("-locations")) {
-
 			Path locationPath = argumentMap.getPath("-locations", Path.of("locations.json"));
 			try {
 				wordindex.locationsJSON(locationPath);
@@ -59,6 +57,7 @@ public class Driver {
 				System.out.println("Couldn't get anything  from path: " + locationPath);
 			}
 		}
+		
 		if (argumentMap.hasFlag("-query")) {
 			if (argumentMap.hasValue("-query")) {
 				Path query = argumentMap.getPath("-query");
@@ -83,6 +82,7 @@ public class Driver {
 				System.out.println("Couldn't get anything  from path: " + result);
 			}
 		}
+		
 		Duration elapsed = Duration.between(start, Instant.now());
 		double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
 		System.out.printf("Elapsed: %f seconds%n", seconds);

@@ -1,18 +1,23 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeMap;
 
+// TODO Fix Javadoc
+
 /**
  * @author Paulke
  *
  */
-public class searchResult {
+public class searchResult { // TODO Refactor to QueryFileParser
 	/**
 	 * QuerySearch
 	 */
-	TreeMap<String, ArrayList<Result>> Result;
+	TreeMap<String, ArrayList<Result>> Result; // TODO Keywords, capitalization
 	/**
 	 * initial InvertedIndex object
 	 */
@@ -28,6 +33,26 @@ public class searchResult {
 		this.index = index;
 	}
 
+	/* TODO Instead of SearchResult method...
+	 * 
+	public void parseFile(Path queryFile, boolean isExact) throws IOException {
+		try (BufferedReader readline = Files.newBufferedReader(queryfile, StandardCharsets.UTF_8)) {
+			for all the lines
+				parseLine(line, isExact);
+		}
+	}
+	
+	public void parseLine(String line, boolean isExact) {
+		TreeSet<String> queries = TextFileStemmer.uniqueStems(...);
+		String cleanedLine = String.join(" ", queries);
+		
+		if (queries.isEmpty()) {
+			results.put(cleanedLine, this.index.search(queries, isExact));
+		}
+	}
+	*/
+	
+	
 	/**
 	 * @param isExact
 	 * @param queryfile

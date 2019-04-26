@@ -9,23 +9,26 @@ public class Result implements Comparable<Result> {
 	 * define the file
 	 */
 	private String where;
+	
 	/**
 	 * define the number of words
 	 */
 	private int count;
+	
 	/**
 	 * define the occur of words
 	 */
-	private double score;
+	private double score; // TODO Remove
+	
 	/**
 	 * define the total of words in a file
 	 */
-	private int TotalWords;
+	private int TotalWords; // TODO Fix capitalization
 
 	/**
 	 * define the decimal
 	 */
-	DecimalFormat df = new DecimalFormat("0.00000000");
+	DecimalFormat df = new DecimalFormat("0.00000000"); // TODO Use keywords private, final, and fix variable name, initialize in the constructor
 
 	/**
 	 * Create constructor
@@ -35,10 +38,11 @@ public class Result implements Comparable<Result> {
 	 * @param score
 	 * @param TotalWords
 	 */
+	// TODO public Result(String where, int count, int TotalWords) {
 	public Result(String where, double score, int count, int TotalWords) {
 		this.where = where;
 		this.count = count;
-		this.score = score;
+		this.score = score; // TODO Remove
 		this.TotalWords = TotalWords;
 	}
 
@@ -79,7 +83,7 @@ public class Result implements Comparable<Result> {
 	 * 
 	 * @return score
 	 */
-	public Double getScore() {
+	public Double getScore() { // TODO double not Double
 		return ((double) this.count / this.TotalWords);
 	}
 
@@ -101,6 +105,7 @@ public class Result implements Comparable<Result> {
 		this.count = this.count + newCount;
 	}
 
+	// TODO @Override
 	public String toString() {
 		return "Where: " + where + " " + "Count: " + count + " " + "Score: " + score;
 

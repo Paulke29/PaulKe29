@@ -55,7 +55,7 @@ public class InvertedIndex {
 	 */
 	public ArrayList<Result> ExactSearch(Set<String> QueryLine) {
 		ArrayList<Result> getResultList = new ArrayList<>();
-		Map<String, Result> findUp = new HashMap<>();
+		Map<String, Result> findUp = new HashMap<>(); // TODO Why is this map justified, because it causes double storage
 		for (String queryWord : QueryLine) {
 			if (this.contains(queryWord)) {
 				this.searchProcess(queryWord, getResultList, findUp);
@@ -114,11 +114,11 @@ public class InvertedIndex {
 	 * @param lookUp
 	 */
 	private void partialSearchHelper(String word, ArrayList<Result> result, Map<String, Result> lookUp) {
-		for (String queryWord : this.finalIndex.tailMap(word).keySet()) {
+		for (String queryWord : this.finalIndex.tailMap(word).keySet()) { // TODO Why tailMap?
 			if (queryWord.startsWith(word)) {
 				this.searchProcess(queryWord, result, lookUp);
 			} else {
-				break;
+				break; // TODO Why break?
 			}
 		}
 	}
