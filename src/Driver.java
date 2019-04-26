@@ -72,6 +72,7 @@ public class Driver {
 				Path query = argumentMap.getPath("-query");
 				try {
 					if (argumentMap.hasFlag("-threads")) {
+						System.out.println("Threads");
 						boolean exact = false;
 						if (argumentMap.hasFlag("-exact")) {
 							exact = true;
@@ -80,7 +81,6 @@ public class Driver {
 						int threads1 = Integer.valueOf(threads);
 						ResultSearch.SafeSearchResult(exact, query, safeIndex, threads1);
 					}
-
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
