@@ -50,17 +50,21 @@ public class InvertedIndexBuilder {
 	 * @throws IOException
 	 */
 	public static void MutileIndex(Path file, ThreadSafeIndex index) throws IOException {
+		System.out.println("File: "+file);
 		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
 		if (TextFile.test(file)) {
+			System.out.println("File2: "+file);
 			try (BufferedReader read_line = Files.newBufferedReader(file)) {
 				String line;
 				int number = 0;
 				String files = file.toString();
 				Stemmer stemmer = new SnowballStemmer(SnowballStemmer.ALGORITHM.ENGLISH);
 				while ((line = read_line.readLine()) != null) {
+					System.out.println("Line: "+line);
 					for (String words : TextParser.parse(line)) {
 						String newWords = stemmer.stem(words).toString();
-						index. MutileThreadAdd(newWords, files, number + 1);
+						System.out.println("Mutil Index");
+						index.add(newWords, files, number + 1);
 						number++;
 					}
 				}
@@ -81,18 +85,23 @@ public class InvertedIndexBuilder {
 	}
 	/**
 	 * Initial mulidIndex method
-	 * @param file
-	 * @param index
+	 * @param files
+	 * @param wordindex
 	 * @param threads
+	 * @throws IOException 
 	 */
-	public void SafeIndex(Path file, ThreadSafeIndex index,int threads) {
-		WorkQueue task = new WorkQueue(threads);
-		task.execute(new Task(file, index));
-		task.finish();
-		task.shutdown();
+	public void threadIndex(Path files, ThreadSafeIndex wordindex, int threads) throws IOException {
+		for (Path file : TextFileFinder.list(files)) {
+			System.out.println("Work queue");
+			WorkQueue task = new WorkQueue(threads);
+			task.execute(new Task(file, wordindex));
+			task.finish();
+			task.shutdown();
+		}
 	}
+
 	/**
-	 * @author PaulKe 
+	 * @author PaulKe
 	 *
 	 */
 	private static class Task implements Runnable {
@@ -115,11 +124,14 @@ public class InvertedIndexBuilder {
 		}
 		@Override
 		public void run() {
-			synchronized(index) {
+			synchronized(index.finalIndex) {
 				try {
+					System.out.println("Task running");
 					MutileIndex(file, index);
 				} catch (IOException e) {
 					e.printStackTrace();
+					System.out.println("Exception error: "+ e);
+					System.exit(0);
 				}
 			}		
 		}

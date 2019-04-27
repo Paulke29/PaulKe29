@@ -6,25 +6,36 @@ import java.util.Set;
  *
  */
 public class ThreadSafeIndex extends InvertedIndex {
-
+	/**
+	 * 
+	 */
+	private SimpleReadWriteLock lock;
+	
+	public ThreadSafeIndex() {
+		lock = new SimpleReadWriteLock();
+	}
 	/**
 	 * Mutli-Thread add
 	 * 
 	 * @param words
 	 * @param location
 	 * @param position
+	 * @return 
 	 */
-	public void MutileThreadAdd(String words, String location, int position) {
-		synchronized (this.finalIndex) {
-			while (this.finalIndex == null) {
-				try {
-					finalIndex.wait();
-				} catch (InterruptedException e) {
-				}
-			}
+	public boolean add(String words, String location, int position) {
+		synchronized(this.finalIndex) {
 			super.add(words, location, position);
 			this.finalIndex.notifyAll();
+			return true;
 		}
+//		lock.writeLock().lock();
+//		try {
+//			super.add(words, location, position);
+//			this.finalIndex.notifyAll();
+//			return true;
+//		} finally {
+//			lock.writeLock().unlock();
+//		}
 	}
 
 	/**
@@ -33,14 +44,15 @@ public class ThreadSafeIndex extends InvertedIndex {
 	 * @param QueryLine
 	 * @return 
 	 */
-	public ArrayList<Result>  MutileThreadExactSearch(Set<String> QueryLine) {
+	public ArrayList<Result>ExactSearch(Set<String> QueryLine) {
 		ArrayList<Result> getResultList = new ArrayList<>();
-		synchronized (this.finalIndex) {
+		lock.readLock().lock();
+		try {
 			getResultList.addAll(super.ExactSearch(QueryLine));
-			System.out.println("Synchronized: "+ super.ExactSearch(QueryLine));
+			return getResultList;
+		}finally {
+			lock.readLock().unlock();
 		}
-		System.out.println("Thread exact: "+ getResultList);
-		return getResultList;
 	}
 
 	/**
@@ -48,11 +60,14 @@ public class ThreadSafeIndex extends InvertedIndex {
 	 * 
 	 * @param QueryLine
 	 */
-	public ArrayList<Result>  MutileThreadPartialSearch(Set<String> QueryLine) {
+	public ArrayList<Result>  PartialSearch(Set<String> QueryLine) {
 		ArrayList<Result> getResultList = new ArrayList<>();
-		synchronized (this.finalIndex) {
-			getResultList.addAll(super.partialSearch(QueryLine));
+		lock.readLock().lock();
+		try {
+			getResultList.addAll(super.PartialSearch(QueryLine));
+			return getResultList;
+		}finally {
+			lock.readLock().unlock();
 		}
-		return getResultList;
 	}
 }

@@ -26,28 +26,38 @@ public class Driver {
 
 		Instant start = Instant.now();
 		ArgumentMap argumentMap = new ArgumentMap(args);
-		InvertedIndex wordindex = new InvertedIndex();
+		InvertedIndex wordindex;
+//		ThreadSafeIndex threadIndex;
 		InvertedIndexBuilder invertedIndexBuilder = new InvertedIndexBuilder();
-		searchResult ResultSearch = new searchResult(wordindex);
-		ThreadSafeIndex safeIndex = new ThreadSafeIndex();
+		searchResult ResultSearch;
+		int threads = 0;
+		if(argumentMap.hasFlag("-threads")) {
+			String numThreads = argumentMap.getString("-threads", "5");
+			threads = Integer.valueOf(numThreads);
+			wordindex = new ThreadSafeIndex();
+//			threadIndex = new ThreadSafeIndex();
+			ResultSearch= new searchResult(wordindex);
+		}else {
+			wordindex = new InvertedIndex();
+			ResultSearch= new searchResult(wordindex);
+		}
 		if (argumentMap.hasFlag("-path")) {
-
 			try {
 				if (argumentMap.hasValue("-path")) {
 					Path path = argumentMap.getPath("-path");
 					if(argumentMap.hasFlag("-threads")) {
-						if(argumentMap.hasValue("-thread")) {
-							String threads = argumentMap.getString("-threads","5");
-							int threads1 = Integer.valueOf(threads);
-							invertedIndexBuilder.SafeIndex(path, safeIndex, threads1);
-						}					
+						invertedIndexBuilder.threadIndex(path, (ThreadSafeIndex) wordindex, threads);
 					}
-					invertedIndexBuilder.filesIndex(TextFileFinder.list(path), wordindex);
+					else {
+						invertedIndexBuilder.filesIndex(TextFileFinder.list(path), wordindex);
+					}
+					
 				}
 			} catch (IOException e) {
 				System.out.println("Couldn't to print index from path");
 			}
 		}
+		System.out.println("Driver: "+ wordindex);
 		if (argumentMap.hasFlag("-index")) {
 
 			Path indexPath = argumentMap.getPath("-index", Path.of("index.json"));
@@ -71,16 +81,17 @@ public class Driver {
 			if (argumentMap.hasValue("-query")) {
 				Path query = argumentMap.getPath("-query");
 				try {
-					if (argumentMap.hasFlag("-threads")) {
-						System.out.println("Threads");
-						boolean exact = false;
-						if (argumentMap.hasFlag("-exact")) {
-							exact = true;
-						}
-						String threads = argumentMap.getString("-threads", "5");
-						int threads1 = Integer.valueOf(threads);
-						ResultSearch.SafeSearchResult(exact, query, safeIndex, threads1);
+					boolean exact = false;
+					if(argumentMap.hasFlag("-exact")) {
+						exact = true;
 					}
+					if(argumentMap.hasFlag("-threads")) {
+						ResultSearch.SafeSearchResult(exact, query, threads);
+					}
+					else{
+						ResultSearch.SearchResult(exact, query);
+					}
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -94,6 +105,7 @@ public class Driver {
 					System.out.println(e);
 				}
 		}
+		
 		Duration elapsed = Duration.between(start, Instant.now());
 		double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
 		System.out.printf("Elapsed: %f seconds%n", seconds);

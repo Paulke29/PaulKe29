@@ -103,7 +103,7 @@ public class InvertedIndex {
 	 * @param queryLine
 	 * @return Partial Search for query words
 	 */
-	public ArrayList<Result> partialSearch(Set<String> queryLine) {
+	public ArrayList<Result> PartialSearch(Set<String> queryLine) {
 		ArrayList<Result> getResultList = new ArrayList<>();
 		Map<String, Result> lookUp = new HashMap<>();
 		for (String queryWord : queryLine) {

@@ -13,7 +13,7 @@ public class searchResult {
 	/**
 	 * QuerySearch 
 	 */
-	TreeMap<String, ArrayList<Result>> Result;
+	protected TreeMap<String, ArrayList<Result>> Result;
 	/**
 	 * initial InvertedIndex object
 	 */
@@ -35,14 +35,11 @@ public class searchResult {
 		for (Set<String> words : TextFileStemmer.QuerystemLine2(queryfile)) {
 			String joined = String.join(" ", words);
 			if (!words.isEmpty() && !this.Result.containsKey(joined)) {
-				System.out.println("Join: "+joined);
 				if (isExact == true) {
-					System.out.println("Exact Search Search Result");
 					Result.put(joined, this.index.ExactSearch(words));
 				} 
 				if(isExact == false) {
-					System.out.println("Partial Search Search Result");
-					Result.put(joined, this.index.partialSearch(words));
+					Result.put(joined, this.index.PartialSearch(words));
 				}
 			}
 
@@ -55,16 +52,16 @@ public class searchResult {
 	 * @param threads
 	 * @throws IOException
 	 */
-	public void SafeSearchResult(boolean isExact, Path queryfile, ThreadSafeIndex threadIndex, int threads)
+	public void SafeSearchResult(boolean isExact, Path queryfile, int threads)
 			throws IOException {
 		for (Set<String> words : TextFileStemmer.QuerystemLine2(queryfile)) {
 			String joined = String.join(" ", words);
 			if (!words.isEmpty() && !this.Result.containsKey(joined)) {
 				if (isExact == true) {
-					Result.put(joined,threadIndex.MutileThreadExactSearch(words));
+					Result.put(joined,this.index.ExactSearch(words));
 				} 
 				if(isExact == false) {
-					Result.put(joined,threadIndex.MutileThreadPartialSearch(words));
+					Result.put(joined,this.index.PartialSearch(words));
 				}
 			}
 		}
@@ -116,9 +113,9 @@ public class searchResult {
 		public void run() {
 			synchronized (threadIndex) {
 				if (Exact == true) {
-					threadIndex.MutileThreadExactSearch(Queryline);
+					threadIndex.ExactSearch(Queryline);
 				} else {
-					threadIndex.MutileThreadPartialSearch(Queryline);
+					threadIndex.PartialSearch(Queryline);
 				}
 			}
 
