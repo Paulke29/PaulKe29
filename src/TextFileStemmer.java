@@ -39,7 +39,28 @@ public class TextFileStemmer {
 	public static ArrayList<String> stemLine(String line) {
 		return stemLine(line, new SnowballStemmer(DEFAULT));
 	}
+	
+	/* TODO 
+	public static void stemLine(String line, Stemmer stemmer, Collection<String> container) {
+		for (String words : TextParser.parse(line)) {
+			container.add(stemmer.stem(words).toString());
+		}
+	}
+	
+	public static ArrayList<String> stemLine(String line, Stemmer stemmer) {
+		ArrayList<String> container = new ArrayList<>();
+		stemLine(line, stemmer, container);
+		return container;
+	}
+	
+	public static Set<String> uniqueStems(String line, Stemmer stemmer) {
+		TreeSet<String> container = new TreeSet<>();
+		stemLine(line, stemmer, container);
+		return container;
+	}
+	*/
 
+	// TODO Remove this method
 	/**
 	 * Output a list of query words
 	 * 
@@ -47,13 +68,13 @@ public class TextFileStemmer {
 	 * @param stemmer
 	 * @return a list of query words
 	 */
-	public static ArrayList<Set<String>> QuerystemLine(Path queryfile, Stemmer stemmer) {
+	public static ArrayList<Set<String>> QuerystemLine(Path queryfile, Stemmer stemmer) { // TODO Fix method name
 		ArrayList<Set<String>> answer = new ArrayList<>();
 
 		try (BufferedReader readline = Files.newBufferedReader(queryfile, StandardCharsets.UTF_8)) {
 			String line = null;
 			Set<String> QuerySet = null;
-			Set<String> SetQuery = null;
+			Set<String> SetQuery = null; // TODO Variable names
 			while ((line = readline.readLine()) != null) {
 				String string2 = TextParser.clean(line.trim());
 				QuerySet = new TreeSet<>();
@@ -72,7 +93,7 @@ public class TextFileStemmer {
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // TODO You know how to handle exceptions!
 		}
 		return answer;
 	}
