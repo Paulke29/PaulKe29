@@ -50,12 +50,12 @@ public class InvertedIndex {
 	/**
 	 * Exact search for query words
 	 * 
-	 * @param QueryLine
+	 * @param QueryLine the query line for search
 	 * @return exact search result
 	 */
 	public ArrayList<Result> ExactSearch(Set<String> QueryLine) {
 		ArrayList<Result> getResultList = new ArrayList<>();
-		Map<String, Result> findUp = new HashMap<>(); // TODO Why is this map justified, because it causes double storage
+		Map<String, Result> findUp = new HashMap<>();
 		for (String queryWord : QueryLine) {
 			if (this.contains(queryWord)) {
 				this.searchProcess(queryWord, getResultList, findUp);
@@ -68,22 +68,20 @@ public class InvertedIndex {
 	/**
 	 * Process of Exact Search
 	 * 
-	 * @param queryWord
-	 * @param getResultList
-	 * @param findUp
+	 * @param queryWord     a query word for search
+	 * @param getResultList the result list for adding query word
+	 * @param findUp        keep tracking and store the search process
 	 */
 	private void searchProcess(String queryWord, ArrayList<Result> getResultList, Map<String, Result> findUp) {
 		int count = 0;
 		int TotalWords = 0;
-		double score = 0;
 		for (String location : this.finalIndex.get(queryWord).keySet()) {
 			if (findUp.containsKey(location)) {
 				findUp.get(location).updateCount(this.wordCount(queryWord, location));
 			} else {
 				count = finalIndex.get(queryWord).get(location).size();
 				TotalWords = wordCount.get(location);
-				score = (double) count / TotalWords;
-				Result newResult = new Result(location, score, count, TotalWords);
+				Result newResult = new Result(location, count, TotalWords);
 				getResultList.add(newResult);
 				findUp.put(location, newResult);
 			}
@@ -93,7 +91,7 @@ public class InvertedIndex {
 	/**
 	 * Partial search for query word
 	 * 
-	 * @param queryLine
+	 * @param queryLine the query line for search
 	 * @return Partial Search for query words
 	 */
 	public ArrayList<Result> partialSearch(Set<String> queryLine) {
@@ -109,16 +107,16 @@ public class InvertedIndex {
 	/**
 	 * Partial Search process
 	 * 
-	 * @param word
-	 * @param result
-	 * @param lookUp
+	 * @param word   key word for search
+	 * @param result having the partial research list
+	 * @param lookUp keep tracking and store the search process
 	 */
 	private void partialSearchHelper(String word, ArrayList<Result> result, Map<String, Result> lookUp) {
-		for (String queryWord : this.finalIndex.tailMap(word).keySet()) { // TODO Why tailMap?
+		for (String queryWord : this.finalIndex.tailMap(word).keySet()) {
 			if (queryWord.startsWith(word)) {
 				this.searchProcess(queryWord, result, lookUp);
 			} else {
-				break; // TODO Why break?
+				break;
 			}
 		}
 	}

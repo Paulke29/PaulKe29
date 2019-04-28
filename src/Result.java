@@ -1,7 +1,7 @@
 import java.text.DecimalFormat;
 
 /**
- * @author paulke
+ * @author PaulKe
  *
  */
 public class Result implements Comparable<Result> {
@@ -9,52 +9,49 @@ public class Result implements Comparable<Result> {
 	 * define the file
 	 */
 	private String where;
-	
+
 	/**
 	 * define the number of words
 	 */
 	private int count;
-	
-	/**
-	 * define the occur of words
-	 */
-	private double score; // TODO Remove
-	
+
 	/**
 	 * define the total of words in a file
 	 */
-	private int TotalWords; // TODO Fix capitalization
+	private int totalWords;
 
 	/**
 	 * define the decimal
 	 */
-	DecimalFormat df = new DecimalFormat("0.00000000"); // TODO Use keywords private, final, and fix variable name, initialize in the constructor
+	private final DecimalFormat df;
 
 	/**
 	 * Create constructor
 	 * 
-	 * @param where
-	 * @param count
-	 * @param score
-	 * @param TotalWords
+	 * @param where      having location
+	 * @param count      calculating the number of words
+	 * @param TotalWords total words of file
 	 */
-	// TODO public Result(String where, int count, int TotalWords) {
-	public Result(String where, double score, int count, int TotalWords) {
+	public Result(String where, int count, int TotalWords) {
 		this.where = where;
 		this.count = count;
-		this.score = score; // TODO Remove
-		this.TotalWords = TotalWords;
+		this.totalWords = TotalWords;
+		df = new DecimalFormat("0.00000000");
 	}
 
 	/**
+	 * having the total words of file
+	 * 
 	 * @return TotalWords
 	 */
 	public int getTotalWords() {
-		return this.TotalWords;
+		return this.totalWords;
 	}
 
 	/**
-	 * @return where
+	 * having the location
+	 * 
+	 * @return where location
 	 */
 	public String getWhere() {
 		return this.where;
@@ -63,7 +60,7 @@ public class Result implements Comparable<Result> {
 	/**
 	 * get count
 	 * 
-	 * @return count
+	 * @return count matched words
 	 */
 	public int getCount() {
 		return this.count;
@@ -72,7 +69,7 @@ public class Result implements Comparable<Result> {
 	/**
 	 * set up count
 	 * 
-	 * @param count
+	 * @param count matched words
 	 */
 	public void setCount(int count) {
 		this.count = count;
@@ -81,10 +78,10 @@ public class Result implements Comparable<Result> {
 	/**
 	 * get score
 	 * 
-	 * @return score
+	 * @return score ratio of count and total words
 	 */
-	public Double getScore() { // TODO double not Double
-		return ((double) this.count / this.TotalWords);
+	public double getScore() {
+		return ((double) this.count / this.totalWords);
 	}
 
 	/**
@@ -99,15 +96,15 @@ public class Result implements Comparable<Result> {
 	/**
 	 * Update the count in Result object
 	 * 
-	 * @param newCount
+	 * @param newCount new matched words
 	 */
 	public void updateCount(int newCount) {
 		this.count = this.count + newCount;
 	}
 
-	// TODO @Override
+	@Override
 	public String toString() {
-		return "Where: " + where + " " + "Count: " + count + " " + "Score: " + score;
+		return "Where: " + where + " " + "Count: " + count + " " + "Score: " + getScore();
 
 	}
 

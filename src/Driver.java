@@ -27,7 +27,7 @@ public class Driver {
 		ArgumentMap argumentMap = new ArgumentMap(args);
 		InvertedIndex wordindex = new InvertedIndex();
 		InvertedIndexBuilder invertedIndexBuilder = new InvertedIndexBuilder();
-		searchResult ResultSearch = new searchResult(wordindex);
+		QueryFileParser ResultSearch = new QueryFileParser(wordindex);
 
 		if (argumentMap.hasFlag("-path")) {
 			try {
@@ -39,7 +39,7 @@ public class Driver {
 				System.out.println("Couldn't to print index from path");
 			}
 		}
-		
+
 		if (argumentMap.hasFlag("-index")) {
 			Path indexPath = argumentMap.getPath("-index", Path.of("index.json"));
 			try {
@@ -48,7 +48,7 @@ public class Driver {
 				System.out.println("Couldn't get anything from path: " + indexPath);
 			}
 		}
-		
+
 		if (argumentMap.hasFlag("-locations")) {
 			Path locationPath = argumentMap.getPath("-locations", Path.of("locations.json"));
 			try {
@@ -57,7 +57,7 @@ public class Driver {
 				System.out.println("Couldn't get anything  from path: " + locationPath);
 			}
 		}
-		
+
 		if (argumentMap.hasFlag("-query")) {
 			if (argumentMap.hasValue("-query")) {
 				Path query = argumentMap.getPath("-query");
@@ -66,7 +66,7 @@ public class Driver {
 					if (argumentMap.hasFlag("-exact")) {
 						exact = true;
 					}
-					ResultSearch.SearchResult(exact, query);
+					ResultSearch.parseFile(query, exact);
 
 				} catch (IOException e) {
 					System.out.println("Couldn't get anything  from path: " + query);
@@ -82,7 +82,7 @@ public class Driver {
 				System.out.println("Couldn't get anything  from path: " + result);
 			}
 		}
-		
+
 		Duration elapsed = Duration.between(start, Instant.now());
 		double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
 		System.out.printf("Elapsed: %f seconds%n", seconds);

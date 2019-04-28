@@ -1,13 +1,11 @@
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.Collection;
 import java.util.TreeSet;
 import java.io.BufferedReader;
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
-
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 /**
@@ -39,91 +37,54 @@ public class TextFileStemmer {
 	public static ArrayList<String> stemLine(String line) {
 		return stemLine(line, new SnowballStemmer(DEFAULT));
 	}
-	
-	/* TODO 
+
+	/**
+	 * clean the queryWord and add to collection structure
+	 * 
+	 * @param line      line with unclean queryWords
+	 * @param stemmer   get the stem of each words from queryLine
+	 * @param container data structure to add the clean queryWords
+	 */
 	public static void stemLine(String line, Stemmer stemmer, Collection<String> container) {
 		for (String words : TextParser.parse(line)) {
 			container.add(stemmer.stem(words).toString());
 		}
 	}
-	
+
+	/**
+	 * clean the queryWord and add to ArrayList
+	 * 
+	 * @param line    single line from source file
+	 * @param stemmer helping get the stem of the word
+	 * @return a arrayList contains stemmed and clean queryWord
+	 */
 	public static ArrayList<String> stemLine(String line, Stemmer stemmer) {
 		ArrayList<String> container = new ArrayList<>();
 		stemLine(line, stemmer, container);
 		return container;
 	}
-	
-	public static Set<String> uniqueStems(String line, Stemmer stemmer) {
+
+	/**
+	 * clean the queryWord and add to Set
+	 * 
+	 * @param line    single line from source file
+	 * @param stemmer helping get the stem of the word
+	 * @return a arrayList contains stemmed and clean queryWord
+	 */
+	public static TreeSet<String> uniqueStems(String line, Stemmer stemmer) {
 		TreeSet<String> container = new TreeSet<>();
 		stemLine(line, stemmer, container);
 		return container;
-	}
-	*/
-
-	// TODO Remove this method
-	/**
-	 * Output a list of query words
-	 * 
-	 * @param queryfile
-	 * @param stemmer
-	 * @return a list of query words
-	 */
-	public static ArrayList<Set<String>> QuerystemLine(Path queryfile, Stemmer stemmer) { // TODO Fix method name
-		ArrayList<Set<String>> answer = new ArrayList<>();
-
-		try (BufferedReader readline = Files.newBufferedReader(queryfile, StandardCharsets.UTF_8)) {
-			String line = null;
-			Set<String> QuerySet = null;
-			Set<String> SetQuery = null; // TODO Variable names
-			while ((line = readline.readLine()) != null) {
-				String string2 = TextParser.clean(line.trim());
-				QuerySet = new TreeSet<>();
-				QuerySet.add(string2);
-				if (!QuerySet.isEmpty()) {
-					for (String string3 : QuerySet) {
-						if (!string3.isBlank()) {
-							SetQuery = new TreeSet<>();
-							for (String String4 : TextParser.parse(string3)) {
-								SetQuery.addAll(stemLine(String4));
-							}
-							answer.add(SetQuery);
-						}
-					}
-				}
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace(); // TODO You know how to handle exceptions!
-		}
-		return answer;
 	}
 
 	/**
 	 * Stem words to a set of query words
 	 * 
-	 * @param queryfile
-	 * @return a set of query words
+	 * @param queryfile the source file
+	 * @return a set of query words getting from query file
 	 */
-	public static ArrayList<Set<String>> QuerystemLine2(Path queryfile) {
-		return QuerystemLine(queryfile, new SnowballStemmer(DEFAULT));
-	}
-
-	/**
-	 * Returns a set of cleaned and stemmed words parsed from the provided line.
-	 *
-	 * @param line    the line of words to clean, split, and stem
-	 * @param stemmer the stemmer to use
-	 * @return a sorted set of cleaned and stemmed words
-	 *
-	 * @see Stemmer#stem(CharSequence)
-	 * @see TextParser#parse(String)
-	 */
-	public static ArrayList<String> stemLine(String line, Stemmer stemmer) {
-		ArrayList<String> answer = new ArrayList<>();
-		for (String words : TextParser.parse(line)) {
-			answer.add(stemmer.stem(words).toString());
-		}
-		return answer;
+	public static TreeSet<String> uniqueStems(String queryfile) {
+		return uniqueStems(queryfile, new SnowballStemmer(DEFAULT));
 	}
 
 	/**
