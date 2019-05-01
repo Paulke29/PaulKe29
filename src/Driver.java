@@ -57,26 +57,6 @@ public class Driver {
 				System.out.println("Couldn't to print index from path");
 			}
 		}
-		System.out.println("Driver: "+ wordindex);
-		if (argumentMap.hasFlag("-index")) {
-
-			Path indexPath = argumentMap.getPath("-index", Path.of("index.json"));
-			try {
-				wordindex.nestJSON(indexPath);
-			} catch (IOException e) {
-				System.out.println("Couldn't get anything from path: " + indexPath);
-			}
-
-		}
-		if (argumentMap.hasFlag("-locations")) {
-
-			Path locationPath = argumentMap.getPath("-locations", Path.of("locations.json"));
-			try {
-				wordindex.locationsJSON(locationPath);
-			} catch (IOException e) {
-				System.out.println("Couldn't get anything  from path: " + locationPath);
-			}
-		}
 		if (argumentMap.hasFlag("-query")) {
 			if (argumentMap.hasValue("-query")) {
 				Path query = argumentMap.getPath("-query");
@@ -95,6 +75,26 @@ public class Driver {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+			}
+		}
+//		System.out.println("Driver: "+ wordindex);
+		if (argumentMap.hasFlag("-index")) {
+
+			Path indexPath = argumentMap.getPath("-index", Path.of("index.json"));
+			try {
+				wordindex.nestJSON(indexPath);
+			} catch (IOException e) {
+				System.out.println("Couldn't get anything from path: " + indexPath);
+			}
+
+		}
+		if (argumentMap.hasFlag("-locations")) {
+
+			Path locationPath = argumentMap.getPath("-locations", Path.of("locations.json"));
+			try {
+				wordindex.locationsJSON(locationPath);
+			} catch (IOException e) {
+				System.out.println("Couldn't get anything  from path: " + locationPath);
 			}
 		}
 		if (argumentMap.hasFlag("-results")) {

@@ -92,7 +92,6 @@ public class InvertedIndexBuilder {
 	 */
 	public void threadIndex(Path files, ThreadSafeIndex wordindex, int threads) throws IOException {
 		for (Path file : TextFileFinder.list(files)) {
-			System.out.println("Work queue");
 			WorkQueue task = new WorkQueue(threads);
 			task.execute(new Task(file, wordindex));
 			task.finish();

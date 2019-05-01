@@ -77,16 +77,13 @@ public class WorkQueue {
 	 * Waits for all pending work to be finished.
 	 */
 	public void finish() {
-		// TODO Implement this!
 		synchronized (this.queue) {
-
 			try {
 				while (pending > 0 && !queue.isEmpty()) {
 					this.queue.wait();
 				}
 				this.queue.notifyAll();
 			} catch (InterruptedException ex) {
-
 			}
 		}
 	}
@@ -109,7 +106,6 @@ public class WorkQueue {
 	 *
 	 * @return number of worker threads
 	 */
-	// TODO Modify if necessary
 	public int size() {
 		return workers.length;
 	}
@@ -160,11 +156,8 @@ public class WorkQueue {
 					r.run();
 				}
 				catch (RuntimeException ex) {
-					// catch runtime exceptions to avoid leaking threads
 					System.err.println("Warning: Work queue encountered an exception while running.");
 				}
-
-				// TODO Modify if necessary
 				Pendingdecrease();
 			}
 		}

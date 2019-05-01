@@ -28,14 +28,6 @@ public class ThreadSafeIndex extends InvertedIndex {
 			this.finalIndex.notifyAll();
 			return true;
 		}
-//		lock.writeLock().lock();
-//		try {
-//			super.add(words, location, position);
-//			this.finalIndex.notifyAll();
-//			return true;
-//		} finally {
-//			lock.writeLock().unlock();
-//		}
 	}
 
 	/**
