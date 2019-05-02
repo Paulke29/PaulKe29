@@ -67,8 +67,10 @@ public class WorkQueue {
 	public void execute(Runnable r) {
 		synchronized (queue) {
 			queue.addLast(r);
-			queue.notifyAll();
 			this.pending++;
+
+			queue.notifyAll();
+//			this.pending++;
 		}
 
 	}
