@@ -8,7 +8,7 @@ public class Result implements Comparable<Result> {
 	/**
 	 * define the file
 	 */
-	private String where;
+	private String where; // TODO final
 
 	/**
 	 * define the number of words
@@ -18,7 +18,7 @@ public class Result implements Comparable<Result> {
 	/**
 	 * define the total of words in a file
 	 */
-	private int totalWords;
+	private int totalWords; // TODO final
 
 	/**
 	 * define the decimal

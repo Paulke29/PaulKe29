@@ -46,6 +46,11 @@ public class InvertedIndex {
 		}
 		return checking;
 	}
+	
+	/* TODO
+	public ArrayList<Result> search(Collection<String> queries, boolean exact) {
+		return exact ? exactSearch(queries) : partialSearch(queries);
+	} */
 
 	/**
 	 * Exact search for query words
@@ -53,8 +58,8 @@ public class InvertedIndex {
 	 * @param QueryLine the query line for search
 	 * @return exact search result
 	 */
-	public ArrayList<Result> ExactSearch(Set<String> QueryLine) {
-		ArrayList<Result> getResultList = new ArrayList<>();
+	public ArrayList<Result> ExactSearch(Set<String> QueryLine) { // TODO Collection<String> queries
+		ArrayList<Result> getResultList = new ArrayList<>(); // resultList or results
 		Map<String, Result> findUp = new HashMap<>();
 		for (String queryWord : QueryLine) {
 			if (this.contains(queryWord)) {
@@ -77,6 +82,7 @@ public class InvertedIndex {
 		int TotalWords = 0;
 		for (String location : this.finalIndex.get(queryWord).keySet()) {
 			if (findUp.containsKey(location)) {
+				// TODO findUp.get(location).updateCount(this.finalIndex.get(queryWord).get(location).size());
 				findUp.get(location).updateCount(this.wordCount(queryWord, location));
 			} else {
 				count = finalIndex.get(queryWord).get(location).size();
@@ -99,6 +105,16 @@ public class InvertedIndex {
 		Map<String, Result> lookUp = new HashMap<>();
 		for (String queryWord : queryLine) {
 			this.partialSearchHelper(queryWord, getResultList, lookUp);
+			
+			/* TODO
+			for (String queryWord : this.finalIndex.tailMap(word).keySet()) {
+				if (queryWord.startsWith(word)) {
+					this.searchProcess(queryWord, result, lookUp);
+				} else {
+					break;
+				}
+			}
+			*/
 		}
 		Collections.sort(getResultList);
 		return getResultList;
@@ -111,7 +127,7 @@ public class InvertedIndex {
 	 * @param result having the partial research list
 	 * @param lookUp keep tracking and store the search process
 	 */
-	private void partialSearchHelper(String word, ArrayList<Result> result, Map<String, Result> lookUp) {
+	private void partialSearchHelper(String word, ArrayList<Result> result, Map<String, Result> lookUp) { // TODO Remove
 		for (String queryWord : this.finalIndex.tailMap(word).keySet()) {
 			if (queryWord.startsWith(word)) {
 				this.searchProcess(queryWord, result, lookUp);
@@ -202,7 +218,7 @@ public class InvertedIndex {
 	 * 
 	 * @return the wordCount structure
 	 */
-	public TreeMap<String, Integer> getwordCount() {
+	public TreeMap<String, Integer> getwordCount() { // TODO Remove
 		return this.wordCount;
 	}
 
@@ -211,7 +227,7 @@ public class InvertedIndex {
 	 * 
 	 * @return the finalIndex structure
 	 */
-	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> getfinalIndex() {
+	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> getfinalIndex() { // TODO Remove
 		return this.finalIndex;
 	}
 

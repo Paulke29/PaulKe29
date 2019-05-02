@@ -15,7 +15,7 @@ public class QueryFileParser {
 	/**
 	 * QuerySearch Result
 	 */
-	private final TreeMap<String, ArrayList<Result>> Result;
+	private final TreeMap<String, ArrayList<Result>> Result; // TODO lowercase for all members..... "result"
 	/**
 	 * initial InvertedIndex object
 	 */
@@ -64,6 +64,12 @@ public class QueryFileParser {
 				Result.put(cleanedLine, this.index.partialSearch(queries));
 			}
 		}
+		
+		/* TODO
+		if (!queries.isEmpty() && !results.containsKey(cleanedLine)) {
+			results.put(cleanedLine, index.search(queries));
+		}
+		*/
 	}
 
 	/**
@@ -73,7 +79,7 @@ public class QueryFileParser {
 	 * @throws IOException
 	 */
 	public void toJSON(Path path) throws IOException {
-		PrettyJSONWriter.Rearchformat(this.Result, path);
+		PrettyJSONWriter.Rearchformat(this.Result, path); // TODO Fix capitalization of method
 	}
 
 }
