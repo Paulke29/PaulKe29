@@ -72,7 +72,7 @@ public class searchResult {
 	 * @param index
 	 * @param threads
 	 */
-	public void SafeSearch(Boolean Exact, Set<String> Quryline, ThreadSafeIndex index, int threads) {
+	public void SafeSearch(Boolean Exact, Set<String> Quryline, threadSafeIndex index, int threads) {
 		WorkQueue task = new WorkQueue(threads);
 		task.execute(new Task(Exact, Quryline, index));
 		task.finish();
@@ -91,7 +91,7 @@ public class searchResult {
 		/**
 		 * initial ThreadSafeIndex
 		 */
-		ThreadSafeIndex threadIndex = new ThreadSafeIndex();
+		threadSafeIndex threadIndex = new threadSafeIndex();
 		/**
 		 * whether Exact Search or not
 		 */
@@ -103,7 +103,7 @@ public class searchResult {
 		 * @param Queryline
 		 * @param threadIndex
 		 */
-		Task(Boolean Exact, Set<String> Queryline, ThreadSafeIndex threadIndex) {
+		Task(Boolean Exact, Set<String> Queryline, threadSafeIndex threadIndex) {
 			this.Queryline = Queryline;
 			this.threadIndex = threadIndex;
 			this.Exact = Exact;

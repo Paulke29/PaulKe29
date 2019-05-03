@@ -27,15 +27,13 @@ public class Driver {
 		Instant start = Instant.now();
 		ArgumentMap argumentMap = new ArgumentMap(args);
 		InvertedIndex wordindex;
-//		ThreadSafeIndex threadIndex;
 		InvertedIndexBuilder invertedIndexBuilder = new InvertedIndexBuilder();
 		searchResult ResultSearch;
 		int threads = 0;
 		if(argumentMap.hasFlag("-threads")) {
 			String numThreads = argumentMap.getString("-threads", "5");
 			threads = Integer.valueOf(numThreads);
-			wordindex = new ThreadSafeIndex();
-//			threadIndex = new ThreadSafeIndex();
+			wordindex = new threadSafeIndex();
 			ResultSearch= new searchResult(wordindex);
 		}else {
 			wordindex = new InvertedIndex();
@@ -46,7 +44,7 @@ public class Driver {
 				if (argumentMap.hasValue("-path")) {
 					Path path = argumentMap.getPath("-path");
 					if(argumentMap.hasFlag("-threads")) {
-						invertedIndexBuilder.threadIndex(path, (ThreadSafeIndex) wordindex, threads);
+						invertedIndexBuilder.threadIndex(path, (threadSafeIndex) wordindex, threads);
 					}
 					else {
 						invertedIndexBuilder.filesIndex(TextFileFinder.list(path), wordindex);
@@ -77,7 +75,7 @@ public class Driver {
 				}
 			}
 		}
-//		System.out.println("Driver: "+ wordindex);
+		System.out.println("Index");
 		if (argumentMap.hasFlag("-index")) {
 
 			Path indexPath = argumentMap.getPath("-index", Path.of("index.json"));

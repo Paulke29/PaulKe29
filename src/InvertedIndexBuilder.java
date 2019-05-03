@@ -49,26 +49,25 @@ public class InvertedIndexBuilder {
 	 * @param index
 	 * @throws IOException
 	 */
-	public static void MutileIndex(Path file, ThreadSafeIndex index) throws IOException {
-		System.out.println("File: "+file);
+	public static void MutileIndex(Path file, threadSafeIndex index) throws IOException {
+		System.out.println("BUILDING: " + file.toString());
 		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
 		if (TextFile.test(file)) {
-			System.out.println("File2: "+file);
 			try (BufferedReader read_line = Files.newBufferedReader(file)) {
 				String line;
 				int number = 0;
 				String files = file.toString();
 				Stemmer stemmer = new SnowballStemmer(SnowballStemmer.ALGORITHM.ENGLISH);
 				while ((line = read_line.readLine()) != null) {
-					System.out.println("Line: "+line);
 					for (String words : TextParser.parse(line)) {
 						String newWords = stemmer.stem(words).toString();
-						System.out.println("Mutil Index");
 						index.add(newWords, files, number + 1);
 						number++;
 					}
 				}
 			}
+		}else {
+			System.out.println("ERROR");
 		}
 	}
 	/**
@@ -90,7 +89,7 @@ public class InvertedIndexBuilder {
 	 * @param threads
 	 * @throws IOException 
 	 */
-	public void threadIndex(Path files, ThreadSafeIndex wordindex, int threads) throws IOException {
+	public void threadIndex(Path files, threadSafeIndex wordindex, int threads) throws IOException {
 		for (Path file : TextFileFinder.list(files)) {
 			WorkQueue task = new WorkQueue(threads);
 			task.execute(new Task(file, wordindex));
@@ -111,13 +110,13 @@ public class InvertedIndexBuilder {
 		/**
 		 * 
 		 */
-		ThreadSafeIndex index = new ThreadSafeIndex();
+		threadSafeIndex index = new threadSafeIndex();
 	
 		/**
 		 * @param file
 		 * @param index
 		 */
-		Task(Path file, ThreadSafeIndex index){
+		Task(Path file, threadSafeIndex index){
 			this.file = file;
 			this.index = index;
 		}
@@ -125,12 +124,9 @@ public class InvertedIndexBuilder {
 		public void run() {
 			synchronized(index.finalIndex) {
 				try {
-					System.out.println("Task running");
 					MutileIndex(file, index);
 				} catch (IOException e) {
 					e.printStackTrace();
-					System.out.println("Exception error: "+ e);
-					System.exit(0);
 				}
 			}		
 		}

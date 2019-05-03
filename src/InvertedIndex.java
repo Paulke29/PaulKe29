@@ -20,7 +20,7 @@ public class InvertedIndex {
 	/**
 	 * creating a dataStructure for word count
 	 */
-	private final TreeMap<String, Integer> wordCount;
+	protected final TreeMap<String, Integer> wordCount;
 
 	/**
 	 * initial TreeMap
@@ -65,10 +65,7 @@ public class InvertedIndex {
 				this.searchProcess(queryWord, getResultList, findUp);
 			}
 		}
-		System.out.println("Exact Search1: "+ getResultList);
 		Collections.sort(getResultList);
-		
-		System.out.println("Exact Search: "+ getResultList);
 		return getResultList;
 	}
 
@@ -165,7 +162,6 @@ public class InvertedIndex {
 	 * @return true if the word is stored in the index
 	 */
 	public boolean contains(String word) {
-		System.out.print("COndgdzg\n");
 		return this.finalIndex.containsKey(word);
 	}
 
@@ -206,23 +202,6 @@ public class InvertedIndex {
 		}
 	}
 
-	/**
-	 * Having wordCount
-	 * 
-	 * @return the wordCount structure
-	 */
-	public TreeMap<String, Integer> getwordCount() {
-		return this.wordCount;
-	}
-
-	/**
-	 * Having the finalIndex
-	 * 
-	 * @return the finalIndex structure
-	 */
-	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> getfinalIndex() {
-		return this.finalIndex;
-	}
 
 	/**
 	 * the number of locations stored

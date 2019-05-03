@@ -70,7 +70,6 @@ public class SimpleReadWriteLock {
 		 */
 		@Override
 		public void lock() {
-			// TODO Fill this in!
 			synchronized(lock) {
 				while(writers>0) {
 					try {
