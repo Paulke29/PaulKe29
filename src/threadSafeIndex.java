@@ -112,7 +112,7 @@ public class threadSafeIndex extends InvertedIndex {
 		} finally {
 			lock.readLock().unlock();
 		}
-
+ 
 	}
 	public int locationCount() {
 		lock.readLock().lock();
