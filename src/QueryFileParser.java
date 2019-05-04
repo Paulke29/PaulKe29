@@ -15,7 +15,7 @@ public class QueryFileParser {
 	/**
 	 * QuerySearch Result
 	 */
-	private final TreeMap<String, ArrayList<Result>> Result; // TODO lowercase for all members..... "result"
+	private final TreeMap<String, ArrayList<Result>> result;
 	/**
 	 * initial InvertedIndex object
 	 */
@@ -27,7 +27,7 @@ public class QueryFileParser {
 	 * @param index initial InvertedIndex
 	 */
 	public QueryFileParser(InvertedIndex index) {
-		this.Result = new TreeMap<>();
+		this.result = new TreeMap<>();
 		this.index = index;
 	}
 
@@ -56,20 +56,9 @@ public class QueryFileParser {
 	public void parseLine(String line, boolean isExact) {
 		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
 		String cleanedLine = String.join(" ", queries);
-		if (!queries.isEmpty()) {
-			if (isExact == true) {
-				Result.put(cleanedLine, this.index.ExactSearch(queries));
-			}
-			if (isExact == false) {
-				Result.put(cleanedLine, this.index.partialSearch(queries));
-			}
+		if (!queries.isEmpty() && !result.containsKey(cleanedLine)) {
+			result.put(cleanedLine, index.search(queries,isExact));
 		}
-		
-		/* TODO
-		if (!queries.isEmpty() && !results.containsKey(cleanedLine)) {
-			results.put(cleanedLine, index.search(queries));
-		}
-		*/
 	}
 
 	/**
@@ -79,7 +68,7 @@ public class QueryFileParser {
 	 * @throws IOException
 	 */
 	public void toJSON(Path path) throws IOException {
-		PrettyJSONWriter.Rearchformat(this.Result, path); // TODO Fix capitalization of method
+		PrettyJSONWriter.resultFormat(this.result, path); 
 	}
 
 }

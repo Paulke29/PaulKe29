@@ -1,10 +1,10 @@
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -47,10 +47,16 @@ public class InvertedIndex {
 		return checking;
 	}
 	
-	/* TODO
+	/**
+	 * Search method
+	 * 
+	 * @param queries what to search
+	 * @param exact decide exact or partial
+	 * @return the result 
+	 */
 	public ArrayList<Result> search(Collection<String> queries, boolean exact) {
-		return exact ? exactSearch(queries) : partialSearch(queries);
-	} */
+		return exact ? ExactSearch(queries) : partialSearch(queries);
+	}
 
 	/**
 	 * Exact search for query words
@@ -58,16 +64,16 @@ public class InvertedIndex {
 	 * @param QueryLine the query line for search
 	 * @return exact search result
 	 */
-	public ArrayList<Result> ExactSearch(Set<String> QueryLine) { // TODO Collection<String> queries
-		ArrayList<Result> getResultList = new ArrayList<>(); // resultList or results
+	public ArrayList<Result> ExactSearch(Collection<String> QueryLine) { 
+		ArrayList<Result> results = new ArrayList<>();
 		Map<String, Result> findUp = new HashMap<>();
 		for (String queryWord : QueryLine) {
 			if (this.contains(queryWord)) {
-				this.searchProcess(queryWord, getResultList, findUp);
+				this.searchProcess(queryWord, results, findUp);
 			}
 		}
-		Collections.sort(getResultList);
-		return getResultList;
+		Collections.sort(results);
+		return results;
 	}
 
 	/**
@@ -82,8 +88,7 @@ public class InvertedIndex {
 		int TotalWords = 0;
 		for (String location : this.finalIndex.get(queryWord).keySet()) {
 			if (findUp.containsKey(location)) {
-				// TODO findUp.get(location).updateCount(this.finalIndex.get(queryWord).get(location).size());
-				findUp.get(location).updateCount(this.wordCount(queryWord, location));
+				findUp.get(location).updateCount(this.finalIndex.get(queryWord).get(location).size());
 			} else {
 				count = finalIndex.get(queryWord).get(location).size();
 				TotalWords = wordCount.get(location);
@@ -100,42 +105,22 @@ public class InvertedIndex {
 	 * @param queryLine the query line for search
 	 * @return Partial Search for query words
 	 */
-	public ArrayList<Result> partialSearch(Set<String> queryLine) {
-		ArrayList<Result> getResultList = new ArrayList<>();
+	public ArrayList<Result> partialSearch(Collection<String> queryLine) {
+		ArrayList<Result> results = new ArrayList<>();
 		Map<String, Result> lookUp = new HashMap<>();
 		for (String queryWord : queryLine) {
-			this.partialSearchHelper(queryWord, getResultList, lookUp);
-			
-			/* TODO
-			for (String queryWord : this.finalIndex.tailMap(word).keySet()) {
-				if (queryWord.startsWith(word)) {
-					this.searchProcess(queryWord, result, lookUp);
+			for (String queries : this.finalIndex.tailMap(queryWord).keySet()) {
+				if (queries.startsWith(queryWord)) {
+					this.searchProcess(queries, results, lookUp);
 				} else {
 					break;
 				}
 			}
-			*/
 		}
-		Collections.sort(getResultList);
-		return getResultList;
+		Collections.sort(results);
+		return results;
 	}
 
-	/**
-	 * Partial Search process
-	 * 
-	 * @param word   key word for search
-	 * @param result having the partial research list
-	 * @param lookUp keep tracking and store the search process
-	 */
-	private void partialSearchHelper(String word, ArrayList<Result> result, Map<String, Result> lookUp) { // TODO Remove
-		for (String queryWord : this.finalIndex.tailMap(word).keySet()) {
-			if (queryWord.startsWith(word)) {
-				this.searchProcess(queryWord, result, lookUp);
-			} else {
-				break;
-			}
-		}
-	}
 
 	/**
 	 * Output finalIndex
@@ -213,23 +198,6 @@ public class InvertedIndex {
 		}
 	}
 
-	/**
-	 * Having wordCount
-	 * 
-	 * @return the wordCount structure
-	 */
-	public TreeMap<String, Integer> getwordCount() { // TODO Remove
-		return this.wordCount;
-	}
-
-	/**
-	 * Having the finalIndex
-	 * 
-	 * @return the finalIndex structure
-	 */
-	public TreeMap<String, TreeMap<String, TreeSet<Integer>>> getfinalIndex() { // TODO Remove
-		return this.finalIndex;
-	}
 
 	/**
 	 * the number of locations stored

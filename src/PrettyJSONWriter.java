@@ -185,7 +185,7 @@ public class PrettyJSONWriter {
 	 * @param path
 	 * @throws IOException
 	 */
-	public static void Rearchformat(TreeMap<String, ArrayList<Result>> result, Path path) throws IOException {
+	public static void resultFormat(TreeMap<String, ArrayList<Result>> result, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			FormatSearch(result, writer, 0);
 		}
