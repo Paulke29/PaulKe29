@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -60,7 +61,82 @@ public class QueryFileParser {
 			result.put(cleanedLine, index.search(queries,isExact));
 		}
 	}
+	/**
+	 * @param isExact
+	 * @param queryfile
+	 * @param threadIndex
+	 * @param threads
+	 * @throws IOException
+	 */
+	public void Safeparsefile(boolean isExact, Path queryfile, int threads)throws IOException {
+		for (Set<String> words : TextFileStemmer.QuerystemLine2(queryfile)) {
+			String joined = String.join(" ", words);
+			if (!words.isEmpty() && !this.result.containsKey(joined)) {
+				if (isExact == true) {
+					Result.put(joined,this.index.ExactSearch(words));
+				} 
+				if(isExact == false) {
+					Result.put(joined,this.index.PartialSearch(words));
+				}
+			}
+		}
+	}
+	/**
+	 * @param Exact
+	 * @param Quryline
+	 * @param index
+	 * @param threads
+	 */
+	public void SafeSearch(Boolean Exact, Collection<String> Quryline, threadSafeIndex index, int threads) {
+		WorkQueue task = new WorkQueue(threads);
+		task.execute(new Task(Exact, Quryline, index));
+		task.finish();
+		task.shutdown();
+	}
 
+	/**
+	 * @author Paulke
+	 *
+	 */
+	private static class Task implements Runnable {
+		/**
+		 * QueryLine which for search
+		 */
+		private Collection<String> Queryline;
+		/**
+		 * initial ThreadSafeIndex
+		 */
+		threadSafeIndex threadIndex = new threadSafeIndex();
+		/**
+		 * whether Exact Search or not
+		 */
+		Boolean Exact = null;
+
+		/**
+		 * Initial Task
+		 * @param Exact
+		 * @param Queryline
+		 * @param threadIndex
+		 */
+		Task(Boolean Exact, Collection<String> Queryline, threadSafeIndex threadIndex) {
+			this.Queryline = Queryline;
+			this.threadIndex = threadIndex;
+			this.Exact = Exact;
+		}
+
+		@Override
+		public void run() {
+			synchronized (threadIndex) {
+				if (Exact == true) {
+					threadIndex.ExactSearch(Queryline);
+				} else {
+					threadIndex.partialSearch(Queryline);
+				}
+			}
+
+		}
+
+	}
 	/**
 	 * Output JSON type for Query Result
 	 * 

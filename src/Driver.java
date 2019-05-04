@@ -1,7 +1,9 @@
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -10,7 +12,7 @@ import java.time.Instant;
  * @author CS 212 Software Development
  * @author University of San Francisco
  * @version Spring 2019
- */
+ */ 
 public class Driver {
 	/**
 	 * 
@@ -25,31 +27,72 @@ public class Driver {
 
 		Instant start = Instant.now();
 		ArgumentMap argumentMap = new ArgumentMap(args);
-		InvertedIndex wordindex = new InvertedIndex();
+		InvertedIndex wordindex;
 		InvertedIndexBuilder invertedIndexBuilder = new InvertedIndexBuilder();
-		QueryFileParser ResultSearch = new QueryFileParser(wordindex);
-
+		QueryFileParser ResultSearch;
+		int threads = 0;
+		if(argumentMap.hasFlag("-threads")) {
+			String numThreads = argumentMap.getString("-threads","5");
+			try {
+				threads = Integer.parseInt(numThreads);
+			}catch(NumberFormatException e){
+				threads =5;
+			}
+			wordindex = new threadSafeIndex();
+			ResultSearch= new QueryFileParser(wordindex);
+		}else {
+			wordindex = new InvertedIndex();
+			ResultSearch= new QueryFileParser(wordindex);
+		}
 		if (argumentMap.hasFlag("-path")) {
 			try {
 				if (argumentMap.hasValue("-path")) {
 					Path path = argumentMap.getPath("-path");
-					invertedIndexBuilder.filesIndex(TextFileFinder.list(path), wordindex);
+					if(argumentMap.hasFlag("-threads")) {
+						invertedIndexBuilder.threadIndex(path, (threadSafeIndex) wordindex, threads);
+					}
+					else {
+						invertedIndexBuilder.filesIndex(TextFileFinder.list(path), wordindex);
+					}
+					
 				}
 			} catch (IOException e) {
 				System.out.println("Couldn't to print index from path");
 			}
 		}
+		if (argumentMap.hasFlag("-query")) {
+			if (argumentMap.hasValue("-query")) {
+				Path query = argumentMap.getPath("-query");
+				try {
+					boolean exact = false;
+					if(argumentMap.hasFlag("-exact")) {
+						exact = true;
+					}
+					if(argumentMap.hasFlag("-threads")) {
+						ResultSearch.SafeSearchResult(exact, query, threads);
+					}
+					else{
+						ResultSearch.SearchResult(exact, query);
+					}
 
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		System.out.println("Index");
 		if (argumentMap.hasFlag("-index")) {
+
 			Path indexPath = argumentMap.getPath("-index", Path.of("index.json"));
 			try {
 				wordindex.nestJSON(indexPath);
 			} catch (IOException e) {
 				System.out.println("Couldn't get anything from path: " + indexPath);
 			}
-		}
 
+		}
 		if (argumentMap.hasFlag("-locations")) {
+
 			Path locationPath = argumentMap.getPath("-locations", Path.of("locations.json"));
 			try {
 				wordindex.locationsJSON(locationPath);
@@ -57,32 +100,15 @@ public class Driver {
 				System.out.println("Couldn't get anything  from path: " + locationPath);
 			}
 		}
-
-		if (argumentMap.hasFlag("-query")) {
-			if (argumentMap.hasValue("-query")) {
-				Path query = argumentMap.getPath("-query");
-				try {
-					boolean exact = false;
-					if (argumentMap.hasFlag("-exact")) {
-						exact = true;
-					}
-					ResultSearch.parseFile(query, exact);
-
-				} catch (IOException e) {
-					System.out.println("Couldn't get anything  from path: " + query);
-				}
-			}
-		}
-
 		if (argumentMap.hasFlag("-results")) {
-			Path result = argumentMap.getPath("-results", Path.of("results.json"));
-			try {
-				ResultSearch.toJSON(result);
-			} catch (IOException e) {
-				System.out.println("Couldn't get anything  from path: " + result);
-			}
+				Path result = argumentMap.getPath("-results",Path.of("results.json"));
+				try {
+					ResultSearch.toJSON(result);
+				} catch (IOException e) {
+					System.out.println(e);
+				}
 		}
-
+		
 		Duration elapsed = Duration.between(start, Instant.now());
 		double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
 		System.out.printf("Elapsed: %f seconds%n", seconds);
