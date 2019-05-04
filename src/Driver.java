@@ -69,7 +69,7 @@ public class Driver {
 						exact = true;
 					}
 					if(argumentMap.hasFlag("-threads")) {
-						ResultSearch.Safeparsefile(exact, query, threads);;
+						ResultSearch.SafeSearch(exact,query,(threadSafeIndex) wordindex, threads);
 					}
 					else{
 						ResultSearch.parseFile(query, exact);

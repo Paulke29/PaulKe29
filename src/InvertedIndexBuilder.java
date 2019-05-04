@@ -44,13 +44,12 @@ public class InvertedIndexBuilder {
 		}
 	}
 	/**
-	 * add single object of index with  mutilt-threads
+	 * add single object of index with  multi-threads
 	 * @param file
 	 * @param index
 	 * @throws IOException
 	 */
-	public static void MutileIndex(Path file, threadSafeIndex index) throws IOException {
-		System.out.println("BUILDING: " + file.toString());
+	public static void index(Path file, threadSafeIndex index) throws IOException {
 		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
 		if (TextFile.test(file)) {
 			try (BufferedReader read_line = Files.newBufferedReader(file)) {
@@ -124,7 +123,7 @@ public class InvertedIndexBuilder {
 		public void run() {
 			synchronized(index.finalIndex) {
 				try {
-					MutileIndex(file, index);
+					index(file, index);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

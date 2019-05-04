@@ -68,7 +68,7 @@ public class QueryFileParser {
 	 * @param threads
 	 * @throws IOException
 	 */
-	public void Safeparsefile(boolean isExact, Path queryfile, int threads)throws IOException {
+	public void Safeparsefile(boolean isExact, Path queryfile)throws IOException {
 		try (BufferedReader readLine = Files.newBufferedReader(queryfile, StandardCharsets.UTF_8)){
 			String line = null;
 			while((line = readLine.readLine())!= null) {
@@ -77,14 +77,18 @@ public class QueryFileParser {
 		}
 	}
 	/**
-	 * @param line queryline
+	 * @param line Queryline
 	 * @param isExact boolean exact search or not
 	 */
 	public void SafeparseLine(String line, boolean isExact) {
 		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
+		 ArrayList<Result> results = new ArrayList<>();
 		String cleanedLine = String.join(" ", queries);
 		if (!queries.isEmpty() && !result.containsKey(cleanedLine)) {
-			result.put(cleanedLine, index.search(queries,isExact));
+			results = index.search(queries,isExact);
+		}
+		synchronized(this.result) {
+			result.put(cleanedLine, results);
 		}
 	}
 	/**
@@ -93,7 +97,7 @@ public class QueryFileParser {
 	 * @param index
 	 * @param threads
 	 */
-	public void SafeSearch(Boolean Exact, Collection<String> Quryline, threadSafeIndex index, int threads) {
+	public void SafeSearch(Boolean Exact, Path Quryline, threadSafeIndex index, int threads) {
 		WorkQueue task = new WorkQueue(threads);
 		task.execute(new Task(Exact, Quryline, index));
 		task.finish();
@@ -108,7 +112,7 @@ public class QueryFileParser {
 		/**
 		 * QueryLine which for search
 		 */
-		private Collection<String> Queryline;
+		private Path Queryline;
 		/**
 		 * initial ThreadSafeIndex
 		 */
@@ -124,7 +128,7 @@ public class QueryFileParser {
 		 * @param Queryline
 		 * @param threadIndex
 		 */
-		Task(Boolean Exact, Collection<String> Queryline, threadSafeIndex threadIndex) {
+		Task(Boolean Exact, Path Queryline, threadSafeIndex threadIndex) {
 			this.Queryline = Queryline;
 			this.threadIndex = threadIndex;
 			this.Exact = Exact;
@@ -133,11 +137,12 @@ public class QueryFileParser {
 		@Override
 		public void run() {
 			synchronized (threadIndex) {
-				if (Exact == true) {
-					threadIndex.ExactSearch(Queryline);
-				} else {
-					threadIndex.partialSearch(Queryline);
-				}
+//				if (Exact == true) {
+//					threadIndex.ExactSearch(Queryline);
+//				} else {
+//					threadIndex.partialSearch(Queryline);
+//				}
+				Safeparsefile(Exact,Queryline);
 			}
 
 		}

@@ -53,11 +53,11 @@ public class threadSafeIndex extends InvertedIndex {
 	 * @return 
 	 */
 	public ArrayList<Result>ExactSearch(Set<String> QueryLine) {
-		ArrayList<Result> getResultList = new ArrayList<>();
+		ArrayList<Result> results = new ArrayList<>();
 		lock.readLock().lock();
 		try {
-			getResultList.addAll(super.ExactSearch(QueryLine));
-			return getResultList;
+			results.addAll(super.ExactSearch(QueryLine));
+			return results;
 		}finally {
 			lock.readLock().unlock();
 		}
@@ -67,13 +67,14 @@ public class threadSafeIndex extends InvertedIndex {
 	 * Mutli-thread partial search
 	 * 
 	 * @param QueryLine
+	 * @return  result
 	 */
 	public ArrayList<Result>  partialSearch(Set<String> QueryLine) {
-		ArrayList<Result> getResultList = new ArrayList<>();
+		ArrayList<Result> results = new ArrayList<>();
 		lock.readLock().lock();
 		try {
-			getResultList.addAll(super.partialSearch(QueryLine));
-			return getResultList;
+			results.addAll(super.partialSearch(QueryLine));
+			return results;
 		}finally {
 			lock.readLock().unlock();
 		}
