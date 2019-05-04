@@ -13,10 +13,12 @@ import java.util.TreeSet;
  *
  */
 public class InvertedIndex {
+
 	/**
 	 * creating a dataStructure for index
 	 */
 	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> finalIndex;
+
 	/**
 	 * creating a dataStructure for word count
 	 */
@@ -26,6 +28,7 @@ public class InvertedIndex {
 	 * initial TreeMap
 	 */
 	public InvertedIndex() {
+
 		finalIndex = new TreeMap<>();
 		wordCount = new TreeMap<>();
 	}
@@ -37,6 +40,7 @@ public class InvertedIndex {
 	 * @return true or false
 	 */
 	public boolean add(String words, String location, int position) {
+
 		finalIndex.putIfAbsent(words, new TreeMap<>());
 		finalIndex.get(words).putIfAbsent(location, new TreeSet<>());
 		boolean checking = this.finalIndex.get(words).get(location).add(position);
@@ -46,15 +50,16 @@ public class InvertedIndex {
 		}
 		return checking;
 	}
-	
+
 	/**
 	 * Search method
 	 * 
 	 * @param queries what to search
-	 * @param exact decide exact or partial
-	 * @return the result 
+	 * @param exact   decide exact or partial
+	 * @return the result
 	 */
 	public ArrayList<Result> search(Collection<String> queries, boolean exact) {
+
 		return exact ? ExactSearch(queries) : partialSearch(queries);
 	}
 
@@ -64,7 +69,8 @@ public class InvertedIndex {
 	 * @param QueryLine the query line for search
 	 * @return exact search result
 	 */
-	public ArrayList<Result> ExactSearch(Collection<String> QueryLine) { 
+	public ArrayList<Result> ExactSearch(Collection<String> QueryLine) {
+
 		ArrayList<Result> results = new ArrayList<>();
 		Map<String, Result> findUp = new HashMap<>();
 		for (String queryWord : QueryLine) {
@@ -84,6 +90,7 @@ public class InvertedIndex {
 	 * @param findUp        keep tracking and store the search process
 	 */
 	private void searchProcess(String queryWord, ArrayList<Result> getResultList, Map<String, Result> findUp) {
+
 		int count = 0;
 		int TotalWords = 0;
 		for (String location : this.finalIndex.get(queryWord).keySet()) {
@@ -106,6 +113,7 @@ public class InvertedIndex {
 	 * @return Partial Search for query words
 	 */
 	public ArrayList<Result> partialSearch(Collection<String> queryLine) {
+
 		ArrayList<Result> results = new ArrayList<>();
 		Map<String, Result> lookUp = new HashMap<>();
 		for (String queryWord : queryLine) {
@@ -121,7 +129,6 @@ public class InvertedIndex {
 		return results;
 	}
 
-
 	/**
 	 * Output finalIndex
 	 * 
@@ -129,6 +136,7 @@ public class InvertedIndex {
 	 * @throws IOException
 	 */
 	public void nestJSON(Path path) throws IOException {
+
 		PrettyJSONWriter.asNestedStructure(this.finalIndex, path);
 	}
 
@@ -139,6 +147,7 @@ public class InvertedIndex {
 	 * @throws IOException
 	 */
 	public void locationsJSON(Path path) throws IOException {
+
 		PrettyJSONWriter.asObject(this.wordCount, path);
 	}
 
@@ -148,6 +157,7 @@ public class InvertedIndex {
 	 * @return returns the number of words stored by inverted index
 	 */
 	public int wordCount() {
+
 		return this.finalIndex.size();
 	}
 
@@ -158,6 +168,7 @@ public class InvertedIndex {
 	 * @return true if the word is stored in the index
 	 */
 	public boolean contains(String word) {
+
 		return this.finalIndex.containsKey(word);
 	}
 
@@ -169,6 +180,7 @@ public class InvertedIndex {
 	 * @return true if finalIndex contains this word with this specific location
 	 */
 	public boolean contains(String word, String location) {
+
 		return this.finalIndex.containsKey(word) && this.finalIndex.get(word).containsKey(location);
 	}
 
@@ -179,6 +191,7 @@ public class InvertedIndex {
 	 * @return the number of words found for a specific location in wordCount
 	 */
 	public int wordCount(String location) {
+
 		return wordCount.get(location);
 	}
 
@@ -191,6 +204,7 @@ public class InvertedIndex {
 	 *         finalIndex
 	 */
 	public int wordCount(String word, String location) {
+
 		if (this.contains(word, location)) {
 			return this.finalIndex.get(word).get(location).size();
 		} else {
@@ -198,13 +212,13 @@ public class InvertedIndex {
 		}
 	}
 
-
 	/**
 	 * the number of locations stored
 	 * 
 	 * @return the number of locations stored by wordCount
 	 */
 	public int locationCount() {
+
 		return wordCount.size();
 	}
 
@@ -215,6 +229,7 @@ public class InvertedIndex {
 	 * @return the number of locations stored by finalIndex for that specific word
 	 */
 	public int locationCount(String word) {
+
 		if (this.finalIndex.containsKey(word)) {
 			return this.finalIndex.get(word).size();
 		} else {
