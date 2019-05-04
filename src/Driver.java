@@ -31,8 +31,12 @@ public class Driver {
 		searchResult ResultSearch;
 		int threads = 0;
 		if(argumentMap.hasFlag("-threads")) {
-			String numThreads = argumentMap.getString("-threads", "5");
-			threads = Integer.valueOf(numThreads);
+			String numThreads = argumentMap.getString("-threads","5");
+			try {
+				threads = Integer.parseInt(numThreads);
+			}catch(NumberFormatException e){
+				threads =5;
+			}
 			wordindex = new threadSafeIndex();
 			ResultSearch= new searchResult(wordindex);
 		}else {

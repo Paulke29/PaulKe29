@@ -24,7 +24,6 @@ public class WorkQueue {
 	/**
 	 * initial the number of pending work
 	 */
-	// TODO Add a pending variable to track unfinished work
 	public int pending;
 
 	/**
@@ -41,16 +40,13 @@ public class WorkQueue {
 	 *
 	 * @param threads number of worker threads; should be greater than 1
 	 */
-	// TODO Modify if necessary
 	public WorkQueue(int threads) {
 		this.queue = new LinkedList<Runnable>();
 		this.workers = new PoolWorker[threads];
 
 		this.shutdown = false;
 
-		// TODO Initialize the pending variable.
 		this.pending = 0;
-		// start the threads so they are waiting in the background
 		for (int i = 0; i < threads; i++) {
 			workers[i] = new PoolWorker();
 			workers[i].start();
@@ -63,14 +59,11 @@ public class WorkQueue {
 	 *
 	 * @param r work request (in the form of a {@link Runnable} object)
 	 */
-	// TODO Modify if necessary
 	public void execute(Runnable r) {
 		synchronized (queue) {
 			queue.addLast(r);
 			this.pending++;
-
 			queue.notifyAll();
-//			this.pending++;
 		}
 
 	}
@@ -81,7 +74,7 @@ public class WorkQueue {
 	public void finish() {
 		synchronized (this.queue) {
 			try {
-				while (pending > 0 && !queue.isEmpty()) {
+				while (pending > 0) {
 					this.queue.wait();
 				}
 				this.queue.notifyAll();
@@ -94,9 +87,7 @@ public class WorkQueue {
 	 * Asks the queue to shutdown. Any unprocessed work will not be finished,
 	 * but threads in-progress will not be interrupted.
 	 */
-	// TODO Modify if necessary
 	public void shutdown() {
-		// safe to do unsynchronized due to volatile keyword
 		shutdown = true;
 		synchronized (this.queue) {
 			queue.notifyAll();
