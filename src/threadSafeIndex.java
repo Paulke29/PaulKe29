@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -13,6 +14,9 @@ public class threadSafeIndex extends InvertedIndex {
 	 */
 	private SimpleReadWriteLock lock;
 	
+	/**
+	 * 
+	 */
 	public threadSafeIndex() {
 		lock = new SimpleReadWriteLock();
 	}
@@ -28,13 +32,20 @@ public class threadSafeIndex extends InvertedIndex {
 		lock.writeLock().lock();
 		try{
 			super.add(words, location, position);
-//			this.finalIndex.notifyAll();
 			return true;
 		}finally {
 			lock.writeLock().unlock();
 		}
 	}
-
+	public ArrayList<Result> search(Collection<String> queries, boolean exact) {
+		lock.readLock().lock();
+		try {
+			return exact ? this.ExactSearch(queries) : this.partialSearch(queries);
+		}finally {
+			lock.readLock().unlock();
+		}
+		
+	}
 	/**
 	 * Mutli-thread exact search
 	 * 

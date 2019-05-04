@@ -69,16 +69,22 @@ public class QueryFileParser {
 	 * @throws IOException
 	 */
 	public void Safeparsefile(boolean isExact, Path queryfile, int threads)throws IOException {
-		for (Set<String> words : TextFileStemmer.QuerystemLine2(queryfile)) {
-			String joined = String.join(" ", words);
-			if (!words.isEmpty() && !this.result.containsKey(joined)) {
-				if (isExact == true) {
-					Result.put(joined,this.index.ExactSearch(words));
-				} 
-				if(isExact == false) {
-					Result.put(joined,this.index.PartialSearch(words));
-				}
+		try (BufferedReader readLine = Files.newBufferedReader(queryfile, StandardCharsets.UTF_8)){
+			String line = null;
+			while((line = readLine.readLine())!= null) {
+				SafeparseLine(line,isExact);
 			}
+		}
+	}
+	/**
+	 * @param line queryline
+	 * @param isExact boolean exact search or not
+	 */
+	public void SafeparseLine(String line, boolean isExact) {
+		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
+		String cleanedLine = String.join(" ", queries);
+		if (!queries.isEmpty() && !result.containsKey(cleanedLine)) {
+			result.put(cleanedLine, index.search(queries,isExact));
 		}
 	}
 	/**

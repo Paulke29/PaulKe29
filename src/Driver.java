@@ -69,10 +69,10 @@ public class Driver {
 						exact = true;
 					}
 					if(argumentMap.hasFlag("-threads")) {
-						ResultSearch.SafeSearchResult(exact, query, threads);
+						ResultSearch.Safeparsefile(exact, query, threads);;
 					}
 					else{
-						ResultSearch.SearchResult(exact, query);
+						ResultSearch.parseFile(query, exact);
 					}
 
 				} catch (IOException e) {
