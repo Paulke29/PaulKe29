@@ -60,12 +60,8 @@ public class Driver {
 			}catch(NumberFormatException e) {
 				limit = 50;
 			}
-			webCrawler = new WebCrawler((threadSafeIndex) wordindex);
-			try {
-				webCrawler.craw(seed, limit);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			webCrawler = new WebCrawler((threadSafeIndex) wordindex,threads);
+			webCrawler.craw(seed, limit);
 			
 		}
 		if (argumentMap.hasFlag("-path")) {
