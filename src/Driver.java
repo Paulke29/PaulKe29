@@ -1,5 +1,7 @@
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
@@ -30,6 +32,7 @@ public class Driver {
 		InvertedIndex wordindex;
 		InvertedIndexBuilder invertedIndexBuilder = new InvertedIndexBuilder();
 		QueryFileParser ResultSearch;
+		WebCrawler webCrawler = null;
 		int threads = 0;
 		if(argumentMap.hasFlag("-threads")) {
 			String numThreads = argumentMap.getString("-threads","5");
@@ -43,6 +46,27 @@ public class Driver {
 		}else {
 			wordindex = new InvertedIndex();
 			ResultSearch= new QueryFileParser(wordindex);
+		}
+		if(argumentMap.hasFlag("-url")) {
+			String Seed = argumentMap.getString("-url");
+			String numLimit = argumentMap.getString("-url","50");
+			URL seed = null;
+			int limit = 0;
+			try {
+				seed = new URL(Seed);
+				limit = Integer.parseInt(numLimit);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}catch(NumberFormatException e) {
+				limit = 50;
+			}
+			webCrawler = new WebCrawler((threadSafeIndex) wordindex);
+			try {
+				webCrawler.craw(seed, limit);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 		}
 		if (argumentMap.hasFlag("-path")) {
 			try {

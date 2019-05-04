@@ -236,5 +236,28 @@ public class InvertedIndex {
 			return 0;
 		}
 	}
+	public void addAll(InvertedIndex temp) {
+		for (String word : temp.finalIndex.keySet()) {
+			if (this.finalIndex.containsKey(word)) {
+				for(String path: temp.finalIndex.get(word).keySet()) {
+					if(this.finalIndex.get(word).containsKey(path)) {
+						this.finalIndex.get(word).get(path).addAll(temp.finalIndex.get(word).get(path));
+					}else {
+						this.finalIndex.get(word).put(path, temp.finalIndex.get(word).get(path));
+					}
+				}
+			} else {
+				this.finalIndex.put(word, temp.finalIndex.get(word));
+			}
+		}
+		
+		for(String path : temp.wordCount.keySet()) {
+			if(this.wordCount.containsKey(path)) {
+				this.wordCount.put(path, this.wordCount.get(path) + temp.wordCount.get(path));
+			}else {
+				this.wordCount.put(path, temp.wordCount.get(path));
+			}
+		}
+	}
 
 }

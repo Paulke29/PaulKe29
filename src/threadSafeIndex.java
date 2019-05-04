@@ -165,5 +165,13 @@ public class threadSafeIndex extends InvertedIndex {
 		}
 		
 	}
+	public void addAll(InvertedIndex temp) {
+		lock.readLock();
+		try {
+			super.addAll(temp);
+		}finally {
+			lock.readLock().unlock();
+		}
+	}
 
 }
