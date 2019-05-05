@@ -10,14 +10,14 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
  * @author Paulke
  *
  */
-public class ThreadSafeInvertedIndexBuilder {
+public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 	/**
 	 * add single object of index with  multi-threads
 	 * @param file
 	 * @param index
 	 * @throws IOException
 	 */
-	public static void index(Path file, threadSafeIndex index) throws IOException {
+	public static void filesIndex(Path file, threadSafeIndex index) throws IOException {
 		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
 		if (TextFile.test(file)) {
 			try (BufferedReader read_line = Files.newBufferedReader(file)) {
@@ -79,7 +79,7 @@ public class ThreadSafeInvertedIndexBuilder {
 		public void run() {
 			synchronized(index.finalIndex) {
 				try {
-					index(file, index);
+					filesIndex(file, index);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

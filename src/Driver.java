@@ -28,7 +28,7 @@ public class Driver {
 		Instant start = Instant.now();
 		ArgumentMap argumentMap = new ArgumentMap(args);
 		InvertedIndex wordindex;
-		InvertedIndexBuilder invertedIndexBuilder = new InvertedIndexBuilder();
+		InvertedIndexBuilder invertedIndexBuilder;
 		QueryFileParser ResultSearch;
 		int threads = 0;
 		if(argumentMap.hasFlag("-threads")) {
@@ -40,6 +40,7 @@ public class Driver {
 			}
 			wordindex = new threadSafeIndex();
 			ResultSearch= new ThreadSafeQueryFileParser(wordindex);
+			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder(wordindex);
 		}else {
 			wordindex = new InvertedIndex();
 			ResultSearch= new QueryFileParser(wordindex);
