@@ -26,7 +26,7 @@ public class threadSafeIndex extends InvertedIndex {
 	 * @param words
 	 * @param location
 	 * @param position
-	 * @return 
+	 * @return boolean 
 	 */
 	public boolean add(String words, String location, int position) {
 		lock.writeLock().lock();
@@ -49,8 +49,8 @@ public class threadSafeIndex extends InvertedIndex {
 	/**
 	 * Mutli-thread exact search
 	 * 
-	 * @param QueryLine
-	 * @return 
+	 * @param QueryLine query words for search
+	 * @return results 
 	 */
 	public ArrayList<Result>ExactSearch(Set<String> QueryLine) {
 		ArrayList<Result> results = new ArrayList<>();

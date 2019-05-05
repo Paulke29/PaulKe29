@@ -39,7 +39,7 @@ public class Driver {
 				threads =5;
 			}
 			wordindex = new threadSafeIndex();
-			ResultSearch= new QueryFileParser(wordindex);
+			ResultSearch= new ThreadSafeQueryFileParser(wordindex);
 		}else {
 			wordindex = new InvertedIndex();
 			ResultSearch= new QueryFileParser(wordindex);
@@ -69,7 +69,7 @@ public class Driver {
 						exact = true;
 					}
 					if(argumentMap.hasFlag("-threads")) {
-						ResultSearch.SafeSearch(exact,query,(threadSafeIndex) wordindex, threads);
+						ResultSearch.SafeSearch(exact, query, (threadSafeIndex) wordindex,threads);
 					}
 					else{
 						ResultSearch.parseFile(query, exact);
