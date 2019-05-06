@@ -2,118 +2,119 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * @author PaulKe
  *
  */
 public class threadSafeIndex extends InvertedIndex {
+
 	/**
-	 * 
+	 * initial simple read and write lock
 	 */
 	private SimpleReadWriteLock lock;
-	
+
 	/**
-	 * 
+	 * initial threadSafeIndex class
 	 */
 	public threadSafeIndex() {
+
 		lock = new SimpleReadWriteLock();
 	}
-	/**
-	 * Mutli-Thread add
-	 * 
-	 * @param words
-	 * @param location
-	 * @param position
-	 * @return boolean 
-	 */
+
+	@Override
 	public boolean add(String words, String location, int position) {
+
 		lock.writeLock().lock();
-		try{
+		try {
 			super.add(words, location, position);
 			return true;
-		}finally {
+		} finally {
 			lock.writeLock().unlock();
 		}
 	}
+
+	@Override
 	public ArrayList<Result> search(Collection<String> queries, boolean exact) {
+
 		lock.readLock().lock();
 		try {
-			return exact ? this.ExactSearch(queries) : this.partialSearch(queries);
-		}finally {
+			return exact ? this.exactSearch(queries) : this.partialSearch(queries);
+		} finally {
 			lock.readLock().unlock();
 		}
-		
+
 	}
-	/**
-	 * Mutli-thread exact search
-	 * 
-	 * @param QueryLine query words for search
-	 * @return results 
-	 */
-	public ArrayList<Result>ExactSearch(Set<String> QueryLine) {
-		ArrayList<Result> results = new ArrayList<>();
+
+	@Override
+	public ArrayList<Result> exactSearch(Collection<String> QueryLine) {
+
 		lock.readLock().lock();
 		try {
-			results.addAll(super.ExactSearch(QueryLine));
-			return results;
-		}finally {
+			return super.exactSearch(QueryLine);
+		} finally {
 			lock.readLock().unlock();
 		}
 	}
 
-	/**
-	 * Mutli-thread partial search
-	 * 
-	 * @param QueryLine
-	 * @return  result
-	 */
-	public ArrayList<Result>  partialSearch(Set<String> QueryLine) {
-		ArrayList<Result> results = new ArrayList<>();
+	@Override
+	public ArrayList<Result> partialSearch(Collection<String> QueryLine) {
+
 		lock.readLock().lock();
 		try {
-			results.addAll(super.partialSearch(QueryLine));
-			return results;
-		}finally {
+			return super.partialSearch(QueryLine);
+		} finally {
 			lock.readLock().unlock();
 		}
 	}
-	
+
+	@Override
 	public int wordCount() {
+
 		lock.readLock().lock();
 		try {
 			return this.finalIndex.size();
-		}finally {
+		} finally {
 			lock.readLock().unlock();
-		}	
+		}
 	}
+
+	@Override
 	public boolean contains(String word) {
+
 		lock.readLock().lock();
 		try {
 			return this.finalIndex.containsKey(word);
-		}finally {
+		} finally {
 			lock.readLock().unlock();
 		}
 	}
+
+	@Override
 	public int wordCount(String location) {
+
 		lock.readLock().lock();
 		try {
 			return wordCount.get(location);
-		}finally {
+		} finally {
 			lock.readLock().unlock();
 		}
 	}
+
+	@Override
 	public boolean contains(String word, String location) {
+
 		lock.readLock().lock();
 		try {
 			return this.finalIndex.containsKey(word) && this.finalIndex.get(word).containsKey(location);
-		}finally {
+		} finally {
 			lock.readLock().unlock();
-		}	
+		}
 	}
 
+	@Override
 	public int wordCount(String word, String location) {
+
 		lock.readLock().lock();
 		try {
 			if (this.contains(word, location)) {
@@ -124,46 +125,57 @@ public class threadSafeIndex extends InvertedIndex {
 		} finally {
 			lock.readLock().unlock();
 		}
- 
+
 	}
+
+	@Override
 	public int locationCount() {
+
 		lock.readLock().lock();
 		try {
 			return wordCount.size();
-		}finally {
+		} finally {
 			lock.readLock().unlock();
 		}
-		
+
 	}
 
+	@Override
 	public int locationCount(String word) {
+
 		lock.readLock().lock();
 		try {
 			if (this.finalIndex.containsKey(word)) {
-			return this.finalIndex.get(word).size();
-		} else {
-			return 0;
-		}
-		}finally {
+				return this.finalIndex.get(word).size();
+			} else {
+				return 0;
+			}
+		} finally {
 			lock.readLock().unlock();
 		}
 	}
+
+	@Override
 	public void nestJSON(Path path) throws IOException {
+
 		lock.readLock().lock();
 		try {
 			PrettyJSONWriter.asNestedStructure(this.finalIndex, path);
-		}finally {
+		} finally {
 			lock.readLock().unlock();
 		}
 	}
+
+	@Override
 	public void locationsJSON(Path path) throws IOException {
+
 		lock.readLock().lock();
 		try {
 			PrettyJSONWriter.asObject(this.wordCount, path);
-		}finally {
+		} finally {
 			lock.readLock().unlock();
 		}
-		
+
 	}
 
 }

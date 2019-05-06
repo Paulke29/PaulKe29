@@ -12,12 +12,26 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
 /**
  * this file is going to create single object and add those object together
  * 
- * @author paulke
+ * @author PaulKe
  *
  */
 public class InvertedIndexBuilder {
 
-	
+	/**
+	 * initial InvertedIndex object in InvertedIndexBuilder
+	 */
+	protected final InvertedIndex index;
+
+	/**
+	 * initial InvertedIndexBuilder object
+	 * 
+	 * @param index InvertedInde object
+	 */
+	InvertedIndexBuilder(InvertedIndex index) {
+
+		this.index = index;
+	}
+
 	/**
 	 * add single object of index
 	 * 
@@ -26,6 +40,7 @@ public class InvertedIndexBuilder {
 	 * @throws IOException
 	 */
 	public static void singleIndex(Path file, InvertedIndex index) throws IOException {
+
 		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
 		if (TextFile.test(file)) {
 			try (BufferedReader read_line = Files.newBufferedReader(file)) {
@@ -43,6 +58,7 @@ public class InvertedIndexBuilder {
 			}
 		}
 	}
+
 	/**
 	 * add the index of words from list of files
 	 * 
@@ -50,10 +66,22 @@ public class InvertedIndexBuilder {
 	 * @param index InvertedIndex object
 	 * @throws IOException
 	 */
-	public void filesIndex(List<Path> files, InvertedIndex index) throws IOException {
-		for (Path file : files) {
-			singleIndex(file, index);
-		}
+	public static void filesIndex(Path files, InvertedIndex index) throws IOException {
+
+		singleIndex(files, index);
 	}
 
+	/**
+	 * Building final index
+	 * 
+	 * @param path path of file to add
+	 * @throws IOException
+	 */
+	public void build(Path path) throws IOException {
+
+		List<Path> files = TextFileFinder.list(path);
+		for (Path file : files) {
+			filesIndex(file, this.index);
+		}
+	}
 }

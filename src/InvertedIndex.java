@@ -60,7 +60,7 @@ public class InvertedIndex {
 	 */
 	public ArrayList<Result> search(Collection<String> queries, boolean exact) {
 
-		return exact ? ExactSearch(queries) : partialSearch(queries);
+		return exact ? exactSearch(queries) : partialSearch(queries);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class InvertedIndex {
 	 * @param QueryLine the query line for search
 	 * @return exact search result
 	 */
-	public ArrayList<Result> ExactSearch(Collection<String> QueryLine) {
+	public ArrayList<Result> exactSearch(Collection<String> QueryLine) {
 
 		ArrayList<Result> results = new ArrayList<>();
 		Map<String, Result> findUp = new HashMap<>();

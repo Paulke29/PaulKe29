@@ -40,7 +40,7 @@ public class Driver {
 			}
 			wordindex = new threadSafeIndex();
 			ResultSearch= new ThreadSafeQueryFileParser(wordindex);
-			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder();
+			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder((threadSafeIndex)wordindex);
 		}else {
 			wordindex = new InvertedIndex();
 			ResultSearch= new QueryFileParser(wordindex);
@@ -53,7 +53,7 @@ public class Driver {
 						invertedIndexBuilder.threadIndex(path, (threadSafeIndex) wordindex, threads);
 					}
 					else {
-						invertedIndexBuilder.filesIndex(TextFileFinder.list(path), wordindex);
+						invertedIndexBuilder.build(path);;
 					}
 					
 				}
