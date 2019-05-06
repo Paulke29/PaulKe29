@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.function.Predicate;
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
@@ -12,14 +13,26 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
  */
 public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 	/**
+	 * 
+	 */
+	private SimpleReadWriteLock lock;
+	
+	 /**
+	 * 
+	 */
+	ThreadSafeInvertedIndexBuilder(){
+		 lock = new SimpleReadWriteLock();
+	 }
+	/**
 	 * add single object of index with  multi-threads
 	 * @param file
 	 * @param index
 	 * @throws IOException
 	 */
-	public static void filesIndex(Path file, threadSafeIndex index) throws IOException {
+	public void singleIndex(Path file, threadSafeIndex index) throws IOException {
 		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
 		if (TextFile.test(file)) {
+			lock.readLock().lock();
 			try (BufferedReader read_line = Files.newBufferedReader(file)) {
 				String line;
 				int number = 0;
@@ -32,9 +45,16 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 						number++;
 					}
 				}
+			}finally {
+				lock.readLock().unlock();
 			}
 		}else {
 			System.out.println("ERROR");
+		}
+	}
+	public void filesIndex(List<Path> files, InvertedIndex index) throws IOException {
+		for (Path file : files) {
+			singleIndex(file, index);
 		}
 	}
 	/**
@@ -44,8 +64,8 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 	 * @param threads
 	 * @throws IOException 
 	 */
-	public void threadIndex(Path files, threadSafeIndex wordindex, int threads) throws IOException {
-		for (Path file : TextFileFinder.list(files)) {
+	public void threadIndex(List<Path> files, threadSafeIndex wordindex, int threads) throws IOException {
+		for (Path file : files) {
 			WorkQueue task = new WorkQueue(threads);
 			task.execute(new Task(file, wordindex));
 			task.finish();
@@ -79,7 +99,7 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 		public void run() {
 			synchronized(index.finalIndex) {
 				try {
-					filesIndex(file, index);
+					singleIndex(file, index);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

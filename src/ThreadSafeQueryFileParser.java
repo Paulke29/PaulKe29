@@ -73,7 +73,7 @@ public class ThreadSafeQueryFileParser extends QueryFileParser   {
 	}
 
 	/**
-	 * @author Paulke
+	 * @author PaulKe
 	 *
 	 */
 	private static class Task implements Runnable {

@@ -40,7 +40,7 @@ public class Driver {
 			}
 			wordindex = new threadSafeIndex();
 			ResultSearch= new ThreadSafeQueryFileParser(wordindex);
-			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder(wordindex);
+			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder();
 		}else {
 			wordindex = new InvertedIndex();
 			ResultSearch= new QueryFileParser(wordindex);
