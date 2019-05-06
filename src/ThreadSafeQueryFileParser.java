@@ -21,6 +21,11 @@ public class ThreadSafeQueryFileParser extends QueryFileParser   {
 	 */
 	private final TreeMap<String, ArrayList<Result>> result;
 	/**
+	 * initial SimpleReadWriteLock class
+	 */
+	private final SimpleReadWriteLock lock;
+
+	/**
 	 * Creating constructor 
 	 * @param index
 	 */
@@ -28,6 +33,7 @@ public class ThreadSafeQueryFileParser extends QueryFileParser   {
 		super(index);
 		this.index = index;
 		this.result = new TreeMap<> ();
+		this.lock = new SimpleReadWriteLock();
 	}
 	/**
 	 * @param isExact
@@ -37,11 +43,14 @@ public class ThreadSafeQueryFileParser extends QueryFileParser   {
 	 * @throws IOException
 	 */
 	public void parsefile(boolean isExact, Path queryfile)throws IOException {
+		lock.readLock().lock();
 		try (BufferedReader readLine = Files.newBufferedReader(queryfile, StandardCharsets.UTF_8)){
 			String line = null;
 			while((line = readLine.readLine())!= null) {
 				parseLine(line,isExact);
 			}
+		}finally {
+			lock.readLock().unlock();
 		}
 	}
 	/**
