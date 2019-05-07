@@ -11,30 +11,61 @@ import java.util.TreeSet;
  * @author PaulKe
  *
  */
-public class ThreadSafeQueryFileParser extends QueryFileParser   {
+public class ThreadSafeQueryFileParser extends QueryFileParser {
+
 	/**
 	 * inital variable InvertedIndex Object
 	 */
 	private final InvertedIndex index;
+
 	/**
 	 * initial the data structure
 	 */
 	private final TreeMap<String, ArrayList<Result>> result;
+
 	/**
 	 * initial SimpleReadWriteLock class
 	 */
 	private final SimpleReadWriteLock lock;
+	
+	/**
+	 * number of threads
+	 */
+	private int threads;
+
 
 	/**
-	 * Creating constructor 
+	 * Creating constructor
+	 * 
 	 * @param index
+	 * @param threads 
 	 */
-	public ThreadSafeQueryFileParser(InvertedIndex index) {
+	public ThreadSafeQueryFileParser(InvertedIndex index, int threads) {
+
 		super(index);
 		this.index = index;
-		this.result = new TreeMap<> ();
+		this.result = new TreeMap<>();
 		this.lock = new SimpleReadWriteLock();
+		this.threads = threads;
 	}
+
+	/**
+	 * Parse the line and output the result
+	 * 
+	 * @param line    line from queryFile
+	 * @param isExact decide exact search or not
+	 */
+	@Override
+	public void parseLine(String line, boolean isExact) {
+		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
+		String cleanedLine = String.join(" ", queries);
+		if (!queries.isEmpty() && !result.containsKey(cleanedLine)) {
+			synchronized(result) {
+				result.put(cleanedLine, index.search(queries,isExact));
+			}	
+		}
+	}
+	
 	/**
 	 * @param isExact
 	 * @param queryfile
@@ -42,91 +73,64 @@ public class ThreadSafeQueryFileParser extends QueryFileParser   {
 	 * @param threads
 	 * @throws IOException
 	 */
-	public void parsefile(boolean isExact, Path queryfile)throws IOException {
-		lock.readLock().lock();
-		try (BufferedReader readLine = Files.newBufferedReader(queryfile, StandardCharsets.UTF_8)){
+	public void parseFile(Path queryFile, boolean isExact) throws IOException  {
+		WorkQueue task = new WorkQueue(this.threads);
+		try (BufferedReader readLine = Files.newBufferedReader(queryFile, StandardCharsets.UTF_8)) {
 			String line = null;
-			while((line = readLine.readLine())!= null) {
-				parseLine(line,isExact);
+			while ((line = readLine.readLine()) != null) {
+				task.execute(new Task(isExact,line));
 			}
-		}finally {
-			lock.readLock().unlock();
 		}
-	}
-	/**
-	 * @param line Queryline
-	 * @param isExact boolean exact search or not
-	 */
-	public void parseLine(String line, boolean isExact) {
-		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
-		ArrayList<Result> results = new ArrayList<>();
-		String cleanedLine = String.join(" ", queries);
-		if (!queries.isEmpty() && !result.containsKey(cleanedLine)) {
-			results = index.search(queries,isExact);
-		}
-		synchronized(this.result) {
-			result.put(cleanedLine, results);
-		}
-	}
-	/**
-	 * @param Exact
-	 * @param Quryline
-	 * @param index
-	 * @param threads
-	 */
-	public void SafeSearch(Boolean Exact, Path Quryline, threadSafeIndex index, int threads) {
-		WorkQueue task = new WorkQueue(threads);
-		task.execute(new Task(Exact, Quryline, index));
 		task.finish();
 		task.shutdown();
 	}
+
 
 	/**
 	 * @author PaulKe
 	 *
 	 */
-	private static class Task implements Runnable {
+	private class Task implements Runnable {
+
 		/**
 		 * QueryLine which for search
 		 */
-		private Path Queryline;
-		/**
-		 * initial ThreadSafeIndex
-		 */
-		threadSafeIndex threadIndex = new threadSafeIndex();
+		private String queryLine;
+
+
 		/**
 		 * whether Exact Search or not
 		 */
-		Boolean Exact = null;
+		private Boolean Exact = null;
 
 		/**
 		 * Initial Task
+		 * 
 		 * @param Exact
-		 * @param Queryline
-		 * @param threadIndex
+		 * @param queryLine
 		 */
-		Task(Boolean Exact, Path Queryline, threadSafeIndex threadIndex) {
-			this.Queryline = Queryline;
-			this.threadIndex = threadIndex;
+		Task(Boolean Exact, String queryLine) {
+			this.queryLine = queryLine;
 			this.Exact = Exact;
 		}
 
 		@Override
 		public void run() {
-			synchronized (threadIndex) {
-				parsefile(Exact,Queryline);
-			}
+				parseLine(queryLine,Exact);
 		}
 	}
+
 	/**
 	 * Output JSON type for Query Result
 	 * 
 	 * @param path
 	 * @throws IOException
 	 */
+	@Override
 	public void toJSON(Path path) throws IOException {
-		synchronized(this.result) {
-			PrettyJSONWriter.resultFormat(this.result, path); 
+
+		synchronized (result) {
+			PrettyJSONWriter.resultFormat(result, path);
 		}
 	}
 
