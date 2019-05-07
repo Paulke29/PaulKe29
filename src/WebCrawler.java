@@ -114,7 +114,7 @@ public class WebCrawler {
 							break;
 						}
 						else if(links.contains(link) == false) {
-							links.add(link);
+							links.add(link); 
 //							System.out.println("threadSAFER1223");
 							queue.execute((new WebCrawlerTask(link,limit)));
 						}
