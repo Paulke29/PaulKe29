@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 
-
 /**
  * Class responsible for running this project based on the provided command-line
  * arguments. See the README for details.
@@ -14,8 +13,9 @@ import java.time.Instant;
  * @author CS 212 Software Development
  * @author University of San Francisco
  * @version Spring 2019
- */ 
+ */
 public class Driver {
+
 	/**
 	 * 
 	 * Initializes the classes necessary based on the provided command-line
@@ -29,27 +29,29 @@ public class Driver {
 
 		Instant start = Instant.now();
 		ArgumentMap argumentMap = new ArgumentMap(args);
-		InvertedIndex wordindex;
-		InvertedIndexBuilder invertedIndexBuilder = new InvertedIndexBuilder();
-		QueryFileParser ResultSearch;
-		WebCrawler webCrawler = null;
+		InvertedIndex wordIndex;
+		InvertedIndexBuilder invertedIndexBuilder;
+		QueryFileParser resultSearch;
 		int threads = 0;
-		if(argumentMap.hasFlag("-threads")) {
-			String numThreads = argumentMap.getString("-threads","5");
+		WebCrawler webCrawler = null;
+		if (argumentMap.hasFlag("-threads")) {
+			String numThreads = argumentMap.getString("-threads", "5");
 			try {
 				threads = Integer.parseInt(numThreads);
-			}catch(NumberFormatException e){
-				threads =5;
+			} catch (NumberFormatException e) {
+				threads = 5;
 			}
-			wordindex = new threadSafeIndex();
-			ResultSearch= new QueryFileParser(wordindex);
-		}else {
-			wordindex = new InvertedIndex();
-			ResultSearch= new QueryFileParser(wordindex);
+			wordIndex = new threadSafeIndex();
+			resultSearch = new ThreadSafeQueryFileParser(wordIndex, threads);
+			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder((threadSafeIndex) wordIndex, threads);
+		} else {
+			wordIndex = new InvertedIndex();
+			resultSearch = new QueryFileParser(wordIndex);
+			invertedIndexBuilder = new InvertedIndexBuilder(wordIndex);
 		}
-		if(argumentMap.hasFlag("-url")) {
+		if (argumentMap.hasFlag("-url")) {
 			String Seed = argumentMap.getString("-url");
-			String numLimit = argumentMap.getString("-url","50");
+			String numLimit = argumentMap.getString("-url", "50");
 			URL seed = null;
 			int limit = 0;
 			try {
@@ -57,24 +59,18 @@ public class Driver {
 				limit = Integer.parseInt(numLimit);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
-			}catch(NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				limit = 50;
 			}
-			webCrawler = new WebCrawler((threadSafeIndex) wordindex,threads);
+			webCrawler = new WebCrawler((threadSafeIndex) wordIndex, threads);
 			webCrawler.craw(seed, limit);
-			
+
 		}
 		if (argumentMap.hasFlag("-path")) {
 			try {
 				if (argumentMap.hasValue("-path")) {
 					Path path = argumentMap.getPath("-path");
-					if(argumentMap.hasFlag("-threads")) {
-						invertedIndexBuilder.threadIndex(path, (threadSafeIndex) wordindex, threads);
-					}
-					else {
-						invertedIndexBuilder.filesIndex(TextFileFinder.list(path), wordindex);
-					}
-					
+					invertedIndexBuilder.build(path);
 				}
 			} catch (IOException e) {
 				System.out.println("Couldn't to print index from path");
@@ -85,16 +81,10 @@ public class Driver {
 				Path query = argumentMap.getPath("-query");
 				try {
 					boolean exact = false;
-					if(argumentMap.hasFlag("-exact")) {
+					if (argumentMap.hasFlag("-exact")) {
 						exact = true;
 					}
-					if(argumentMap.hasFlag("-threads")) {
-						ResultSearch.SafeSearch(exact,query,(threadSafeIndex) wordindex, threads);
-					}
-					else{
-						ResultSearch.parseFile(query, exact);
-					}
-
+					resultSearch.parseFile(query, exact);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -105,7 +95,7 @@ public class Driver {
 
 			Path indexPath = argumentMap.getPath("-index", Path.of("index.json"));
 			try {
-				wordindex.nestJSON(indexPath);
+				wordIndex.nestJSON(indexPath);
 			} catch (IOException e) {
 				System.out.println("Couldn't get anything from path: " + indexPath);
 			}
@@ -115,20 +105,20 @@ public class Driver {
 
 			Path locationPath = argumentMap.getPath("-locations", Path.of("locations.json"));
 			try {
-				wordindex.locationsJSON(locationPath);
+				wordIndex.locationsJSON(locationPath);
 			} catch (IOException e) {
 				System.out.println("Couldn't get anything  from path: " + locationPath);
 			}
 		}
 		if (argumentMap.hasFlag("-results")) {
-				Path result = argumentMap.getPath("-results",Path.of("results.json"));
-				try {
-					ResultSearch.toJSON(result);
-				} catch (IOException e) {
-					System.out.println(e);
-				}
+			Path result = argumentMap.getPath("-results", Path.of("results.json"));
+			try {
+				resultSearch.toJSON(result);
+			} catch (IOException e) {
+				System.out.println(e);
+			}
 		}
-		
+
 		Duration elapsed = Duration.between(start, Instant.now());
 		double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
 		System.out.printf("Elapsed: %f seconds%n", seconds);

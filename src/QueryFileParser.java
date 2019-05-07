@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -13,10 +12,12 @@ import java.util.TreeSet;
  *
  */
 public class QueryFileParser {
+
 	/**
 	 * QuerySearch Result
 	 */
 	private final TreeMap<String, ArrayList<Result>> result;
+
 	/**
 	 * initial InvertedIndex object
 	 */
@@ -28,6 +29,7 @@ public class QueryFileParser {
 	 * @param index initial InvertedIndex
 	 */
 	public QueryFileParser(InvertedIndex index) {
+
 		this.result = new TreeMap<>();
 		this.index = index;
 	}
@@ -35,11 +37,12 @@ public class QueryFileParser {
 	/**
 	 * Having a queryFile and start to decide whether exact search or not
 	 * 
-	 * @param queryFile source file 
-	 * @param isExact boolean variable
+	 * @param queryFile source file
+	 * @param isExact   boolean variable
 	 * @throws IOException handled exception
 	 */
 	public void parseFile(Path queryFile, boolean isExact) throws IOException {
+
 		try (BufferedReader readLine = Files.newBufferedReader(queryFile, StandardCharsets.UTF_8)) {
 			String line = null;
 			while ((line = readLine.readLine()) != null) {
@@ -55,110 +58,23 @@ public class QueryFileParser {
 	 * @param isExact decide exact search or not
 	 */
 	public void parseLine(String line, boolean isExact) {
+
 		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
 		String cleanedLine = String.join(" ", queries);
 		if (!queries.isEmpty() && !result.containsKey(cleanedLine)) {
-			result.put(cleanedLine, index.search(queries,isExact));
+			result.put(cleanedLine, index.search(queries, isExact));
 		}
 	}
-	/**
-	 * @param isExact
-	 * @param queryfile
-	 * @param threadIndex
-	 * @param threads
-	 * @throws IOException
-	 */
-	public static void Safeparsefile(boolean isExact, Path queryfile)throws IOException {
-		try (BufferedReader readLine = Files.newBufferedReader(queryfile, StandardCharsets.UTF_8)){
-			String line = null;
-			while((line = readLine.readLine())!= null) {
-				SafeparseLine(line,isExact);
-			}
-		}
-	}
-	/**
-	 * @param line Queryline
-	 * @param isExact boolean exact search or not
-	 * @throws InterruptedException 
-	 */
-	public void SafeparseLine(String line, boolean isExact) throws InterruptedException {
 
-		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
-		ArrayList<Result> results = new ArrayList<>();
-		String cleanedLine = String.join(" ", queries);
-		synchronized (this.result) {
-			while (queries.isEmpty() && !result.containsKey(cleanedLine)) {
-				this.result.wait();
-			}
-			results = index.search(queries, isExact);
-			result.put(cleanedLine, results);
-		}
-	}
-	/**
-	 * @param Exact
-	 * @param Quryline
-	 * @param index
-	 * @param threads
-	 */
-	public void SafeSearch(Boolean Exact, Path Quryline, threadSafeIndex index, int threads) {
-		WorkQueue task = new WorkQueue(threads);
-		task.execute(new Task(Exact, Quryline, index));
-		task.finish();
-		task.shutdown();
-	}
-
-	/**
-	 * @author Paulke
-	 *
-	 */
-	private static class Task implements Runnable {
-		/**
-		 * QueryLine which for search
-		 */
-		private Path Queryline;
-		/**
-		 * initial ThreadSafeIndex
-		 */
-		threadSafeIndex threadIndex = new threadSafeIndex();
-		/**
-		 * whether Exact Search or not
-		 */
-		Boolean Exact = null;
-
-		/**
-		 * Initial Task
-		 * @param Exact
-		 * @param Queryline
-		 * @param threadIndex
-		 */
-		Task(Boolean Exact, Path Queryline, threadSafeIndex threadIndex) {
-			this.Queryline = Queryline;
-			this.threadIndex = threadIndex;
-			this.Exact = Exact;
-		}
-
-		@Override
-		public void run() {
-			synchronized (threadIndex) {
-//				if (Exact == true) {
-//					threadIndex.ExactSearch(Queryline);
-//				} else {
-//					threadIndex.partialSearch(Queryline);
-//				}
-				Safeparsefile(Exact,Queryline);
-			}
-
-		}
-
-	}
 	/**
 	 * Output JSON type for Query Result
 	 * 
 	 * @param path
-	 * @throws IOException
+	 * @throws IOException handled exception
 	 */
 	public void toJSON(Path path) throws IOException {
-		PrettyJSONWriter.resultFormat(this.result, path); 
+
+		PrettyJSONWriter.resultFormat(this.result, path);
 	}
 
 }

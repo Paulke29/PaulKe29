@@ -236,6 +236,9 @@ public class InvertedIndex {
 			return 0;
 		}
 	}
+	/**
+	 * @param temp
+	 */
 	public void addAll(InvertedIndex temp) {
 		for (String word : temp.finalIndex.keySet()) {
 			if (this.finalIndex.containsKey(word)) {

@@ -12,12 +12,26 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
 /**
  * this file is going to create single object and add those object together
  * 
- * @author paulke
+ * @author PaulKe
  *
  */
 public class InvertedIndexBuilder {
 
-	
+	/**
+	 * initial InvertedIndex object in InvertedIndexBuilder
+	 */
+	protected final InvertedIndex index;
+
+	/**
+	 * initial InvertedIndexBuilder object
+	 * 
+	 * @param index InvertedInde object
+	 */
+	InvertedIndexBuilder(InvertedIndex index) {
+
+		this.index = index;
+	}
+
 	/**
 	 * add single object of index
 	 * 
@@ -26,6 +40,7 @@ public class InvertedIndexBuilder {
 	 * @throws IOException
 	 */
 	public static void singleIndex(Path file, InvertedIndex index) throws IOException {
+
 		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
 		if (TextFile.test(file)) {
 			try (BufferedReader read_line = Files.newBufferedReader(file)) {
@@ -43,93 +58,30 @@ public class InvertedIndexBuilder {
 			}
 		}
 	}
+
+//	/**
+//	 * add the index of words from list of files
+//	 * 
+//	 * @param files list of file
+//	 * @param index InvertedIndex object
+//	 * @throws IOException
+//	 */
+//	public static void filesIndex(Path files, InvertedIndex index) throws IOException {
+//
+//		singleIndex(files, index);
+//	}
+
 	/**
-	 * add single object of index with  multi-threads
-	 * @param file
-	 * @param index
-	 * @throws IOException
-	 */
-	public static void index(Path file, threadSafeIndex index) throws IOException {
-		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
-		if (TextFile.test(file)) {
-			try (BufferedReader read_line = Files.newBufferedReader(file)) {
-				String line;
-				int number = 0;
-				String files = file.toString();
-				Stemmer stemmer = new SnowballStemmer(SnowballStemmer.ALGORITHM.ENGLISH);
-				while ((line = read_line.readLine()) != null) {
-					for (String words : TextParser.parse(line)) {
-						String newWords = stemmer.stem(words).toString();
-						index.add(newWords, files, number + 1);
-						number++;
-					}
-				}
-			}
-		}else {
-			System.out.println("ERROR");
-		}
-	}
-	/**
-	 * add the index of words from list of files
+	 * Building final index
 	 * 
-	 * @param files list of file
-	 * @param index InvertedIndex object
+	 * @param path path of file to add
 	 * @throws IOException
 	 */
-	public void filesIndex(List<Path> files, InvertedIndex index) throws IOException {
+	public void build(Path path) throws IOException {
+
+		List<Path> files = TextFileFinder.list(path);
 		for (Path file : files) {
-			singleIndex(file, index);
+			singleIndex(file, this.index);
 		}
 	}
-	/**
-	 * Initial mulidIndex method
-	 * @param files
-	 * @param wordindex
-	 * @param threads
-	 * @throws IOException 
-	 */
-	public void threadIndex(Path files, threadSafeIndex wordindex, int threads) throws IOException {
-		for (Path file : TextFileFinder.list(files)) {
-			WorkQueue task = new WorkQueue(threads);
-			task.execute(new Task(file, wordindex));
-			task.finish();
-			task.shutdown();
-		}
-	}
-
-	/**
-	 * @author PaulKe
-	 *
-	 */
-	private static class Task implements Runnable {
-		/**
-		 * 
-		 */
-		private Path file;
-		/**
-		 * 
-		 */
-		threadSafeIndex index = new threadSafeIndex();
-	
-		/**
-		 * @param file
-		 * @param index
-		 */
-		Task(Path file, threadSafeIndex index){
-			this.file = file;
-			this.index = index;
-		}
-		@Override
-		public void run() {
-			synchronized(index.finalIndex) {
-				try {
-					index(file, index);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}		
-		}
-	}
-
-
 }
