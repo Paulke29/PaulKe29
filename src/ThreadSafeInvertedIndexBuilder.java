@@ -10,11 +10,6 @@ import java.util.List;
 public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 
 	/**
-	 * 
-	 */
-	private final SimpleReadWriteLock lock;
-
-	/**
 	 * number of threads
 	 */
 	private int threads;
@@ -27,16 +22,16 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 	ThreadSafeInvertedIndexBuilder(threadSafeIndex index, int threads) {
 
 		super(index);
-		lock = new SimpleReadWriteLock();
+
 		this.threads = threads;
 	}
 
 	/**
 	 * Initial mulidIndex method
 	 * 
-	 * @param files
-	 * @param wordindex
-	 * @param threads
+	 * @param files     Queryfile to add
+	 * @param wordindex data structre to store data
+	 * @param threads   the number of threads
 	 * @throws IOException
 	 */
 	public void build(Path path) throws IOException {
@@ -62,7 +57,7 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 		private Path file;
 
 		/**
-		 * @param file
+		 * @param file QueryFile to add
 		 */
 		Task(Path file) {
 

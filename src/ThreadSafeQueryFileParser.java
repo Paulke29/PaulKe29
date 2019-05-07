@@ -24,28 +24,21 @@ public class ThreadSafeQueryFileParser extends QueryFileParser {
 	private final TreeMap<String, ArrayList<Result>> result;
 
 	/**
-	 * initial SimpleReadWriteLock class
-	 */
-	private final SimpleReadWriteLock lock;
-	
-	/**
 	 * number of threads
 	 */
 	private int threads;
 
-
 	/**
 	 * Creating constructor
 	 * 
-	 * @param index
-	 * @param threads 
+	 * @param index   data structure
+	 * @param threads the number of threads
 	 */
 	public ThreadSafeQueryFileParser(InvertedIndex index, int threads) {
 
 		super(index);
 		this.index = index;
 		this.result = new TreeMap<>();
-		this.lock = new SimpleReadWriteLock();
 		this.threads = threads;
 	}
 
@@ -57,34 +50,35 @@ public class ThreadSafeQueryFileParser extends QueryFileParser {
 	 */
 	@Override
 	public void parseLine(String line, boolean isExact) {
+
 		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
 		String cleanedLine = String.join(" ", queries);
 		if (!queries.isEmpty() && !result.containsKey(cleanedLine)) {
-			synchronized(result) {
-				result.put(cleanedLine, index.search(queries,isExact));
-			}	
+			synchronized (result) {
+				result.put(cleanedLine, index.search(queries, isExact));
+			}
 		}
 	}
-	
+
 	/**
-	 * @param isExact
-	 * @param queryfile
-	 * @param threadIndex
-	 * @param threads
+	 * Using WorkQueue to search word
+	 * 
+	 * @param isExact   decide exact search or not
+	 * @param queryfile which file to search
 	 * @throws IOException
 	 */
-	public void parseFile(Path queryFile, boolean isExact) throws IOException  {
+	public void parseFile(Path queryFile, boolean isExact) throws IOException {
+
 		WorkQueue task = new WorkQueue(this.threads);
 		try (BufferedReader readLine = Files.newBufferedReader(queryFile, StandardCharsets.UTF_8)) {
 			String line = null;
 			while ((line = readLine.readLine()) != null) {
-				task.execute(new Task(isExact,line));
+				task.execute(new Task(isExact, line));
 			}
 		}
 		task.finish();
 		task.shutdown();
 	}
-
 
 	/**
 	 * @author PaulKe
@@ -96,7 +90,6 @@ public class ThreadSafeQueryFileParser extends QueryFileParser {
 		 * QueryLine which for search
 		 */
 		private String queryLine;
-
 
 		/**
 		 * whether Exact Search or not
@@ -110,13 +103,15 @@ public class ThreadSafeQueryFileParser extends QueryFileParser {
 		 * @param queryLine
 		 */
 		Task(Boolean Exact, String queryLine) {
+
 			this.queryLine = queryLine;
 			this.Exact = Exact;
 		}
 
 		@Override
 		public void run() {
-				parseLine(queryLine,Exact);
+
+			parseLine(queryLine, Exact);
 		}
 	}
 

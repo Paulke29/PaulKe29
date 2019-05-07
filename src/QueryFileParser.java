@@ -12,10 +12,12 @@ import java.util.TreeSet;
  *
  */
 public class QueryFileParser {
+
 	/**
 	 * QuerySearch Result
 	 */
 	private final TreeMap<String, ArrayList<Result>> result;
+
 	/**
 	 * initial InvertedIndex object
 	 */
@@ -27,6 +29,7 @@ public class QueryFileParser {
 	 * @param index initial InvertedIndex
 	 */
 	public QueryFileParser(InvertedIndex index) {
+
 		this.result = new TreeMap<>();
 		this.index = index;
 	}
@@ -34,11 +37,12 @@ public class QueryFileParser {
 	/**
 	 * Having a queryFile and start to decide whether exact search or not
 	 * 
-	 * @param queryFile source file 
-	 * @param isExact boolean variable
+	 * @param queryFile source file
+	 * @param isExact   boolean variable
 	 * @throws IOException handled exception
 	 */
 	public void parseFile(Path queryFile, boolean isExact) throws IOException {
+
 		try (BufferedReader readLine = Files.newBufferedReader(queryFile, StandardCharsets.UTF_8)) {
 			String line = null;
 			while ((line = readLine.readLine()) != null) {
@@ -54,20 +58,23 @@ public class QueryFileParser {
 	 * @param isExact decide exact search or not
 	 */
 	public void parseLine(String line, boolean isExact) {
+
 		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
 		String cleanedLine = String.join(" ", queries);
 		if (!queries.isEmpty() && !result.containsKey(cleanedLine)) {
-			result.put(cleanedLine, index.search(queries,isExact));
+			result.put(cleanedLine, index.search(queries, isExact));
 		}
 	}
+
 	/**
 	 * Output JSON type for Query Result
 	 * 
 	 * @param path
-	 * @throws IOException
+	 * @throws IOException handled exception
 	 */
 	public void toJSON(Path path) throws IOException {
-		PrettyJSONWriter.resultFormat(this.result, path); 
+
+		PrettyJSONWriter.resultFormat(this.result, path);
 	}
 
 }
