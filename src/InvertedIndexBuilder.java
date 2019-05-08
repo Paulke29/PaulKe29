@@ -20,14 +20,14 @@ public class InvertedIndexBuilder {
 	/**
 	 * initial InvertedIndex object in InvertedIndexBuilder
 	 */
-	protected final InvertedIndex index;
+	protected final InvertedIndex index; // TODO private
 
 	/**
 	 * initial InvertedIndexBuilder object
 	 * 
 	 * @param index InvertedInde object
 	 */
-	InvertedIndexBuilder(InvertedIndex index) {
+	InvertedIndexBuilder(InvertedIndex index) { // TODO public
 
 		this.index = index;
 	}
@@ -43,7 +43,7 @@ public class InvertedIndexBuilder {
 
 		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
 		if (TextFile.test(file)) {
-			try (BufferedReader read_line = Files.newBufferedReader(file)) {
+			try (BufferedReader read_line = Files.newBufferedReader(file)) { // TODO Add StandardCharset.UTF_8
 				String line;
 				int number = 0;
 				String files = file.toString();
