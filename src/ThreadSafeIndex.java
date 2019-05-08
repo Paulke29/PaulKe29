@@ -7,7 +7,7 @@ import java.util.Collection;
  * @author PaulKe
  *
  */
-public class threadSafeIndex extends InvertedIndex {
+public class ThreadSafeIndex extends InvertedIndex {
 
 	/**
 	 * initial simple read and write lock
@@ -17,7 +17,7 @@ public class threadSafeIndex extends InvertedIndex {
 	/**
 	 * initial threadSafeIndex class
 	 */
-	public threadSafeIndex() {
+	public ThreadSafeIndex() {
 
 		lock = new SimpleReadWriteLock();
 	}
@@ -27,8 +27,7 @@ public class threadSafeIndex extends InvertedIndex {
 
 		lock.writeLock().lock();
 		try {
-			super.add(words, location, position);
-			return true;
+			return super.add(words, location, position);
 		} finally {
 			lock.writeLock().unlock();
 		}

@@ -59,18 +59,6 @@ public class InvertedIndexBuilder {
 		}
 	}
 
-//	/**
-//	 * add the index of words from list of files
-//	 * 
-//	 * @param files list of file
-//	 * @param index InvertedIndex object
-//	 * @throws IOException
-//	 */
-//	public static void filesIndex(Path files, InvertedIndex index) throws IOException {
-//
-//		singleIndex(files, index);
-//	}
-
 	/**
 	 * Building final index
 	 * 

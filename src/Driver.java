@@ -38,9 +38,9 @@ public class Driver {
 			} catch (NumberFormatException e) {
 				threads = 5;
 			}
-			wordIndex = new threadSafeIndex();
+			wordIndex = new ThreadSafeIndex();
 			resultSearch = new ThreadSafeQueryFileParser(wordIndex, threads);
-			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder((threadSafeIndex) wordIndex, threads);
+			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder((ThreadSafeIndex) wordIndex, threads);
 		} else {
 			wordIndex = new InvertedIndex();
 			resultSearch = new QueryFileParser(wordIndex);
@@ -66,11 +66,10 @@ public class Driver {
 					}
 					resultSearch.parseFile(query, exact);
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.out.println("Couldn't to have a search");
 				}
 			}
 		}
-		System.out.println("Index");
 		if (argumentMap.hasFlag("-index")) {
 
 			Path indexPath = argumentMap.getPath("-index", Path.of("index.json"));
@@ -95,7 +94,7 @@ public class Driver {
 			try {
 				resultSearch.toJSON(result);
 			} catch (IOException e) {
-				System.out.println(e);
+				System.out.println("Couldn't to print out the result");
 			}
 		}
 

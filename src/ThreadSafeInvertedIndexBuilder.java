@@ -19,7 +19,7 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 	 * @param threads number of threads
 	 * 
 	 */
-	ThreadSafeInvertedIndexBuilder(threadSafeIndex index, int threads) {
+	ThreadSafeInvertedIndexBuilder(ThreadSafeIndex index, int threads) {
 
 		super(index);
 

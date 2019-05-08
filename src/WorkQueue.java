@@ -32,6 +32,7 @@ public class WorkQueue {
 	 * @see #WorkQueue(int)
 	 */
 	public WorkQueue() {
+
 		this(DEFAULT);
 	}
 
@@ -41,6 +42,7 @@ public class WorkQueue {
 	 * @param threads number of worker threads; should be greater than 1
 	 */
 	public WorkQueue(int threads) {
+
 		this.queue = new LinkedList<Runnable>();
 		this.workers = new PoolWorker[threads];
 
@@ -60,6 +62,7 @@ public class WorkQueue {
 	 * @param r work request (in the form of a {@link Runnable} object)
 	 */
 	public void execute(Runnable r) {
+
 		synchronized (queue) {
 			queue.addLast(r);
 			this.pending++;
@@ -72,6 +75,7 @@ public class WorkQueue {
 	 * Waits for all pending work to be finished.
 	 */
 	public void finish() {
+
 		synchronized (this.queue) {
 			try {
 				while (pending > 0) {
@@ -84,10 +88,11 @@ public class WorkQueue {
 	}
 
 	/**
-	 * Asks the queue to shutdown. Any unprocessed work will not be finished,
-	 * but threads in-progress will not be interrupted.
+	 * Asks the queue to shutdown. Any unprocessed work will not be finished, but
+	 * threads in-progress will not be interrupted.
 	 */
 	public void shutdown() {
+
 		shutdown = true;
 		synchronized (this.queue) {
 			queue.notifyAll();
@@ -100,15 +105,18 @@ public class WorkQueue {
 	 * @return number of worker threads
 	 */
 	public int size() {
+
 		return workers.length;
 	}
+
 	/**
 	 * 
 	 */
 	public void Pendingdecrease() {
-		synchronized(this.queue) {
+
+		synchronized (this.queue) {
 			this.pending--;
-			if(pending <= 0 && queue.isEmpty()) {
+			if (pending <= 0 && queue.isEmpty()) {
 				queue.notifyAll();
 			}
 		}
@@ -116,14 +124,15 @@ public class WorkQueue {
 
 	/**
 	 * Waits until work is available in the work queue. When work is found, will
-	 * remove the work from the queue and run it. If a shutdown is detected,
-	 * will exit instead of grabbing new work from the queue. These threads will
-	 * continue running in the background until a shutdown is requested.
+	 * remove the work from the queue and run it. If a shutdown is detected, will
+	 * exit instead of grabbing new work from the queue. These threads will continue
+	 * running in the background until a shutdown is requested.
 	 */
 	private class PoolWorker extends Thread {
 
 		@Override
 		public void run() {
+
 			Runnable r = null;
 
 			while (true) {
@@ -131,24 +140,21 @@ public class WorkQueue {
 					while (queue.isEmpty() && !shutdown) {
 						try {
 							queue.wait();
-						}
-						catch (InterruptedException ex) {
+						} catch (InterruptedException ex) {
 							System.err.println("Warning: Work queue interrupted.");
 							Thread.currentThread().interrupt();
 						}
 					}
 					if (shutdown) {
 						break;
-					}
-					else {
+					} else {
 						r = queue.removeFirst();
 					}
 				}
 
 				try {
 					r.run();
-				}
-				catch (RuntimeException ex) {
+				} catch (RuntimeException ex) {
 					System.err.println("Warning: Work queue encountered an exception while running.");
 				}
 				Pendingdecrease();
