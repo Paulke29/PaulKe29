@@ -14,6 +14,7 @@ import java.util.TreeSet;
  */
 public class InvertedIndex {
 
+	// TODO finalIndex and wordCount must both be private
 	/**
 	 * creating a dataStructure for index
 	 */
@@ -236,5 +237,22 @@ public class InvertedIndex {
 			return 0;
 		}
 	}
+	
+	/* TODO
+	public void addAll(InvertedIndex other) {
+		for (String key : other.finalIndex.keySet()) {
+			if (this.finalIndex.containsKey(key) == false) {
+				this.finalIndex.put(key, other.finalIndex.get(key));
+			}
+			else {
+				
+			}
+		}
+		
+		for (String key : other.wordCount.keySet()) {
+			
+		}
+	}
+	*/
 
 }

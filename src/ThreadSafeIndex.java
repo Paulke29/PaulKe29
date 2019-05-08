@@ -3,6 +3,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 
+// TODO Keep method order between this and InvertedIndex consistent
+
 /**
  * @author PaulKe
  *
@@ -12,7 +14,7 @@ public class ThreadSafeIndex extends InvertedIndex {
 	/**
 	 * initial simple read and write lock
 	 */
-	private SimpleReadWriteLock lock;
+	private SimpleReadWriteLock lock; // TODO final
 
 	/**
 	 * initial threadSafeIndex class
@@ -33,6 +35,7 @@ public class ThreadSafeIndex extends InvertedIndex {
 		}
 	}
 
+	// TODO Remove
 	@Override
 	public ArrayList<Result> search(Collection<String> queries, boolean exact) {
 
@@ -72,12 +75,15 @@ public class ThreadSafeIndex extends InvertedIndex {
 
 		lock.readLock().lock();
 		try {
+			// TODO return super.wordCount();
 			return this.finalIndex.size();
 		} finally {
 			lock.readLock().unlock();
 		}
 	}
 
+	// TODO Fix all of these to call super instead of accessing the finalIndex directly
+	
 	@Override
 	public boolean contains(String word) {
 

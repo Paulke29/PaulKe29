@@ -1,8 +1,12 @@
 import java.util.LinkedList;
 
+// TODO Clean up code formatting
+// TODO Fix all of your Javadoc
+
 /**
+ * TODO
+ * 
  * @author PaulKe
- *
  */
 public class WorkQueue {
 
@@ -22,10 +26,13 @@ public class WorkQueue {
 	public static final int DEFAULT = 5;
 
 	/**
-	 * initial the number of pending work
+	 * The number of pending work
 	 */
-	public int pending;
+	public int pending; // TODO private
 
+	// TODO Everything that accesses pending synchronize on "this"
+	// TODO Everything that accesses queue synchronize on "queue"
+	
 	/**
 	 * Starts a work queue with the default number of threads.
 	 *
@@ -47,8 +54,8 @@ public class WorkQueue {
 		this.workers = new PoolWorker[threads];
 
 		this.shutdown = false;
-
 		this.pending = 0;
+		
 		for (int i = 0; i < threads; i++) {
 			workers[i] = new PoolWorker();
 			workers[i].start();
@@ -62,10 +69,10 @@ public class WorkQueue {
 	 * @param r work request (in the form of a {@link Runnable} object)
 	 */
 	public void execute(Runnable r) {
-
+		// TODO increasePending();
 		synchronized (queue) {
 			queue.addLast(r);
-			this.pending++;
+			this.pending++; // TODO Remove
 			queue.notifyAll();
 		}
 
@@ -74,15 +81,16 @@ public class WorkQueue {
 	/**
 	 * Waits for all pending work to be finished.
 	 */
-	public void finish() {
+	public void finish() { // TODO Make entire method synchronized
 
-		synchronized (this.queue) {
+		synchronized (this.queue) { // TODO Remove
 			try {
 				while (pending > 0) {
-					this.queue.wait();
+					this.queue.wait(); // TODO this.wait()
 				}
-				this.queue.notifyAll();
+				this.queue.notifyAll(); // TODO Remove
 			} catch (InterruptedException ex) {
+				// TODO Fix
 			}
 		}
 	}
@@ -110,17 +118,19 @@ public class WorkQueue {
 	}
 
 	/**
-	 * 
+	 * TODO
 	 */
-	public void Pendingdecrease() {
+	public void Pendingdecrease() { // TODO Refactor to decreasePending, private, synchronized
 
 		synchronized (this.queue) {
 			this.pending--;
-			if (pending <= 0 && queue.isEmpty()) {
+			if (pending <= 0 && queue.isEmpty()) { // TODO Do not check for isEmpty
 				queue.notifyAll();
 			}
 		}
 	}
+	
+	// TODO private synchronized increasePending();
 
 	/**
 	 * Waits until work is available in the work queue. When work is found, will

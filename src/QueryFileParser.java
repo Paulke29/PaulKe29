@@ -11,7 +11,7 @@ import java.util.TreeSet;
  * @author Paulke
  *
  */
-public class QueryFileParser {
+public class QueryFileParser { // TODO implements QueryFileParserInterface
 
 	/**
 	 * QuerySearch Result
@@ -34,6 +34,7 @@ public class QueryFileParser {
 		this.index = index;
 	}
 
+	// TODO Remove
 	/**
 	 * Having a queryFile and start to decide whether exact search or not
 	 * 
