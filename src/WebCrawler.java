@@ -31,7 +31,7 @@ public class WebCrawler {
 	/**
 	 * 
 	 */
-	WorkQueue queue;
+	private final WorkQueue queue;
 
 	/**
 	 * @param threadSafe
@@ -55,7 +55,7 @@ public class WebCrawler {
 		links.add(seed);
 		queue.execute(new WebCrawlerTask(seed, limit));
 		queue.finish();
-//		queue.shutdown();
+		queue.shutdown();
 	}
 
 	/**
@@ -83,44 +83,38 @@ public class WebCrawler {
 			this.singleURL = url;
 			this.limit = limit;
 		}
+
 		@Override
 		public void run() {
+
 			try {
 
 				var HTML = HtmlFetcher.fetchHTML(this.singleURL, 3);
-				if(HTML == null) {
+				if (HTML == null) {
 					return;
 				}
 
 				InvertedIndex local = new InvertedIndex();
 				Stemmer stemmer = new SnowballStemmer(SnowballStemmer.ALGORITHM.ENGLISH);
 				int start = 1;
-				for(String s: TextParser.parse(HtmlCleaner.stripHtml(HTML))) {
+				for (String s : TextParser.parse(HtmlCleaner.stripHtml(HTML))) {
 					local.add(stemmer.stem(s).toString(), this.singleURL.toString(), start);
 					start++;
 				}
 				threadSafe.addAll(local);
-
-//			System.out.println("threadSAFER");
-			synchronized (links) {
-				links.add(singleURL);
-//				System.out.println("threadSAFER2345");
-//				if (links.size() < limit) {
-					ArrayList<URL> Alllinks = HtmlCleaner.listLinks(this.singleURL,
-							HtmlFetcher.fetchHTML(this.singleURL));
-//					System.out.println("threadSAFER2345789");
-					for(URL link : Alllinks) {
-						if(links.size()>= limit) {
-							break;
-						}
-						else if(links.contains(link) == false) {
-							links.add(link); 
-//							System.out.println("threadSAFER1223");
-							queue.execute((new WebCrawlerTask(link,limit)));
+				synchronized (links) {
+					links.add(singleURL);
+					if (links.size() < limit) {
+						ArrayList<URL> Alllinks = HtmlCleaner.listLinks(this.singleURL,
+								HtmlFetcher.fetchHTML(this.singleURL));
+						for (URL link : Alllinks) {
+							if (links.size() <= limit && links.contains(link) == false) {
+								links.add(link);
+								queue.execute((new WebCrawlerTask(link, limit)));
+							}
 						}
 					}
-//				}
-			}
+				}
 
 			} catch (IOException e) {
 			}
