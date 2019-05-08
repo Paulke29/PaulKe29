@@ -142,24 +142,28 @@ public class HtmlCleaner {
 	 */
 	public static ArrayList<URL> listLinks(URL base, String html) throws MalformedURLException {
 		
-		ArrayList<URL> links = new ArrayList<URL>();
-		int GROUP = 1;
-		String REGEX = "(?i)<a(?:[^<>]*?)href=\"([^\"]+?)\"";
-		URL link = null;
-		Matcher match = Pattern.compile(REGEX).matcher(html.replaceAll("\\s", "").trim());
-
-		while (match.find()) {
-			String site = match.group(GROUP);
-			if (!site.startsWith("http")) {
-				link = new URL(base, site);
-			} else {
-				link = new URL(site);
+		ArrayList<URL> locations = new ArrayList<URL>();
+		String rex = "(?i)<a(?:[^<>]*?)href=\"([^\"]+?)\"";
+		html = html.replaceAll("\\s", "").trim();
+		Matcher match = Pattern.compile(rex).matcher(html);
+		
+		
+		URL url;
+		while(match.find()) {
+			String web = match.group(1);
+			if(web.startsWith("http")) {
+				url = new URL(web);
+			}else {
+				url = new URL(base, web);
 			}
-			if (link.toString().startsWith("http")) {
-				links.add(clean(link));
+			
+			if(url.toString().startsWith("http")) {
+				locations.add(clean(url));
 			}
 		}
-		return links;
+		
+		
+		return locations;
 	}
 
 

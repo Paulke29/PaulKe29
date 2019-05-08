@@ -105,10 +105,11 @@ public class WebCrawler {
 				synchronized (links) {
 					links.add(singleURL);
 					if (links.size() < limit) {
-						ArrayList<URL> Alllinks = HtmlCleaner.listLinks(this.singleURL,
-								HtmlFetcher.fetchHTML(this.singleURL));
+						ArrayList<URL> Alllinks = HtmlCleaner.listLinks(this.singleURL, HTML);
+//						System.out.println("SingleURL: "+singleURL);
+//						System.out.println("Alllinks: "+Alllinks);
 						for (URL link : Alllinks) {
-							System.out.println("link:"+link);
+//							System.out.println("link: " + link);
 							if (links.size() <= limit && links.contains(link) == false) {
 								links.add(link);
 								queue.execute((new WebCrawlerTask(link, limit)));
