@@ -43,9 +43,12 @@ public class ArgumentMap {
 	public void parse(String[] args) {
 		for (int x = 0; x < args.length; x++) {
 			if (isFlag(args[x])) {
+				System.out.println("ArgumentMap args: "+args[x]);
 				if (args.length > x + 1 && isValue(args[x + 1])) {
+					System.out.println("ArgumentMap args2: "+args[x]);
 					map.put(args[x], args[x + 1]);
 				} else {
+					System.out.println("ArgumentMap args3: "+args[x]);
 					map.put(args[x], null);
 				}
 			}
@@ -87,7 +90,8 @@ public class ArgumentMap {
 	 * @see String#length()
 	 */
 	public static boolean isValue(String arg) {
-		return arg != null && !arg.startsWith("-") && arg.trim().length() > 1;
+		System.out.println("ArgumentMap isValue: "+ arg);
+		return arg != null && !arg.startsWith("-") && arg.trim().length() > 0;
 	}
 
 	/**

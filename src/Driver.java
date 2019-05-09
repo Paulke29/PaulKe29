@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 
 // TODO Warnings in code. Receiving -10 on code review grade. Fix warnings before review always.
 
@@ -44,7 +45,9 @@ public class Driver {
 			if(threads < 1) {
 				threads = 5;
 			}
-			System.out.println("threads: "+threads);
+			System.out.println("args: "+Arrays.toString(args));
+			System.out.println("argumentMap:"+argumentMap);
+			System.out.println("threads: "+threads+". "+argumentMap.getString("-threads"));
 			wordIndex = new ThreadSafeIndex();
 			results = new ThreadSafeQueryFileParser((ThreadSafeIndex) wordIndex, threads);
 			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder((ThreadSafeIndex) wordIndex, threads);
