@@ -261,21 +261,15 @@ public class InvertedIndex {
 			} else {
 				for (String path : other.finalIndex.get(key).keySet()) {
 					try {
-						if (this.finalIndex.get(key).containsKey(path)) {
+						if (this.finalIndex.get(key).containsKey(path) && !key.isEmpty()) {
 							this.finalIndex.get(key).get(path).addAll(other.finalIndex.get(key).get(path));
 						} else {
 							this.finalIndex.get(key).put(path, other.finalIndex.get(key).get(path));
 						}
 					} catch (NullPointerException e) {
 						System.out.println("Add ALL");
-//						if(this.finalIndex.get(key).containsKey(path)) {
-//							System.out.println("AddAll: "+ finalIndex.get(key).containsKey(path));
-//						}else {
-//							System.out.println("AddAllfalse: "+ finalIndex.toString());
-//						}
-//						
 						e.printStackTrace();
-//						System.exit(0);
+						System.exit(0);
 					}
 				}
 			}
