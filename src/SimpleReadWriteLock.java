@@ -24,12 +24,12 @@ public class SimpleReadWriteLock {
 
 	/** The number of active writers; */
 	private int writers;
+
 	/**
-	 * 
+	 * TODO
 	 */
 	private final SimpleReadWriteLock lock;
-	
-	// TODO Add additional members if you want.
+
 	/**
 	 * Initializes a new simple read/write lock.
 	 */
@@ -39,7 +39,6 @@ public class SimpleReadWriteLock {
 		readers = 0;
 		writers = 0;
 		this.lock = this;
-		// TODO Perform additional initialization if needed.
 	}
 
 	/**
@@ -64,18 +63,19 @@ public class SimpleReadWriteLock {
 	 * Used to maintain simultaneous read operations.
 	 */
 	private class ReadLock implements SimpleLock {
+
 		/**
 		 * Will wait until there are no active writers in the system, and then will
 		 * increase the number of active readers.
 		 */
 		@Override
 		public void lock() {
-			synchronized(lock) {
-				while(writers>0) {
+			synchronized (lock) {
+				while (writers > 0) {
 					try {
 						lock.wait();
-					}catch(InterruptedException e) {
-						
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
 					}
 				}
 				readers++;
@@ -88,12 +88,12 @@ public class SimpleReadWriteLock {
 		 */
 		@Override
 		public void unlock() {
-			// TODO Fill this in!
-			synchronized(lock) {
-				readers --;
-				lock.notifyAll();
+			synchronized (lock) {
+				readers--;
+				if(readers == 0) {
+					lock.notifyAll();// TODO Only notifyAll when readers is 0 
+				}	 
 			}
-			
 		}
 	}
 
@@ -101,19 +101,19 @@ public class SimpleReadWriteLock {
 	 * Used to maintain exclusive write operations.
 	 */
 	private class WriteLock implements SimpleLock {
+
 		/**
 		 * Will wait until there are no active readers or writers in the system, and
 		 * then will increase the number of active writers.
 		 */
 		@Override
-		public  void lock() {
-			// TODO Fill this in!
-			synchronized(lock) {
-				while(readers > 0 || writers > 0) {
+		public void lock() {
+			synchronized (lock) {
+				while (readers > 0 || writers > 0) {
 					try {
 						lock.wait();
-					}catch(InterruptedException e) {
-						
+					} catch (InterruptedException e) {
+						System.out.println("Do not use lock propertely");
 					}
 				}
 				writers++;
@@ -125,12 +125,11 @@ public class SimpleReadWriteLock {
 		 * necessary.
 		 */
 		@Override
-		public  void unlock() {
-			// TODO Fill this in!
-			synchronized(lock) {
+		public void unlock() {
+			synchronized (lock) {
 				writers--;
 				lock.notifyAll();
-			}	
+			}
 		}
 	}
 }
