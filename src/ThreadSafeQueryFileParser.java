@@ -51,15 +51,6 @@ public class ThreadSafeQueryFileParser implements QueryFileParserInterface { // 
 	@Override
 	public void parseLine(String line, boolean isExact) {
 
-//		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
-//		String cleanedLine = String.join(" ", queries);
-//		if (!queries.isEmpty() && !result.containsKey(cleanedLine)) {
-//			synchronized (result) {
-//				result.put(cleanedLine, index.search(queries, isExact));
-//			}
-//		}
-		
-//		/* TODO
 		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
 		String cleanedLine = String.join(" ", queries);
 		
@@ -74,7 +65,7 @@ public class ThreadSafeQueryFileParser implements QueryFileParserInterface { // 
 		synchronized (result) {
 			result.put(cleanedLine, local);
 		}
-//		*/
+
 	}
 
 	/**
@@ -101,7 +92,7 @@ public class ThreadSafeQueryFileParser implements QueryFileParserInterface { // 
 	 * @author PaulKe
 	 *
 	 */
-	private class Task implements Runnable { // TODO Clean up formatting, and keywords
+	private class Task implements Runnable {
 
 		/**
 		 * QueryLine which for search

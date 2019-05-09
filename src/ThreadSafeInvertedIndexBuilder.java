@@ -78,6 +78,8 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 			try {
 				InvertedIndex local = new InvertedIndex();
 				singleIndex(file, local);
+//				System.out.println(file + ": " + local.wordCount());
+//				System.out.println(local.finalIndex.toString());
 				index.addAll(local);
 
 			} catch (IOException e) {

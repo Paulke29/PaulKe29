@@ -172,5 +172,13 @@ public class ThreadSafeIndex extends InvertedIndex {
 		}
 
 	}
+	public void addAll(InvertedIndex other) {
+		lock.writeLock().unlock();
+		try {
+			super.addAll(other);
+		}finally {
+			lock.writeLock().unlock();
+		}
+	}
 
 }
