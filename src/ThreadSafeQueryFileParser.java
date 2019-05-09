@@ -11,12 +11,12 @@ import java.util.TreeSet;
  * @author PaulKe
  *
  */
-public class ThreadSafeQueryFileParser extends QueryFileParser { // TODO implements QueryFileParserInterface
+public class ThreadSafeQueryFileParser implements QueryFileParserInterface { // TODO implements QueryFileParserInterface
 
 	/**
-	 * inital variable InvertedIndex Object
+	 * Initial variable InvertedIndex Object
 	 */
-	private final InvertedIndex index; // TODO ThreadSafeIndex
+	private final ThreadSafeIndex index; // TODO ThreadSafeIndex
 
 	/**
 	 * initial the data structure
@@ -34,9 +34,9 @@ public class ThreadSafeQueryFileParser extends QueryFileParser { // TODO impleme
 	 * @param index   data structure
 	 * @param threads the number of threads
 	 */
-	public ThreadSafeQueryFileParser(InvertedIndex index, int threads) { // TODO ThreadSafeIndex
+	public ThreadSafeQueryFileParser(ThreadSafeIndex index, int threads) { // TODO ThreadSafeIndex
 
-		super(index);
+//		super(index);
 		this.index = index;
 		this.result = new TreeMap<>();
 		this.threads = threads;
@@ -51,15 +51,15 @@ public class ThreadSafeQueryFileParser extends QueryFileParser { // TODO impleme
 	@Override
 	public void parseLine(String line, boolean isExact) {
 
-		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
-		String cleanedLine = String.join(" ", queries);
-		if (!queries.isEmpty() && !result.containsKey(cleanedLine)) {
-			synchronized (result) {
-				result.put(cleanedLine, index.search(queries, isExact));
-			}
-		}
+//		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
+//		String cleanedLine = String.join(" ", queries);
+//		if (!queries.isEmpty() && !result.containsKey(cleanedLine)) {
+//			synchronized (result) {
+//				result.put(cleanedLine, index.search(queries, isExact));
+//			}
+//		}
 		
-		/* TODO
+//		/* TODO
 		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
 		String cleanedLine = String.join(" ", queries);
 		
@@ -69,12 +69,12 @@ public class ThreadSafeQueryFileParser extends QueryFileParser { // TODO impleme
 			}
 		}
 		
-		List<Result> local = index.search(queries, isExact);
+		ArrayList<Result> local = index.search(queries, isExact);
 		
 		synchronized (result) {
 			result.put(cleanedLine, local);
 		}
-		*/
+//		*/
 	}
 
 	/**

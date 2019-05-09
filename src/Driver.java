@@ -31,7 +31,8 @@ public class Driver {
 		ArgumentMap argumentMap = new ArgumentMap(args);
 		InvertedIndex wordIndex;
 		InvertedIndexBuilder invertedIndexBuilder;
-		QueryFileParser resultSearch;
+//		QueryFileParser resultSearch;
+		QueryFileParserInterface results;
 		int threads = 0;
 		if (argumentMap.hasFlag("-threads")) {
 			String numThreads = argumentMap.getString("-threads", "5");
@@ -41,11 +42,11 @@ public class Driver {
 				threads = 5;
 			}
 			wordIndex = new ThreadSafeIndex();
-			resultSearch = new ThreadSafeQueryFileParser(wordIndex, threads);
+			results = new ThreadSafeQueryFileParser((ThreadSafeIndex) wordIndex, threads);
 			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder((ThreadSafeIndex) wordIndex, threads);
 		} else {
 			wordIndex = new InvertedIndex();
-			resultSearch = new QueryFileParser(wordIndex);
+			results = new QueryFileParser(wordIndex);
 			invertedIndexBuilder = new InvertedIndexBuilder(wordIndex);
 		}
 		if (argumentMap.hasFlag("-path")) {
@@ -66,7 +67,7 @@ public class Driver {
 					if (argumentMap.hasFlag("-exact")) {
 						exact = true;
 					}
-					resultSearch.parseFile(query, exact);
+					results.parseFile(query, exact);
 				} catch (IOException e) {
 					System.out.println("Couldn't to have a search");
 				}
@@ -94,7 +95,7 @@ public class Driver {
 		if (argumentMap.hasFlag("-results")) {
 			Path result = argumentMap.getPath("-results", Path.of("results.json"));
 			try {
-				resultSearch.toJSON(result);
+				results.toJSON(result);
 			} catch (IOException e) {
 				System.out.println("Couldn't to print out the result");
 			}

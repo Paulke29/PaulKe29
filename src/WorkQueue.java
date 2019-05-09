@@ -1,10 +1,7 @@
 import java.util.LinkedList;
 
-// TODO Clean up code formatting
-// TODO Fix all of your Javadoc
-
 /**
- * TODO
+ * Creating WorkQueue to do the multithreading
  * 
  * @author PaulKe
  */
@@ -28,10 +25,8 @@ public class WorkQueue {
 	/**
 	 * The number of pending work
 	 */
-	public int pending; // TODO private
+	private int pending;
 
-	// TODO Everything that accesses pending synchronize on "this"
-	// TODO Everything that accesses queue synchronize on "queue"
 	
 	/**
 	 * Starts a work queue with the default number of threads.
@@ -52,10 +47,8 @@ public class WorkQueue {
 
 		this.queue = new LinkedList<Runnable>();
 		this.workers = new PoolWorker[threads];
-
 		this.shutdown = false;
 		this.pending = 0;
-		
 		for (int i = 0; i < threads; i++) {
 			workers[i] = new PoolWorker();
 			workers[i].start();
@@ -69,29 +62,25 @@ public class WorkQueue {
 	 * @param r work request (in the form of a {@link Runnable} object)
 	 */
 	public void execute(Runnable r) {
-		// TODO increasePending();
+
+		increasePending();
 		synchronized (queue) {
 			queue.addLast(r);
-			this.pending++; // TODO Remove
 			queue.notifyAll();
 		}
-
 	}
 
 	/**
 	 * Waits for all pending work to be finished.
 	 */
-	public void finish() { // TODO Make entire method synchronized
-
-		synchronized (this.queue) { // TODO Remove
-			try {
-				while (pending > 0) {
-					this.queue.wait(); // TODO this.wait()
-				}
-				this.queue.notifyAll(); // TODO Remove
-			} catch (InterruptedException ex) {
-				// TODO Fix
+	public synchronized void finish() { 
+		
+		try {
+			while (pending > 0) {
+				this.wait(); 
 			}
+		} catch (InterruptedException ex) {
+			System.out.println("Finsh come up InterruptedException");
 		}
 	}
 
@@ -118,20 +107,26 @@ public class WorkQueue {
 	}
 
 	/**
-	 * TODO
+	 * Decreasing pending
 	 */
-	public void Pendingdecrease() { // TODO Refactor to decreasePending, private, synchronized
+	private synchronized void decreasePending() {
 
-		synchronized (this.queue) {
-			this.pending--;
-			if (pending <= 0 && queue.isEmpty()) { // TODO Do not check for isEmpty
-				queue.notifyAll();
-			}
+		this.pending--;
+		if (pending <= 0) {
+			this.notifyAll();
 		}
 	}
-	
-	// TODO private synchronized increasePending();
 
+	/**
+	 * Increasing the pending
+	 */
+	private synchronized void increasePending() {
+
+		this.pending++;
+		if (pending <= 0) {
+			this.notifyAll();
+		}
+	}
 	/**
 	 * Waits until work is available in the work queue. When work is found, will
 	 * remove the work from the queue and run it. If a shutdown is detected, will
@@ -144,7 +139,6 @@ public class WorkQueue {
 		public void run() {
 
 			Runnable r = null;
-
 			while (true) {
 				synchronized (queue) {
 					while (queue.isEmpty() && !shutdown) {
@@ -161,13 +155,13 @@ public class WorkQueue {
 						r = queue.removeFirst();
 					}
 				}
-
 				try {
 					r.run();
 				} catch (RuntimeException ex) {
+					ex.printStackTrace();
 					System.err.println("Warning: Work queue encountered an exception while running.");
 				}
-				Pendingdecrease();
+				decreasePending();
 			}
 		}
 	}

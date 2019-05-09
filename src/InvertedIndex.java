@@ -14,16 +14,15 @@ import java.util.TreeSet;
  */
 public class InvertedIndex {
 
-	// TODO finalIndex and wordCount must both be private
 	/**
 	 * creating a dataStructure for index
 	 */
-	protected final TreeMap<String, TreeMap<String, TreeSet<Integer>>> finalIndex;
+	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> finalIndex;
 
 	/**
 	 * creating a dataStructure for word count
 	 */
-	protected final TreeMap<String, Integer> wordCount;
+	private final TreeMap<String, Integer> wordCount;
 
 	/**
 	 * initial TreeMap
@@ -96,7 +95,13 @@ public class InvertedIndex {
 		int TotalWords = 0;
 		for (String location : this.finalIndex.get(queryWord).keySet()) {
 			if (findUp.containsKey(location)) {
-				findUp.get(location).updateCount(this.finalIndex.get(queryWord).get(location).size());
+				try {
+					findUp.get(location).updateCount(this.finalIndex.get(queryWord).get(location).size());
+				} catch (NullPointerException e) {
+					System.out.println("1:" + this.finalIndex.get(queryWord).get(location).size());
+					System.out.println("2" + findUp.get(location));
+					System.exit(0);
+				}
 			} else {
 				count = finalIndex.get(queryWord).get(location).size();
 				TotalWords = wordCount.get(location);
@@ -120,7 +125,12 @@ public class InvertedIndex {
 		for (String queryWord : queryLine) {
 			for (String queries : this.finalIndex.tailMap(queryWord).keySet()) {
 				if (queries.startsWith(queryWord)) {
-					this.searchProcess(queries, results, lookUp);
+					try {
+						this.searchProcess(queries, results, lookUp);
+					} catch (NullPointerException e) {
+						System.out.println("3: " + queries);
+//						System.exit(0);
+					}
 				} else {
 					break;
 				}
@@ -237,22 +247,33 @@ public class InvertedIndex {
 			return 0;
 		}
 	}
-	
-	/* TODO
+
+	/**
+	 * add all other to the InvertedIndex data structure
+	 * 
+	 * @param other other InvertedIndex
+	 */
 	public void addAll(InvertedIndex other) {
+
 		for (String key : other.finalIndex.keySet()) {
 			if (this.finalIndex.containsKey(key) == false) {
 				this.finalIndex.put(key, other.finalIndex.get(key));
-			}
-			else {
-				
+			} else {
+				for (String path : other.finalIndex.get(key).keySet()) {
+					if (this.finalIndex.get(key).containsKey(path)) {
+						this.finalIndex.get(key).get(path).addAll(other.finalIndex.get(key).get(path));
+					} else {
+						this.finalIndex.get(key).put(path, other.finalIndex.get(key).get(path));
+					}
+				}
 			}
 		}
-		
 		for (String key : other.wordCount.keySet()) {
-			
+			if (this.wordCount.containsKey(key)) {
+				this.wordCount.put(key, this.wordCount.get(key) + other.wordCount.get(key));
+			} else {
+				this.wordCount.put(key, other.wordCount.get(key));
+			}
 		}
 	}
-	*/
-
 }

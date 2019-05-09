@@ -75,8 +75,7 @@ public class SimpleReadWriteLock {
 					try {
 						lock.wait();
 					} catch (InterruptedException e) {
-						// TODO Fix exception handling
-						// Thread.currentThread().interrupt()
+						Thread.currentThread().interrupt();
 					}
 				}
 				readers++;
@@ -91,7 +90,9 @@ public class SimpleReadWriteLock {
 		public void unlock() {
 			synchronized (lock) {
 				readers--;
-				lock.notifyAll(); // TODO Only notifyAll when readers is 0 
+				if(readers == 0) {
+					lock.notifyAll();// TODO Only notifyAll when readers is 0 
+				}	 
 			}
 		}
 	}
@@ -112,7 +113,7 @@ public class SimpleReadWriteLock {
 					try {
 						lock.wait();
 					} catch (InterruptedException e) {
-						// TODO Fix this
+						System.out.println("Do not use lock propertely");
 					}
 				}
 				writers++;

@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -20,14 +21,14 @@ public class InvertedIndexBuilder {
 	/**
 	 * initial InvertedIndex object in InvertedIndexBuilder
 	 */
-	protected final InvertedIndex index; // TODO private
+	private final InvertedIndex index; 
 
 	/**
 	 * initial InvertedIndexBuilder object
 	 * 
 	 * @param index InvertedInde object
 	 */
-	InvertedIndexBuilder(InvertedIndex index) { // TODO public
+	InvertedIndexBuilder(InvertedIndex index) {
 
 		this.index = index;
 	}
@@ -43,7 +44,7 @@ public class InvertedIndexBuilder {
 
 		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
 		if (TextFile.test(file)) {
-			try (BufferedReader read_line = Files.newBufferedReader(file)) { // TODO Add StandardCharset.UTF_8
+			try (BufferedReader read_line = Files.newBufferedReader(file,StandardCharsets.UTF_8)) {
 				String line;
 				int number = 0;
 				String files = file.toString();

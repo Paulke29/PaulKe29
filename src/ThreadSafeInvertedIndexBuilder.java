@@ -14,7 +14,11 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 	 */
 	private int threads;
 	
-	// TODO private final ThreadSafeIndex index;
+	
+	/**
+	 * initial ThreadSafeIndex object
+	 */
+	private final ThreadSafeIndex index;
 
 	/**
 	 * TODO 
@@ -22,10 +26,10 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 	 * @param threads number of threads
 	 * 
 	 */
-	ThreadSafeInvertedIndexBuilder(ThreadSafeIndex index, int threads) { // TODO public
+	public ThreadSafeInvertedIndexBuilder(ThreadSafeIndex index, int threads) { 
 
 		super(index);
-		// TODO this.index = index;
+		this.index = index;
 		this.threads = threads;
 	}
 
@@ -57,12 +61,12 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 		/**
 		 * Path files for adding
 		 */
-		private Path file; // TODO final
+		private final Path file; 
 
 		/**
 		 * @param file QueryFile to add
 		 */
-		Task(Path file) { // TODO public
+		public Task(Path file) {
 
 			this.file = file;
 
@@ -72,17 +76,12 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 		public void run() {
 
 			try {
-
-				singleIndex(file, index);
-				
-				/* TODO
 				InvertedIndex local = new InvertedIndex();
 				singleIndex(file, local);
 				index.addAll(local);
-				*/
 
 			} catch (IOException e) {
-				e.printStackTrace(); // TODO Fix
+				System.out.println("IndexBuilder task has occur error");
 			}
 		}
 	}

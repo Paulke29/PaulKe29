@@ -11,7 +11,7 @@ import java.util.TreeSet;
  * @author Paulke
  *
  */
-public class QueryFileParser { // TODO implements QueryFileParserInterface
+public class QueryFileParser implements QueryFileParserInterface{ // TODO implements QueryFileParserInterface
 
 	/**
 	 * QuerySearch Result
