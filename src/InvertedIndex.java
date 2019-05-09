@@ -260,20 +260,17 @@ public class InvertedIndex {
 				this.finalIndex.put(key, other.finalIndex.get(key));
 			} else {
 				for (String path : other.finalIndex.get(key).keySet()) {
-					
 					try {
-						System.out.println("path: "+path);
-						if (this.finalIndex.get(key).containsKey(path)&& !key.isEmpty()) {
-						this.finalIndex.get(key).get(path).addAll(other.finalIndex.get(key).get(path));
-					} else {
-						this.finalIndex.get(key).put(path, other.finalIndex.get(key).get(path));
-					}
-					}catch(NullPointerException e) {
+						if (this.finalIndex.get(key).containsKey(path) && !key.isEmpty()) {
+							this.finalIndex.get(key).get(path).addAll(other.finalIndex.get(key).get(path));
+						} else {
+							this.finalIndex.get(key).put(path, other.finalIndex.get(key).get(path));
+						}
+					} catch (NullPointerException e) {
 						System.out.println("Add ALL");
 						e.printStackTrace();
 						System.exit(0);
 					}
-					
 				}
 			}
 		}
