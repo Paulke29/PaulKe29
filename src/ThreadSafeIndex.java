@@ -14,7 +14,7 @@ public class ThreadSafeIndex extends InvertedIndex {
 	/**
 	 * initial simple read and write lock
 	 */
-	private final SimpleReadWriteLock lock; 
+	private final SimpleReadWriteLock lock; // TODO final
 
 	/**
 	 * initial threadSafeIndex class
@@ -35,6 +35,18 @@ public class ThreadSafeIndex extends InvertedIndex {
 		}
 	}
 
+//	// TODO Remove
+//	@Override
+//	public ArrayList<Result> search(Collection<String> queries, boolean exact) {
+//
+//		lock.readLock().lock();
+//		try {
+//			return exact ? this.exactSearch(queries) : this.partialSearch(queries);
+//		} finally {
+//			lock.readLock().unlock();
+//		}
+//
+//	}
 
 	@Override
 	public ArrayList<Result> exactSearch(Collection<String> QueryLine) {
@@ -160,10 +172,8 @@ public class ThreadSafeIndex extends InvertedIndex {
 		}
 
 	}
-	
-	@Override
 	public void addAll(InvertedIndex other) {
-		lock.writeLock().unlock();
+		lock.writeLock().lock();
 		try {
 			super.addAll(other);
 		}finally {

@@ -35,12 +35,16 @@ public class Driver {
 		QueryFileParserInterface results;
 		int threads = 0;
 		if (argumentMap.hasFlag("-threads")) {
-			String numThreads = argumentMap.getString("-threads", "5");
+//			String numThreads = argumentMap.getString("-threads", "5");
 			try {
-				threads = Integer.parseInt(numThreads);
+				threads = Integer.parseInt(argumentMap.getString("-threads", "5"));
 			} catch (NumberFormatException e) {
+				System.out.print("NumberFormatException");
+			}
+			if(threads < 1) {
 				threads = 5;
 			}
+			System.out.println("threads: "+threads);
 			wordIndex = new ThreadSafeIndex();
 			results = new ThreadSafeQueryFileParser((ThreadSafeIndex) wordIndex, threads);
 			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder((ThreadSafeIndex) wordIndex, threads);

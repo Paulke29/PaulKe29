@@ -123,9 +123,9 @@ public class WorkQueue {
 	private synchronized void increasePending() {
 
 		this.pending++;
-		if (pending <= 0) {
-			this.notifyAll();
-		}
+//		if (pending <= 0) {
+//			this.notifyAll();
+//		}
 	}
 	/**
 	 * Waits until work is available in the work queue. When work is found, will
