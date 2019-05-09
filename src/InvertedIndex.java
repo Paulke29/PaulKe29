@@ -100,7 +100,7 @@ public class InvertedIndex {
 				} catch (NullPointerException e) {
 					System.out.println("1:" + this.finalIndex.get(queryWord).get(location).size());
 					System.out.println("2" + findUp.get(location));
-					System.exit(0);
+//					System.exit(0);
 				}
 			} else {
 				count = finalIndex.get(queryWord).get(location).size();
@@ -124,13 +124,13 @@ public class InvertedIndex {
 		Map<String, Result> lookUp = new HashMap<>();
 		for (String queryWord : queryLine) {
 			for (String queries : this.finalIndex.tailMap(queryWord).keySet()) {
-				if (queries.startsWith(queryWord)) {
-					try {
-						this.searchProcess(queries, results, lookUp);
-					} catch (NullPointerException e) {
-						System.out.println("3: " + queries);
+				if (queries.startsWith(queryWord) && !queries.isEmpty()) {
+//					try {
+					this.searchProcess(queries, results, lookUp);
+//					} catch (NullPointerException e) {
+//						e.printStackTrace();
 //						System.exit(0);
-					}
+//					}
 				} else {
 					break;
 				}
@@ -260,11 +260,20 @@ public class InvertedIndex {
 				this.finalIndex.put(key, other.finalIndex.get(key));
 			} else {
 				for (String path : other.finalIndex.get(key).keySet()) {
-					if (this.finalIndex.get(key).containsKey(path)) {
+					
+					try {
+						System.out.println("path: "+path);
+						if (this.finalIndex.get(key).containsKey(path)&& !key.isEmpty()) {
 						this.finalIndex.get(key).get(path).addAll(other.finalIndex.get(key).get(path));
 					} else {
 						this.finalIndex.get(key).put(path, other.finalIndex.get(key).get(path));
 					}
+					}catch(NullPointerException e) {
+						System.out.println("Add ALL");
+						e.printStackTrace();
+						System.exit(0);
+					}
+					
 				}
 			}
 		}

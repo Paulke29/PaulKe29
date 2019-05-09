@@ -34,23 +34,23 @@ public class QueryFileParser implements QueryFileParserInterface{ // TODO implem
 		this.index = index;
 	}
 
-	// TODO Remove
-	/**
-	 * Having a queryFile and start to decide whether exact search or not
-	 * 
-	 * @param queryFile source file
-	 * @param isExact   boolean variable
-	 * @throws IOException handled exception
-	 */
-	public void parseFile(Path queryFile, boolean isExact) throws IOException {
-
-		try (BufferedReader readLine = Files.newBufferedReader(queryFile, StandardCharsets.UTF_8)) {
-			String line = null;
-			while ((line = readLine.readLine()) != null) {
-				parseLine(line, isExact);
-			}
-		}
-	}
+//	// TODO Remove
+//	/**
+//	 * Having a queryFile and start to decide whether exact search or not
+//	 * 
+//	 * @param queryFile source file
+//	 * @param isExact   boolean variable
+//	 * @throws IOException handled exception
+//	 */
+//	public void parseFile(Path queryFile, boolean isExact) throws IOException {
+//
+//		try (BufferedReader readLine = Files.newBufferedReader(queryFile, StandardCharsets.UTF_8)) {
+//			String line = null;
+//			while ((line = readLine.readLine()) != null) {
+//				parseLine(line, isExact);
+//			}
+//		}
+//	}
 
 	/**
 	 * Parse the line and output the result
