@@ -25,7 +25,7 @@ public interface QueryFileParserInterface {
 			}
 		}
 	}
-	
+	  
 	/**
 	 * Parse the line and output the result
 	 * 
