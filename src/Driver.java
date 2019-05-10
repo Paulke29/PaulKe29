@@ -51,17 +51,21 @@ public class Driver {
 		}
 		if (argumentMap.hasFlag("-url")) {
 			String Seed = argumentMap.getString("-url");
-			String numLimit = argumentMap.getString("-url", "50");
+			int limit;
 			URL seed = null;
-			int limit = 0;
 			try {
 				seed = new URL(Seed);
-				limit = Integer.parseInt(numLimit);
+				limit = Integer.parseInt(argumentMap.getString("-limit", "50"));
+				System.out.println("Limit: "+ limit);
+				System.out.println("Limi2t: "+argumentMap.getString("-limit"));
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				System.err.println("Illegal url: " + Seed + " please check your argument");
+				return;
 			} catch (NumberFormatException e) {
-				limit = 50;
+				System.err.println("Illegal limit number: " + argumentMap.getString("-limit"));
+				return;
 			}
+			System.out.print("Limit3: "+limit);
 			crawler = new WebCrawler((threadSafeIndex) wordIndex, threads);
 			crawler.craw(seed, limit);
 
