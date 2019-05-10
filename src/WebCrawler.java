@@ -95,8 +95,7 @@ public class WebCrawler {
 //					links.add(singleURL);
 					if (links.size() < limit) {
 						ArrayList<URL> Alllinks = HtmlCleaner.listLinks(this.singleURL, HTML);
-//						System.out.println("SingleURL: " + singleURL);
-//						System.out.println("Alllinks: " + Alllinks);
+
 						for (URL link : Alllinks) {
 							if (links.size() >= limit) {
 								break;
