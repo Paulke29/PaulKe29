@@ -8,7 +8,7 @@ import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
 /**
- * @author paulke
+ * @author PaulKe
  *
  */
 public class WebCrawler {
@@ -57,7 +57,6 @@ public class WebCrawler {
 		queue.finish();
 		queue.shutdown();
 	}
-
 	/**
 	 * @author PaulKe
 	 *
@@ -88,12 +87,28 @@ public class WebCrawler {
 		public void run() {
 
 			try {
-
 				var HTML = HtmlFetcher.fetchHTML(this.singleURL, 3);
 				if (HTML == null) {
 					return;
 				}
-
+				synchronized (links) {
+//					links.add(singleURL);
+					if (links.size() < limit) {
+						ArrayList<URL> Alllinks = HtmlCleaner.listLinks(this.singleURL, HTML);
+//						System.out.println("SingleURL: " + singleURL);
+//						System.out.println("Alllinks: " + Alllinks);
+						for (URL link : Alllinks) {
+							if (links.size() >= limit) {
+								break;
+							} else {
+								if (links.contains(link) == false) {
+									links.add(link);
+									queue.execute((new WebCrawlerTask(link, limit)));
+								}
+							}
+						}
+					}
+				}
 				InvertedIndex local = new InvertedIndex();
 				Stemmer stemmer = new SnowballStemmer(SnowballStemmer.ALGORITHM.ENGLISH);
 				int start = 1;
@@ -102,22 +117,6 @@ public class WebCrawler {
 					start++;
 				}
 				threadSafe.addAll(local);
-				synchronized (links) {
-					links.add(singleURL);
-					if (links.size() < limit) {
-						ArrayList<URL> Alllinks = HtmlCleaner.listLinks(this.singleURL, HTML);
-						System.out.println("SingleURL: " + singleURL);
-						System.out.println("Alllinks: " + Alllinks);
-						for (URL link : Alllinks) {
-							System.out.println("link: " + link);
-							if (links.size() <= limit && links.contains(link) == false) {
-								links.add(link);
-								queue.execute((new WebCrawlerTask(link, limit)));
-							}
-						}
-					}
-				}
-
 			} catch (IOException e) {
 			}
 		}
