@@ -91,6 +91,13 @@ public class WebCrawler {
 				if (HTML == null) {
 					return;
 				}
+				InvertedIndex local = new InvertedIndex();
+				Stemmer stemmer = new SnowballStemmer(SnowballStemmer.ALGORITHM.ENGLISH);
+				int start = 1;
+				for (String s : TextParser.parse(HtmlCleaner.stripHtml(HTML))) {
+					local.add(stemmer.stem(s).toString(), this.singleURL.toString(), start);
+					start++;
+				}
 				synchronized (links) {
 //					links.add(singleURL);
 					if (links.size() < limit) {
@@ -107,13 +114,6 @@ public class WebCrawler {
 							}
 						}
 					}
-				}
-				InvertedIndex local = new InvertedIndex();
-				Stemmer stemmer = new SnowballStemmer(SnowballStemmer.ALGORITHM.ENGLISH);
-				int start = 1;
-				for (String s : TextParser.parse(HtmlCleaner.stripHtml(HTML))) {
-					local.add(stemmer.stem(s).toString(), this.singleURL.toString(), start);
-					start++;
 				}
 				threadSafe.addAll(local);
 			} catch (IOException e) {
