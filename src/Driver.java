@@ -34,7 +34,6 @@ public class Driver {
 		QueryFileParser resultSearch;
 		int threads = 0;
 		WebCrawler crawler = null;
-		WorkQueue worker = null;
 		if (argumentMap.hasFlag("-threads")) {
 			String numThreads = argumentMap.getString("-threads", "5");
 			try {
@@ -42,7 +41,6 @@ public class Driver {
 			} catch (NumberFormatException e) {
 				threads = 5;
 			}
-			worker = new WorkQueue(threads);
 			wordIndex = new threadSafeIndex();
 			resultSearch = new ThreadSafeQueryFileParser(wordIndex, threads);
 			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder((threadSafeIndex) wordIndex, threads);
@@ -92,7 +90,6 @@ public class Driver {
 				}
 			}
 		}
-		System.out.println("Index");
 		if (argumentMap.hasFlag("-index")) {
 
 			Path indexPath = argumentMap.getPath("-index", Path.of("index.json"));
@@ -119,9 +116,6 @@ public class Driver {
 			} catch (IOException e) {
 				System.out.println(e);
 			}
-		}
-		if (worker != null) {
-			worker.shutdown();
 		}
 
 		Duration elapsed = Duration.between(start, Instant.now());

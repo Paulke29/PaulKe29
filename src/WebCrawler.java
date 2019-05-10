@@ -1,3 +1,4 @@
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -106,11 +107,10 @@ public class WebCrawler {
 						for (URL link : Alllinks) {
 							if (links.size() >= limit) {
 								break;
-							} else {
-								if (links.contains(link) == false) {
+							} 
+							else if (links.contains(link) == false) {
 									links.add(link);
 									queue.execute((new WebCrawlerTask(link, limit)));
-								}
 							}
 						}
 					}
