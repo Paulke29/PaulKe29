@@ -34,7 +34,6 @@ public class Driver {
 		QueryFileParser resultSearch;
 		int threads = 0;
 		WebCrawler crawler = null;
-		boolean urlFlag = argumentMap.hasFlag("-url");
 		WorkQueue worker = null;
 		if (argumentMap.hasFlag("-threads")) {
 			String numThreads = argumentMap.getString("-threads", "5");
