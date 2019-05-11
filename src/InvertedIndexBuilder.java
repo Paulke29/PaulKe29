@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -20,7 +21,7 @@ public class InvertedIndexBuilder {
 	/**
 	 * initial InvertedIndex object in InvertedIndexBuilder
 	 */
-	protected final InvertedIndex index;
+	private final InvertedIndex index; 
 
 	/**
 	 * initial InvertedIndexBuilder object
@@ -43,7 +44,7 @@ public class InvertedIndexBuilder {
 
 		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
 		if (TextFile.test(file)) {
-			try (BufferedReader read_line = Files.newBufferedReader(file)) {
+			try (BufferedReader read_line = Files.newBufferedReader(file,StandardCharsets.UTF_8)) {
 				String line;
 				int number = 0;
 				String files = file.toString();
@@ -58,18 +59,6 @@ public class InvertedIndexBuilder {
 			}
 		}
 	}
-
-//	/**
-//	 * add the index of words from list of files
-//	 * 
-//	 * @param files list of file
-//	 * @param index InvertedIndex object
-//	 * @throws IOException
-//	 */
-//	public static void filesIndex(Path files, InvertedIndex index) throws IOException {
-//
-//		singleIndex(files, index);
-//	}
 
 	/**
 	 * Building final index

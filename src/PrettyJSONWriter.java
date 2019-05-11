@@ -235,7 +235,7 @@ public class PrettyJSONWriter {
 	public static void asObject(TreeMap<String, Integer> elements, Writer writer, int level) throws IOException {
 		writer.write('{');
 		writer.write('\n');
-		if (elements != null) {
+		if (!elements.isEmpty()) {
 			for (String keys : elements.headMap(elements.lastKey()).keySet()) {
 				quote(keys, writer, level + 1);
 				writer.write(": ");
@@ -355,15 +355,16 @@ public class PrettyJSONWriter {
 			}
 			quote(elements.lastKey(), writer, level + 1);
 			writer.write(": ");
-			writer.write('{');
-			writer.write('\n');
-			indent(writer, level + 1);
-			for (String filename : elements.get(elements.lastKey()).keySet()) {
-				quote(filename, writer, level + 1);
-				writer.write(": ");
-
-				asArray(elements.get(elements.lastKey()).get(filename), writer, level + 3);
-			}
+			asNestedObject(elements.get(elements.lastKey()), writer, level + 1);
+//			writer.write('{');
+//			writer.write('\n');
+//			indent(writer, level + 1);
+//			for (String filename : elements.get(elements.lastKey()).keySet()) {
+//				quote(filename, writer, level + 1);
+//				writer.write(": ");
+//
+//				asArray(elements.get(elements.lastKey()).get(filename), writer, level + 3);
+//			}
 			writer.write('\n');
 			indent(writer, level + 1);
 			writer.write("}");

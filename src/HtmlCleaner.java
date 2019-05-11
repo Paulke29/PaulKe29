@@ -140,7 +140,7 @@ public class HtmlCleaner {
 	 * @return cleaned list of all http(s) links in the order they were found
 	 * @throws MalformedURLException
 	 */
-	public static ArrayList<URL> listLinks(URL base, String html) throws MalformedURLException {
+	public static ArrayList<URL> listLinks(URL base, String html) {
 		
 		ArrayList<URL> locations = new ArrayList<URL>();
 		String rex = "(?i)<a(?:[^<>]*?)href=\"([^\"]+?)\"";
@@ -150,7 +150,8 @@ public class HtmlCleaner {
 		
 		URL url;
 		while(match.find()) {
-			String web = match.group(1);
+			try {
+				String web = match.group(1);
 			if(web.startsWith("http")) {
 				url = new URL(web);
 			}else {
@@ -160,6 +161,10 @@ public class HtmlCleaner {
 			if(url.toString().startsWith("http")) {
 				locations.add(clean(url));
 			}
+			}catch (MalformedURLException e){
+				e.printStackTrace();
+			}
+			
 		}
 		
 		

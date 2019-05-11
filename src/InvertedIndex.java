@@ -17,12 +17,12 @@ public class InvertedIndex {
 	/**
 	 * creating a dataStructure for index
 	 */
-	protected final TreeMap<String, TreeMap<String, TreeSet<Integer>>> finalIndex;
+	private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> finalIndex;
 
 	/**
 	 * creating a dataStructure for word count
 	 */
-	protected final TreeMap<String, Integer> wordCount;
+	private final TreeMap<String, Integer> wordCount;
 
 	/**
 	 * initial TreeMap
@@ -60,7 +60,7 @@ public class InvertedIndex {
 	 */
 	public ArrayList<Result> search(Collection<String> queries, boolean exact) {
 
-		return exact ? ExactSearch(queries) : partialSearch(queries);
+		return exact ? exactSearch(queries) : partialSearch(queries);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class InvertedIndex {
 	 * @param QueryLine the query line for search
 	 * @return exact search result
 	 */
-	public ArrayList<Result> ExactSearch(Collection<String> QueryLine) {
+	public ArrayList<Result> exactSearch(Collection<String> QueryLine) {
 
 		ArrayList<Result> results = new ArrayList<>();
 		Map<String, Result> findUp = new HashMap<>();
@@ -95,7 +95,13 @@ public class InvertedIndex {
 		int TotalWords = 0;
 		for (String location : this.finalIndex.get(queryWord).keySet()) {
 			if (findUp.containsKey(location)) {
-				findUp.get(location).updateCount(this.finalIndex.get(queryWord).get(location).size());
+				try {
+					findUp.get(location).updateCount(this.finalIndex.get(queryWord).get(location).size());
+				} catch (NullPointerException e) {
+					System.out.println("1:" + this.finalIndex.get(queryWord).get(location).size());
+					System.out.println("2" + findUp.get(location));
+//					System.exit(0);
+				}
 			} else {
 				count = finalIndex.get(queryWord).get(location).size();
 				TotalWords = wordCount.get(location);
@@ -118,8 +124,13 @@ public class InvertedIndex {
 		Map<String, Result> lookUp = new HashMap<>();
 		for (String queryWord : queryLine) {
 			for (String queries : this.finalIndex.tailMap(queryWord).keySet()) {
-				if (queries.startsWith(queryWord)) {
+				if (queries.startsWith(queryWord) && !queries.isEmpty()) {
+//					try {
 					this.searchProcess(queries, results, lookUp);
+//					} catch (NullPointerException e) {
+//						e.printStackTrace();
+//						System.exit(0);
+//					}
 				} else {
 					break;
 				}
@@ -236,31 +247,39 @@ public class InvertedIndex {
 			return 0;
 		}
 	}
+
 	/**
-	 * @param temp
+	 * add all other to the InvertedIndex data structure
+	 * 
+	 * @param other other InvertedIndex
 	 */
-	public void addAll(InvertedIndex temp) {
-		for (String word : temp.finalIndex.keySet()) {
-			if (this.finalIndex.containsKey(word)) {
-				for(String path: temp.finalIndex.get(word).keySet()) {
-					if(this.finalIndex.get(word).containsKey(path)) {
-						this.finalIndex.get(word).get(path).addAll(temp.finalIndex.get(word).get(path));
-					}else {
-						this.finalIndex.get(word).put(path, temp.finalIndex.get(word).get(path));
+	public void addAll(InvertedIndex other) {
+
+		for (String key : other.finalIndex.keySet()) {
+			if (this.finalIndex.containsKey(key) == false) {
+				this.finalIndex.put(key, other.finalIndex.get(key));
+			} else {
+				for (String path : other.finalIndex.get(key).keySet()) {
+					try {
+						if (this.finalIndex.get(key).containsKey(path) && !key.isEmpty()) {
+							this.finalIndex.get(key).get(path).addAll(other.finalIndex.get(key).get(path));
+						} else {
+							this.finalIndex.get(key).put(path, other.finalIndex.get(key).get(path));
+						}
+					} catch (NullPointerException e) {
+						System.out.println("Add ALL");
+						e.printStackTrace();
+						System.exit(0);
 					}
 				}
-			} else {
-				this.finalIndex.put(word, temp.finalIndex.get(word));
 			}
 		}
-		
-		for(String path : temp.wordCount.keySet()) {
-			if(this.wordCount.containsKey(path)) {
-				this.wordCount.put(path, this.wordCount.get(path) + temp.wordCount.get(path));
-			}else {
-				this.wordCount.put(path, temp.wordCount.get(path));
+		for (String key : other.wordCount.keySet()) {
+			if (this.wordCount.containsKey(key)) {
+				this.wordCount.put(key, this.wordCount.get(key) + other.wordCount.get(key));
+			} else {
+				this.wordCount.put(key, other.wordCount.get(key));
 			}
 		}
 	}
-
 }

@@ -31,7 +31,8 @@ public class Driver {
 		ArgumentMap argumentMap = new ArgumentMap(args);
 		InvertedIndex wordIndex;
 		InvertedIndexBuilder invertedIndexBuilder;
-		QueryFileParser resultSearch;
+//		QueryFileParser resultSearch;
+		QueryFileParserInterface results;
 		int threads = 0;
 		WebCrawler crawler = null;
 		if (argumentMap.hasFlag("-threads")) {
@@ -41,12 +42,15 @@ public class Driver {
 			} catch (NumberFormatException e) {
 				threads = 5;
 			}
-			wordIndex = new threadSafeIndex();
-			resultSearch = new ThreadSafeQueryFileParser(wordIndex, threads);
-			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder((threadSafeIndex) wordIndex, threads);
+			if(threads <1) {
+				threads =5;
+			}
+			wordIndex = new ThreadSafeIndex();
+			results = new ThreadSafeQueryFileParser((ThreadSafeIndex) wordIndex, threads);
+			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder((ThreadSafeIndex) wordIndex, threads);
 		} else {
 			wordIndex = new InvertedIndex();
-			resultSearch = new QueryFileParser(wordIndex);
+			results = new QueryFileParser(wordIndex);
 			invertedIndexBuilder = new InvertedIndexBuilder(wordIndex);
 		}
 		if (argumentMap.hasFlag("-url")) {
@@ -66,7 +70,7 @@ public class Driver {
 				return;
 			}
 			System.out.print("Limit3: "+limit);
-			crawler = new WebCrawler((threadSafeIndex) wordIndex, threads);
+			crawler = new WebCrawler((ThreadSafeIndex) wordIndex, threads);
 			crawler.craw(seed, limit);
 
 		}
@@ -88,7 +92,7 @@ public class Driver {
 					if (argumentMap.hasFlag("-exact")) {
 						exact = true;
 					}
-					resultSearch.parseFile(query, exact);
+					results.parseFile(query, exact);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -98,6 +102,7 @@ public class Driver {
 
 			Path indexPath = argumentMap.getPath("-index", Path.of("index.json"));
 			try {
+				System.out.println("Right starting");
 				wordIndex.nestJSON(indexPath);
 			} catch (IOException e) {
 				System.out.println("Couldn't get anything from path: " + indexPath);
@@ -116,7 +121,7 @@ public class Driver {
 		if (argumentMap.hasFlag("-results")) {
 			Path result = argumentMap.getPath("-results", Path.of("results.json"));
 			try {
-				resultSearch.toJSON(result);
+				results.toJSON(result);
 			} catch (IOException e) {
 				System.out.println(e);
 			}

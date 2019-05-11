@@ -22,7 +22,7 @@ public class WebCrawler {
 	/**
 	 * 
 	 */
-	private final threadSafeIndex threadSafe;
+	private final ThreadSafeIndex threadSafe;
 
 	/**
 	 * 
@@ -39,7 +39,7 @@ public class WebCrawler {
 	 * @param threads
 	 * @param queue
 	 */
-	public WebCrawler(threadSafeIndex threadSafe, int threads) {
+	public WebCrawler(ThreadSafeIndex threadSafe, int threads) {
 
 		this.queue = new WorkQueue(threads);
 		this.threads = threads;
@@ -57,6 +57,7 @@ public class WebCrawler {
 		queue.execute(new WebCrawlerTask(seed, limit));
 		queue.finish();
 		queue.shutdown();
+		System.out.println("Queue done");
 	}
 	/**
 	 * @author PaulKe
@@ -117,6 +118,7 @@ public class WebCrawler {
 				}
 				threadSafe.addAll(local);
 			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}

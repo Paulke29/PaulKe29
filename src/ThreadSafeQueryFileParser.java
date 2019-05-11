@@ -11,13 +11,12 @@ import java.util.TreeSet;
  * @author PaulKe
  *
  */
-public class ThreadSafeQueryFileParser extends QueryFileParser {
+public class ThreadSafeQueryFileParser implements QueryFileParserInterface {
 
 	/**
-	 * inital variable InvertedIndex Object
+	 * Initial variable InvertedIndex Object
 	 */
-	private final InvertedIndex index;
-
+	private final ThreadSafeIndex index; 
 	/**
 	 * initial the data structure
 	 */
@@ -34,9 +33,7 @@ public class ThreadSafeQueryFileParser extends QueryFileParser {
 	 * @param index   data structure
 	 * @param threads the number of threads
 	 */
-	public ThreadSafeQueryFileParser(InvertedIndex index, int threads) {
-
-		super(index);
+	public ThreadSafeQueryFileParser(ThreadSafeIndex index, int threads) { 
 		this.index = index;
 		this.result = new TreeMap<>();
 		this.threads = threads;
@@ -53,11 +50,20 @@ public class ThreadSafeQueryFileParser extends QueryFileParser {
 
 		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
 		String cleanedLine = String.join(" ", queries);
-		if (!queries.isEmpty() && !result.containsKey(cleanedLine)) {
-			synchronized (result) {
-				result.put(cleanedLine, index.search(queries, isExact));
+		
+		synchronized (result) {
+			if (queries.isEmpty() || result.containsKey(cleanedLine)) {
+				return;
 			}
 		}
+		
+		ArrayList<Result> local = index.search(queries, isExact);
+//		System.out.println("Queries: "+queries);
+		synchronized (result) {
+			result.put(cleanedLine, local);
+//			System.out.println("result: "+result);
+		}
+
 	}
 
 	/**
