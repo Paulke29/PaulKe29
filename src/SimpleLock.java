@@ -20,5 +20,4 @@ public interface SimpleLock {
 	 * Releases the lock.
 	 */
 	public void unlock();
-
 }

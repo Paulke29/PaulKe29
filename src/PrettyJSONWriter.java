@@ -31,6 +31,7 @@ public class PrettyJSONWriter {
 	 * @throws IOException
 	 */
 	public static void asArray(TreeSet<Integer> elements, Writer writer, int level) throws IOException {
+
 		writer.write('[');
 		writer.write('\n');
 		var iterator = elements.iterator();
@@ -41,7 +42,6 @@ public class PrettyJSONWriter {
 				indent(iterator.next().toString(), writer, level + 1);
 			}
 			writer.write("\n");
-
 		}
 		indent(writer, level);
 		writer.write(']');
@@ -55,6 +55,7 @@ public class PrettyJSONWriter {
 	 * @throws IOException
 	 */
 	public static void location_format(TreeMap<String, Integer> counting, Path path) throws IOException {
+
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asObject(counting, writer, 0);
 		}
@@ -69,6 +70,7 @@ public class PrettyJSONWriter {
 	 * @throws IOException
 	 */
 	public static void asResultArray(ArrayList<Result> result, Writer writer, int level) throws IOException {
+
 		int lastKey = result.size() - 1;
 		int beforeLast = result.size() - 2;
 		if (result.size() < 1) {
@@ -141,7 +143,6 @@ public class PrettyJSONWriter {
 			writer.write('}');
 			writer.write('\n');
 		}
-
 	}
 
 	/**
@@ -154,6 +155,7 @@ public class PrettyJSONWriter {
 	 */
 	public static void FormatSearch(TreeMap<String, ArrayList<Result>> result, Writer writer, int level)
 			throws IOException {
+
 		writer.write('{');
 		writer.write('\n');
 		if (!result.isEmpty()) {
@@ -186,6 +188,7 @@ public class PrettyJSONWriter {
 	 * @throws IOException
 	 */
 	public static void resultFormat(TreeMap<String, ArrayList<Result>> result, Path path) throws IOException {
+
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			FormatSearch(result, writer, 0);
 		}
@@ -201,6 +204,7 @@ public class PrettyJSONWriter {
 	 * @see #asArray(TreeSet, Writer, int)
 	 */
 	public static void asArray(TreeSet<Integer> elements, Path path) throws IOException {
+
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asArray(elements, writer, 0);
 		}
@@ -215,6 +219,7 @@ public class PrettyJSONWriter {
 	 * @see #asArray(TreeSet, Writer, int)
 	 */
 	public static String asArray(TreeSet<Integer> elements) {
+
 		try {
 			StringWriter writer = new StringWriter();
 			asArray(elements, writer, 0);
@@ -233,6 +238,7 @@ public class PrettyJSONWriter {
 	 * @throws IOException
 	 */
 	public static void asObject(TreeMap<String, Integer> elements, Writer writer, int level) throws IOException {
+
 		writer.write('{');
 		writer.write('\n');
 		if (elements != null) {
@@ -247,10 +253,8 @@ public class PrettyJSONWriter {
 			indent(elements.get(elements.lastKey()), writer, level);
 			writer.write("\n");
 		}
-
 		indent(writer, level);
 		writer.write('}');
-
 	}
 
 	/**
@@ -263,6 +267,7 @@ public class PrettyJSONWriter {
 	 * @see #asObject(TreeMap, Writer, int)
 	 */
 	public static void asObject(TreeMap<String, Integer> elements, Path path) throws IOException {
+
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asObject(elements, writer, 0);
 		}
@@ -277,6 +282,7 @@ public class PrettyJSONWriter {
 	 * @see #asObject(TreeMap, Writer, int)
 	 */
 	public static String asObject(TreeMap<String, Integer> elements) {
+
 		try {
 			StringWriter writer = new StringWriter();
 			asObject(elements, writer, 0);
@@ -299,7 +305,6 @@ public class PrettyJSONWriter {
 
 		writer.write('{');
 		writer.write('\n');
-
 		if (elements != null) {
 			for (String keys : elements.headMap(elements.lastKey()).keySet()) {
 				quote(keys, writer, level + 1);
@@ -307,11 +312,9 @@ public class PrettyJSONWriter {
 				asArray(elements.get(keys), writer, level + 1);
 				writer.write(",\n");
 			}
-
 			quote(elements.lastKey(), writer, level + 1);
 			writer.write(": ");
 			asArray(elements.get(elements.lastKey()), writer, level + 1);
-
 		}
 	}
 
@@ -324,6 +327,7 @@ public class PrettyJSONWriter {
 	 */
 	public static void asNestedStructure(TreeMap<String, TreeMap<String, TreeSet<Integer>>> elements, Path path)
 			throws IOException {
+
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asNestedStructure(elements, writer, 0);
 		}
@@ -339,10 +343,10 @@ public class PrettyJSONWriter {
 	 */
 	public static void asNestedStructure(TreeMap<String, TreeMap<String, TreeSet<Integer>>> elements, Writer writer,
 			int level) throws IOException {
+
 		if (!elements.isEmpty()) {
 			writer.write('{');
 			writer.write('\n');
-
 			for (String keys : elements.headMap(elements.lastKey()).keySet()) {
 				quote(keys, writer, level + 1);
 				writer.write(": ");
@@ -351,7 +355,6 @@ public class PrettyJSONWriter {
 				indent(writer, level + 1);
 				writer.write('}');
 				writer.write(",\n");
-
 			}
 			quote(elements.lastKey(), writer, level + 1);
 			writer.write(": ");
@@ -361,7 +364,6 @@ public class PrettyJSONWriter {
 			for (String filename : elements.get(elements.lastKey()).keySet()) {
 				quote(filename, writer, level + 1);
 				writer.write(": ");
-
 				asArray(elements.get(elements.lastKey()).get(filename), writer, level + 3);
 			}
 			writer.write('\n');
@@ -369,9 +371,7 @@ public class PrettyJSONWriter {
 			writer.write("}");
 			writer.write("\n");
 			writer.write('}');
-
 		}
-
 	}
 
 	/**
@@ -381,6 +381,7 @@ public class PrettyJSONWriter {
 	 * @throws IOException
 	 */
 	public void emptyFile(Path path) throws IOException {
+
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			emptyFile(writer);
 		}
@@ -393,6 +394,7 @@ public class PrettyJSONWriter {
 	 * @throws IOException
 	 */
 	public void emptyFile(Writer writer) throws IOException {
+
 		writer.write('{');
 		writer.write('\n');
 		writer.write("}");
@@ -408,6 +410,7 @@ public class PrettyJSONWriter {
 	 * @see #asNestedObject(TreeMap, Writer, int)
 	 */
 	public static void asNestedObject(TreeMap<String, TreeSet<Integer>> elements, Path path) throws IOException {
+
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 			asNestedObject(elements, writer, 0);
 		}
@@ -422,6 +425,7 @@ public class PrettyJSONWriter {
 	 * @see #asNestedObject(TreeMap, Writer, int)
 	 */
 	public static String asNestedObject(TreeMap<String, TreeSet<Integer>> elements) {
+
 		try {
 			StringWriter writer = new StringWriter();
 			asNestedObject(elements, writer, 0);
@@ -439,6 +443,7 @@ public class PrettyJSONWriter {
 	 * @throws IOException
 	 */
 	public static void indent(Writer writer, int times) throws IOException {
+
 		for (int i = 0; i < times; i++) {
 			writer.write('\t');
 		}
@@ -456,6 +461,7 @@ public class PrettyJSONWriter {
 	 * @see #indent(Writer, int)
 	 */
 	public static void indent(Integer element, Writer writer, int times) throws IOException {
+
 		indent(element.toString(), writer, times);
 	}
 
@@ -470,6 +476,7 @@ public class PrettyJSONWriter {
 	 * @see #indent(Writer, int)
 	 */
 	public static void indent(String element, Writer writer, int times) throws IOException {
+
 		indent(writer, times);
 		writer.write(element);
 	}
@@ -482,6 +489,7 @@ public class PrettyJSONWriter {
 	 * @throws IOException
 	 */
 	public static void quote(String element, Writer writer) throws IOException {
+
 		writer.write('"');
 		writer.write(element);
 		writer.write('"');
@@ -500,6 +508,7 @@ public class PrettyJSONWriter {
 	 * @see #quote(String, Writer)
 	 */
 	public static void quote(String element, Writer writer, int times) throws IOException {
+
 		indent(writer, times);
 		quote(element, writer);
 	}
@@ -510,14 +519,13 @@ public class PrettyJSONWriter {
 	 * @param args unused
 	 */
 	public static void main(String[] args) {
+
 		TreeSet<Integer> elements = new TreeSet<>();
 		System.out.println("Empty:");
 		System.out.println(asArray(elements));
-
 		elements.add(65);
 		System.out.println("\nSingle:");
 		System.out.println(asArray(elements));
-
 		elements.add(66);
 		elements.add(67);
 		System.out.println("\nSimple:");

@@ -9,7 +9,9 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
- * @author paulke
+ * Building an index like using adding, partial search and Exact Search
+ * 
+ * @author PaulKe
  *
  */
 public class InvertedIndex {
@@ -95,13 +97,7 @@ public class InvertedIndex {
 		int TotalWords = 0;
 		for (String location : this.finalIndex.get(queryWord).keySet()) {
 			if (findUp.containsKey(location)) {
-				try {
-					findUp.get(location).updateCount(this.finalIndex.get(queryWord).get(location).size());
-				} catch (NullPointerException e) {
-					System.out.println("1:" + this.finalIndex.get(queryWord).get(location).size());
-					System.out.println("2" + findUp.get(location));
-//					System.exit(0);
-				}
+				findUp.get(location).updateCount(this.finalIndex.get(queryWord).get(location).size());
 			} else {
 				count = finalIndex.get(queryWord).get(location).size();
 				TotalWords = wordCount.get(location);
@@ -125,12 +121,7 @@ public class InvertedIndex {
 		for (String queryWord : queryLine) {
 			for (String queries : this.finalIndex.tailMap(queryWord).keySet()) {
 				if (queries.startsWith(queryWord) && !queries.isEmpty()) {
-//					try {
 					this.searchProcess(queries, results, lookUp);
-//					} catch (NullPointerException e) {
-//						e.printStackTrace();
-//						System.exit(0);
-//					}
 				} else {
 					break;
 				}
@@ -143,7 +134,7 @@ public class InvertedIndex {
 	/**
 	 * Output finalIndex
 	 * 
-	 * @param path
+	 * @param path the path for outputing the format
 	 * @throws IOException
 	 */
 	public void nestJSON(Path path) throws IOException {
@@ -154,7 +145,7 @@ public class InvertedIndex {
 	/**
 	 * Output location format
 	 * 
-	 * @param path
+	 * @param path the path for outputing the format
 	 * @throws IOException
 	 */
 	public void locationsJSON(Path path) throws IOException {
@@ -186,8 +177,8 @@ public class InvertedIndex {
 	/**
 	 * Judge finalIndex contains this word with this specific location or not
 	 * 
-	 * @param word
-	 * @param location
+	 * @param word     checking contain the word or not
+	 * @param location checking the word in special location
 	 * @return true if finalIndex contains this word with this specific location
 	 */
 	public boolean contains(String word, String location) {
@@ -198,7 +189,7 @@ public class InvertedIndex {
 	/**
 	 * Get the number of words found for a specific location
 	 * 
-	 * @param location
+	 * @param location having location for the world
 	 * @return the number of words found for a specific location in wordCount
 	 */
 	public int wordCount(String location) {
@@ -236,7 +227,7 @@ public class InvertedIndex {
 	/**
 	 * the number of locations stored that specific word
 	 * 
-	 * @param word
+	 * @param word find the word in special location
 	 * @return the number of locations stored by finalIndex for that specific word
 	 */
 	public int locationCount(String word) {
@@ -260,16 +251,10 @@ public class InvertedIndex {
 				this.finalIndex.put(key, other.finalIndex.get(key));
 			} else {
 				for (String path : other.finalIndex.get(key).keySet()) {
-					try {
-						if (this.finalIndex.get(key).containsKey(path) && !key.isEmpty()) {
-							this.finalIndex.get(key).get(path).addAll(other.finalIndex.get(key).get(path));
-						} else {
-							this.finalIndex.get(key).put(path, other.finalIndex.get(key).get(path));
-						}
-					} catch (NullPointerException e) {
-						System.out.println("Add ALL");
-						e.printStackTrace();
-						System.exit(0);
+					if (this.finalIndex.get(key).containsKey(path) && !key.isEmpty()) {
+						this.finalIndex.get(key).get(path).addAll(other.finalIndex.get(key).get(path));
+					} else {
+						this.finalIndex.get(key).put(path, other.finalIndex.get(key).get(path));
 					}
 				}
 			}

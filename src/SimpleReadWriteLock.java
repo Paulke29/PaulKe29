@@ -26,7 +26,7 @@ public class SimpleReadWriteLock {
 	private int writers;
 
 	/**
-	 * TODO
+	 * Initial SimpleReadWriteLock
 	 */
 	private final SimpleReadWriteLock lock;
 
@@ -34,6 +34,7 @@ public class SimpleReadWriteLock {
 	 * Initializes a new simple read/write lock.
 	 */
 	public SimpleReadWriteLock() {
+
 		readerLock = new ReadLock();
 		writerLock = new WriteLock();
 		readers = 0;
@@ -47,6 +48,7 @@ public class SimpleReadWriteLock {
 	 * @return the reader lock
 	 */
 	public SimpleLock readLock() {
+
 		return readerLock;
 	}
 
@@ -56,9 +58,9 @@ public class SimpleReadWriteLock {
 	 * @return the writer lock
 	 */
 	public SimpleLock writeLock() {
+
 		return writerLock;
 	}
-
 	/**
 	 * Used to maintain simultaneous read operations.
 	 */
@@ -70,6 +72,7 @@ public class SimpleReadWriteLock {
 		 */
 		@Override
 		public void lock() {
+
 			synchronized (lock) {
 				while (writers > 0) {
 					try {
@@ -88,15 +91,15 @@ public class SimpleReadWriteLock {
 		 */
 		@Override
 		public void unlock() {
+
 			synchronized (lock) {
 				readers--;
-				if(readers == 0) {
-					lock.notifyAll();// TODO Only notifyAll when readers is 0 
-				}	 
+				if (readers == 0) {
+					lock.notifyAll();
+				}
 			}
 		}
 	}
-
 	/**
 	 * Used to maintain exclusive write operations.
 	 */
@@ -108,6 +111,7 @@ public class SimpleReadWriteLock {
 		 */
 		@Override
 		public void lock() {
+
 			synchronized (lock) {
 				while (readers > 0 || writers > 0) {
 					try {
@@ -126,6 +130,7 @@ public class SimpleReadWriteLock {
 		 */
 		@Override
 		public void unlock() {
+
 			synchronized (lock) {
 				writers--;
 				lock.notifyAll();

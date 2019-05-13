@@ -21,7 +21,7 @@ public class InvertedIndexBuilder {
 	/**
 	 * initial InvertedIndex object in InvertedIndexBuilder
 	 */
-	private final InvertedIndex index; 
+	private final InvertedIndex index;
 
 	/**
 	 * initial InvertedIndexBuilder object
@@ -44,7 +44,7 @@ public class InvertedIndexBuilder {
 
 		Predicate<Path> TextFile = TextFileFinder.TEXT_EXT;
 		if (TextFile.test(file)) {
-			try (BufferedReader read_line = Files.newBufferedReader(file,StandardCharsets.UTF_8)) {
+			try (BufferedReader read_line = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
 				String line;
 				int number = 0;
 				String files = file.toString();

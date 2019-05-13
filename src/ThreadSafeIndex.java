@@ -3,9 +3,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 
-// TODO Keep method order between this and InvertedIndex consistent
-
 /**
+ * Creating ThreadSafeIndex for mutil-threading
+ * 
  * @author PaulKe
  *
  */
@@ -14,7 +14,7 @@ public class ThreadSafeIndex extends InvertedIndex {
 	/**
 	 * initial simple read and write lock
 	 */
-	private final SimpleReadWriteLock lock; // TODO final
+	private final SimpleReadWriteLock lock;
 
 	/**
 	 * initial threadSafeIndex class
@@ -35,19 +35,6 @@ public class ThreadSafeIndex extends InvertedIndex {
 		}
 	}
 
-//	// TODO Remove
-//	@Override
-//	public ArrayList<Result> search(Collection<String> queries, boolean exact) {
-//
-//		lock.readLock().lock();
-//		try {
-//			return exact ? this.exactSearch(queries) : this.partialSearch(queries);
-//		} finally {
-//			lock.readLock().unlock();
-//		}
-//
-//	}
-
 	@Override
 	public ArrayList<Result> exactSearch(Collection<String> QueryLine) {
 
@@ -65,86 +52,6 @@ public class ThreadSafeIndex extends InvertedIndex {
 		lock.readLock().lock();
 		try {
 			return super.partialSearch(QueryLine);
-		} finally {
-			lock.readLock().unlock();
-		}
-	}
-
-	@Override
-	public int wordCount() {
-
-		lock.readLock().lock();
-		try {
-			// TODO return super.wordCount();
-			return super.wordCount();
-		} finally {
-			lock.readLock().unlock();
-		}
-	}
-
-	// TODO Fix all of these to call super instead of accessing the finalIndex directly
-	
-	@Override
-	public boolean contains(String word) {
-
-		lock.readLock().lock();
-		try {
-			return super.contains(word);
-		} finally {
-			lock.readLock().unlock();
-		}
-	}
-
-	@Override
-	public int wordCount(String location) {
-
-		lock.readLock().lock();
-		try {
-			return super.wordCount(location);
-		} finally {
-			lock.readLock().unlock();
-		}
-	}
-
-	@Override
-	public boolean contains(String word, String location) {
-
-		lock.readLock().lock();
-		try {
-			return super.contains(word,location);
-		} finally {
-			lock.readLock().unlock();
-		}
-	}
-
-	@Override
-	public int wordCount(String word, String location) {
-		lock.readLock().lock();
-		try {
-			return super.wordCount(word,location);
-		} finally {
-			lock.readLock().unlock();
-		}
-
-	}
-
-	@Override
-	public int locationCount() {
-		lock.readLock().lock();
-		try {
-			return super.locationCount();
-		} finally {
-			lock.readLock().unlock();
-		}
-
-	}
-
-	@Override
-	public int locationCount(String word) {
-
-		lock.readLock().lock();
-		try {
-			return super.locationCount(word);
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -170,15 +77,92 @@ public class ThreadSafeIndex extends InvertedIndex {
 		} finally {
 			lock.readLock().unlock();
 		}
-
 	}
-	public void addAll(InvertedIndex other) {
-		lock.writeLock().lock();
+
+	@Override
+	public int locationCount() {
+
+		lock.readLock().lock();
 		try {
-			super.addAll(other);
-		}finally {
-			lock.writeLock().unlock();
+			return super.locationCount();
+		} finally {
+			lock.readLock().unlock();
 		}
 	}
 
+	@Override
+	public int wordCount() {
+
+		lock.readLock().lock();
+		try {
+			return super.wordCount();
+		} finally {
+			lock.readLock().unlock();
+		}
+	}
+
+	@Override
+	public boolean contains(String word) {
+
+		lock.readLock().lock();
+		try {
+			return super.contains(word);
+		} finally {
+			lock.readLock().unlock();
+		}
+	}
+
+	@Override
+	public boolean contains(String word, String location) {
+
+		lock.readLock().lock();
+		try {
+			return super.contains(word, location);
+		} finally {
+			lock.readLock().unlock();
+		}
+	}
+
+	@Override
+	public int wordCount(String location) {
+
+		lock.readLock().lock();
+		try {
+			return super.wordCount(location);
+		} finally {
+			lock.readLock().unlock();
+		}
+	}
+
+	@Override
+	public int wordCount(String word, String location) {
+
+		lock.readLock().lock();
+		try {
+			return super.wordCount(word, location);
+		} finally {
+			lock.readLock().unlock();
+		}
+	}
+
+	@Override
+	public int locationCount(String word) {
+
+		lock.readLock().lock();
+		try {
+			return super.locationCount(word);
+		} finally {
+			lock.readLock().unlock();
+		}
+	}
+
+	public void addAll(InvertedIndex other) {
+
+		lock.writeLock().lock();
+		try {
+			super.addAll(other);
+		} finally {
+			lock.writeLock().unlock();
+		}
+	}
 }

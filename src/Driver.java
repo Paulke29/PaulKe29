@@ -1,11 +1,7 @@
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
-
-// TODO Warnings in code. Receiving -10 on code review grade. Fix warnings before review always.
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -32,22 +28,17 @@ public class Driver {
 		ArgumentMap argumentMap = new ArgumentMap(args);
 		InvertedIndex wordIndex;
 		InvertedIndexBuilder invertedIndexBuilder;
-//		QueryFileParser resultSearch;
 		QueryFileParserInterface results;
 		int threads = 0;
 		if (argumentMap.hasFlag("-threads")) {
-//			String numThreads = argumentMap.getString("-threads", "5");
 			try {
 				threads = Integer.parseInt(argumentMap.getString("-threads", "5"));
 			} catch (NumberFormatException e) {
 				System.out.print("NumberFormatException");
 			}
-			if(threads < 1) {
+			if (threads < 1) {
 				threads = 5;
 			}
-			System.out.println("args: "+Arrays.toString(args));
-			System.out.println("argumentMap:"+argumentMap);
-			System.out.println("threads: "+threads+". "+argumentMap.getString("-threads"));
 			wordIndex = new ThreadSafeIndex();
 			results = new ThreadSafeQueryFileParser((ThreadSafeIndex) wordIndex, threads);
 			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder((ThreadSafeIndex) wordIndex, threads);
@@ -81,17 +72,14 @@ public class Driver {
 			}
 		}
 		if (argumentMap.hasFlag("-index")) {
-
 			Path indexPath = argumentMap.getPath("-index", Path.of("index.json"));
 			try {
 				wordIndex.nestJSON(indexPath);
 			} catch (IOException e) {
 				System.out.println("Couldn't get anything from path: " + indexPath);
 			}
-
 		}
 		if (argumentMap.hasFlag("-locations")) {
-
 			Path locationPath = argumentMap.getPath("-locations", Path.of("locations.json"));
 			try {
 				wordIndex.locationsJSON(locationPath);
@@ -107,7 +95,6 @@ public class Driver {
 				System.out.println("Couldn't to print out the result");
 			}
 		}
-
 		Duration elapsed = Duration.between(start, Instant.now());
 		double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
 		System.out.printf("Elapsed: %f seconds%n", seconds);

@@ -5,8 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * TODO
- * @author TODO
+ * Interface for QueryFileParser method
+ * 
+ * @author PaulKe
  */
 public interface QueryFileParserInterface {
 
@@ -18,6 +19,7 @@ public interface QueryFileParserInterface {
 	 * @throws IOException handled exception
 	 */
 	public default void parseFile(Path queryFile, boolean isExact) throws IOException {
+
 		try (BufferedReader readLine = Files.newBufferedReader(queryFile, StandardCharsets.UTF_8)) {
 			String line = null;
 			while ((line = readLine.readLine()) != null) {
@@ -25,7 +27,7 @@ public interface QueryFileParserInterface {
 			}
 		}
 	}
-	  
+
 	/**
 	 * Parse the line and output the result
 	 * 
@@ -33,11 +35,11 @@ public interface QueryFileParserInterface {
 	 * @param isExact decide exact search or not
 	 */
 	public void parseLine(String line, boolean isExact);
-	
+
 	/**
 	 * Output JSON type for Query Result
 	 * 
-	 * @param path
+	 * @param path the path of outputing format
 	 * @throws IOException handled exception
 	 */
 	public void toJSON(Path path) throws IOException;

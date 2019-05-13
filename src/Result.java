@@ -1,10 +1,13 @@
 import java.text.DecimalFormat;
 
 /**
+ * Creating Single result object for every result
+ * 
  * @author PaulKe
  *
  */
 public class Result implements Comparable<Result> {
+
 	/**
 	 * define the file
 	 */
@@ -33,6 +36,7 @@ public class Result implements Comparable<Result> {
 	 * @param TotalWords total words of file
 	 */
 	public Result(String where, int count, int TotalWords) {
+
 		this.where = where;
 		this.count = count;
 		this.totalWords = TotalWords;
@@ -45,6 +49,7 @@ public class Result implements Comparable<Result> {
 	 * @return TotalWords
 	 */
 	public int getTotalWords() {
+
 		return this.totalWords;
 	}
 
@@ -54,6 +59,7 @@ public class Result implements Comparable<Result> {
 	 * @return where location
 	 */
 	public String getWhere() {
+
 		return this.where;
 	}
 
@@ -63,6 +69,7 @@ public class Result implements Comparable<Result> {
 	 * @return count matched words
 	 */
 	public int getCount() {
+
 		return this.count;
 	}
 
@@ -72,6 +79,7 @@ public class Result implements Comparable<Result> {
 	 * @param count matched words
 	 */
 	public void setCount(int count) {
+
 		this.count = count;
 	}
 
@@ -81,6 +89,7 @@ public class Result implements Comparable<Result> {
 	 * @return score ratio of count and total words
 	 */
 	public double getScore() {
+
 		return ((double) this.count / this.totalWords);
 	}
 
@@ -90,6 +99,7 @@ public class Result implements Comparable<Result> {
 	 * @return the format of score
 	 */
 	public String getFormattedScore() {
+
 		return df.format(this.getScore());
 	}
 
@@ -99,17 +109,19 @@ public class Result implements Comparable<Result> {
 	 * @param newCount new matched words
 	 */
 	public void updateCount(int newCount) {
+
 		this.count = this.count + newCount;
 	}
 
 	@Override
 	public String toString() {
-		return "Where: " + where + " " + "Count: " + count + " " + "Score: " + getScore();
 
+		return "Where: " + where + " " + "Count: " + count + " " + "Score: " + getScore();
 	}
 
 	@Override
 	public int compareTo(Result other) {
+
 		int result = Double.compare(other.getScore(), this.getScore());
 		if (result == 0) {
 			result = Integer.compare(other.getCount(), this.getCount());

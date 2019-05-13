@@ -1,9 +1,10 @@
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
 /**
+ * Creating ThreadSafeInvertedIndexBuilder class for mutilethreading
+ * 
  * @author Paulke
  *
  */
@@ -13,20 +14,20 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 	 * number of threads
 	 */
 	private int threads;
-	
-	
+
 	/**
 	 * initial ThreadSafeIndex object
 	 */
 	private final ThreadSafeIndex index;
 
 	/**
-	 * TODO 
+	 * Initial ThreadSafeInvertedIndexBuilder object
+	 * 
 	 * @param index   initial threadSafeIndex
 	 * @param threads number of threads
 	 * 
 	 */
-	public ThreadSafeInvertedIndexBuilder(ThreadSafeIndex index, int threads) { 
+	public ThreadSafeInvertedIndexBuilder(ThreadSafeIndex index, int threads) {
 
 		super(index);
 		this.index = index;
@@ -36,9 +37,7 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 	/**
 	 * Initial mulidIndex method
 	 * 
-	 * @param files     Queryfile to add
-	 * @param wordindex data structre to store data
-	 * @param threads   the number of threads
+	 * @param path path for using working queue to build index
 	 * @throws IOException
 	 */
 	public void build(Path path) throws IOException {
@@ -51,7 +50,6 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 		task.finish();
 		task.shutdown();
 	}
-
 	/**
 	 * @author PaulKe
 	 *
@@ -61,7 +59,7 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 		/**
 		 * Path files for adding
 		 */
-		private final Path file; 
+		private final Path file;
 
 		/**
 		 * @param file QueryFile to add
@@ -69,7 +67,6 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 		public Task(Path file) {
 
 			this.file = file;
-
 		}
 
 		@Override
@@ -79,7 +76,6 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 				InvertedIndex local = new InvertedIndex();
 				singleIndex(file, local);
 				index.addAll(local);
-
 			} catch (IOException e) {
 				System.out.println("IndexBuilder task has occur error");
 			}

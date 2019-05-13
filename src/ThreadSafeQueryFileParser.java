@@ -8,6 +8,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
+ * Creating mulitthreading for search words
+ * 
  * @author PaulKe
  *
  */
@@ -16,7 +18,8 @@ public class ThreadSafeQueryFileParser implements QueryFileParserInterface {
 	/**
 	 * Initial variable InvertedIndex Object
 	 */
-	private final ThreadSafeIndex index; 
+	private final ThreadSafeIndex index;
+
 	/**
 	 * initial the data structure
 	 */
@@ -33,7 +36,8 @@ public class ThreadSafeQueryFileParser implements QueryFileParserInterface {
 	 * @param index   data structure
 	 * @param threads the number of threads
 	 */
-	public ThreadSafeQueryFileParser(ThreadSafeIndex index, int threads) { 
+	public ThreadSafeQueryFileParser(ThreadSafeIndex index, int threads) {
+
 		this.index = index;
 		this.result = new TreeMap<>();
 		this.threads = threads;
@@ -50,20 +54,15 @@ public class ThreadSafeQueryFileParser implements QueryFileParserInterface {
 
 		TreeSet<String> queries = TextFileStemmer.uniqueStems(line);
 		String cleanedLine = String.join(" ", queries);
-		
 		synchronized (result) {
 			if (queries.isEmpty() || result.containsKey(cleanedLine)) {
 				return;
 			}
 		}
-		
 		ArrayList<Result> local = index.search(queries, isExact);
-//		System.out.println("Queries: "+queries);
 		synchronized (result) {
 			result.put(cleanedLine, local);
-//			System.out.println("result: "+result);
 		}
-
 	}
 
 	/**
@@ -85,7 +84,6 @@ public class ThreadSafeQueryFileParser implements QueryFileParserInterface {
 		task.finish();
 		task.shutdown();
 	}
-
 	/**
 	 * @author PaulKe
 	 *
@@ -105,8 +103,8 @@ public class ThreadSafeQueryFileParser implements QueryFileParserInterface {
 		/**
 		 * Initial Task
 		 * 
-		 * @param Exact
-		 * @param queryLine
+		 * @param Exact     decide exact or partial search
+		 * @param queryLine the querylind we look for
 		 */
 		Task(Boolean Exact, String queryLine) {
 
@@ -124,7 +122,7 @@ public class ThreadSafeQueryFileParser implements QueryFileParserInterface {
 	/**
 	 * Output JSON type for Query Result
 	 * 
-	 * @param path
+	 * @param path the path of output format
 	 * @throws IOException
 	 */
 	@Override
@@ -134,5 +132,4 @@ public class ThreadSafeQueryFileParser implements QueryFileParserInterface {
 			PrettyJSONWriter.resultFormat(result, path);
 		}
 	}
-
 }

@@ -10,6 +10,7 @@ import java.util.Map;
  * @author University of San Francisco
  */
 public class ArgumentMap {
+
 	/**
 	 * Stores command-line arguments in key = value pairs.
 	 */
@@ -19,6 +20,7 @@ public class ArgumentMap {
 	 * Initializes this argument map.
 	 */
 	public ArgumentMap() {
+
 		this.map = new HashMap<>();
 	}
 
@@ -30,6 +32,7 @@ public class ArgumentMap {
 	 * @param args
 	 */
 	public ArgumentMap(String[] args) {
+
 		this();
 		parse(args);
 	}
@@ -41,14 +44,12 @@ public class ArgumentMap {
 	 * @param args the command line arguments to parse
 	 */
 	public void parse(String[] args) {
+
 		for (int x = 0; x < args.length; x++) {
 			if (isFlag(args[x])) {
-				System.out.println("ArgumentMap args: "+args[x]);
 				if (args.length > x + 1 && isValue(args[x + 1])) {
-					System.out.println("ArgumentMap args2: "+args[x]);
 					map.put(args[x], args[x + 1]);
 				} else {
-					System.out.println("ArgumentMap args3: "+args[x]);
 					map.put(args[x], null);
 				}
 			}
@@ -69,6 +70,7 @@ public class ArgumentMap {
 	 * @see String#length()
 	 */
 	public static boolean isFlag(String arg) {
+
 		if (arg == null) {
 			return false;
 		}
@@ -90,7 +92,7 @@ public class ArgumentMap {
 	 * @see String#length()
 	 */
 	public static boolean isValue(String arg) {
-		System.out.println("ArgumentMap isValue: "+ arg);
+
 		return arg != null && !arg.startsWith("-") && arg.trim().length() > 0;
 	}
 
@@ -100,6 +102,7 @@ public class ArgumentMap {
 	 * @return number of unique flags
 	 */
 	public int numFlags() {
+
 		return map.size();
 	}
 
@@ -110,6 +113,7 @@ public class ArgumentMap {
 	 * @return {@code true} if the flag exists
 	 */
 	public boolean hasFlag(String flag) {
+
 		return map.containsKey(flag);
 	}
 
@@ -120,6 +124,7 @@ public class ArgumentMap {
 	 * @return {@code true} if the flag is mapped to a non-null value
 	 */
 	public boolean hasValue(String flag) {
+
 		return map.get(flag) != null;
 	}
 
@@ -132,6 +137,7 @@ public class ArgumentMap {
 	 *         there is no mapping for the flag
 	 */
 	public String getString(String flag) {
+
 		return map.get(flag);
 	}
 
@@ -146,6 +152,7 @@ public class ArgumentMap {
 	 *         if there is no mapping for the flag
 	 */
 	public String getString(String flag, String defaultValue) {
+
 		String value = getString(flag);
 		return value == null ? defaultValue : value;
 	}
@@ -188,12 +195,14 @@ public class ArgumentMap {
 	 *         default value if there is no valid mapping for the flag
 	 */
 	public Path getPath(String flag, Path defaultValue) {
+
 		Path value = getPath(flag);
 		return value == null ? defaultValue : value;
 	}
 
 	@Override
 	public String toString() {
+
 		return this.map.toString();
 	}
 
@@ -204,6 +213,7 @@ public class ArgumentMap {
 	 * @param args the command-line arguments to parse
 	 */
 	public static void main(String[] args) {
+
 		var map = new ArgumentMap(args);
 		System.out.println(map);
 	}
