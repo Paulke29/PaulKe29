@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -9,6 +6,7 @@ import java.util.TreeSet;
 
 /**
  * @author Paulke
+ *  
  *
  */
 public class QueryFileParser implements QueryFileParserInterface{ // TODO implements QueryFileParserInterface
