@@ -40,6 +40,7 @@ public class ThreadSafeInvertedIndexBuilder extends InvertedIndexBuilder {
 	 * @param path path for using working queue to build index
 	 * @throws IOException
 	 */
+	// TODO @Override
 	public void build(Path path) throws IOException {
 
 		WorkQueue task = new WorkQueue(this.threads);

@@ -98,7 +98,7 @@ public class ThreadSafeQueryFileParser implements QueryFileParserInterface {
 		/**
 		 * whether Exact Search or not
 		 */
-		private Boolean Exact = null;
+		private Boolean Exact = null; // TODO Fix variable name
 
 		/**
 		 * Initial Task
@@ -106,7 +106,7 @@ public class ThreadSafeQueryFileParser implements QueryFileParserInterface {
 		 * @param Exact     decide exact or partial search
 		 * @param queryLine the querylind we look for
 		 */
-		Task(Boolean Exact, String queryLine) {
+		Task(Boolean Exact, String queryLine) { // TODO public
 
 			this.queryLine = queryLine;
 			this.Exact = Exact;

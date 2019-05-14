@@ -155,7 +155,7 @@ public class WorkQueue {
 				try {
 					r.run();
 				} catch (RuntimeException ex) {
-					ex.printStackTrace();
+					ex.printStackTrace(); // TODO No stack trace!
 					System.err.println("Warning: Work queue encountered an exception while running.");
 				}
 				decreasePending();

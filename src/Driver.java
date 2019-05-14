@@ -34,7 +34,7 @@ public class Driver {
 			try {
 				threads = Integer.parseInt(argumentMap.getString("-threads", "5"));
 			} catch (NumberFormatException e) {
-				System.out.print("NumberFormatException");
+				System.out.print("NumberFormatException"); // TODO Better output?
 			}
 			if (threads < 1) {
 				threads = 5;
@@ -42,6 +42,16 @@ public class Driver {
 			wordIndex = new ThreadSafeIndex();
 			results = new ThreadSafeQueryFileParser((ThreadSafeIndex) wordIndex, threads);
 			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder((ThreadSafeIndex) wordIndex, threads);
+			
+			// TODO Should always try to avoid downcasting
+			/* 
+			ThreadSafeIndex threadSafe = new ThreadSafeIndex();
+			wordIndex = threadSafe;
+			
+			results = new ThreadSafeQueryFileParser(threadSafe, threads);
+			invertedIndexBuilder = new ThreadSafeInvertedIndexBuilder(threadSafe, threads);
+			*/
+			
 		} else {
 			wordIndex = new InvertedIndex();
 			results = new QueryFileParser(wordIndex);

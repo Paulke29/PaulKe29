@@ -28,7 +28,7 @@ public class InvertedIndexBuilder {
 	 * 
 	 * @param index InvertedInde object
 	 */
-	InvertedIndexBuilder(InvertedIndex index) {
+	InvertedIndexBuilder(InvertedIndex index) { // TODO public
 
 		this.index = index;
 	}

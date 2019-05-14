@@ -34,6 +34,8 @@ public class QueryFileParser implements QueryFileParserInterface {
 		this.index = index;
 	}
 
+	// TODO Use the @Override annotation
+	
 	/**
 	 * Parse the line and output the result
 	 * 
