@@ -57,7 +57,6 @@ public class WebCrawler {
 		queue.execute(new WebCrawlerTask(seed, limit));
 		queue.finish();
 		queue.shutdown();
-		System.out.println("Queue done");
 	}
 	/**
 	 * @author PaulKe
@@ -101,7 +100,6 @@ public class WebCrawler {
 					start++;
 				}
 				synchronized (links) {
-//					links.add(singleURL);
 					if (links.size() < limit) {
 						ArrayList<URL> Alllinks = HtmlCleaner.listLinks(this.singleURL, HTML);
 

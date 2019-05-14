@@ -31,7 +31,6 @@ public class Driver {
 		ArgumentMap argumentMap = new ArgumentMap(args);
 		InvertedIndex wordIndex;
 		InvertedIndexBuilder invertedIndexBuilder;
-//		QueryFileParser resultSearch;
 		QueryFileParserInterface results;
 		int threads = 0;
 		WebCrawler crawler = null;
@@ -60,8 +59,6 @@ public class Driver {
 			try {
 				seed = new URL(Seed);
 				limit = Integer.parseInt(argumentMap.getString("-limit", "50"));
-				System.out.println("Limit: "+ limit);
-				System.out.println("Limi2t: "+argumentMap.getString("-limit"));
 			} catch (MalformedURLException e) {
 				System.err.println("Illegal url: " + Seed + " please check your argument");
 				return;
@@ -69,7 +66,6 @@ public class Driver {
 				System.err.println("Illegal limit number: " + argumentMap.getString("-limit"));
 				return;
 			}
-			System.out.print("Limit3: "+limit);
 			crawler = new WebCrawler((ThreadSafeIndex) wordIndex, threads);
 			crawler.craw(seed, limit);
 
@@ -102,7 +98,6 @@ public class Driver {
 
 			Path indexPath = argumentMap.getPath("-index", Path.of("index.json"));
 			try {
-				System.out.println("Right starting");
 				wordIndex.nestJSON(indexPath);
 			} catch (IOException e) {
 				System.out.println("Couldn't get anything from path: " + indexPath);

@@ -87,7 +87,6 @@ public class ArgumentMap {
 	 * @see String#length()
 	 */
 	public static boolean isValue(String arg) {
-		System.out.println("ArgumentMap isValue: "+ arg);
 		return arg != null && !arg.startsWith("-") && arg.trim().length() > 0;
 	}
 

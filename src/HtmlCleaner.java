@@ -14,10 +14,7 @@ import java.util.regex.Pattern;
  */
 public class HtmlCleaner {
 
-	/*
-	 * Instead of creating several get methods, these are all public for direct
-	 * access since they are constant and/or unmodifiable.
-	 */
+	
 
 	/**
 	 * The base URL of the HTML provided.
@@ -247,7 +244,6 @@ public class HtmlCleaner {
 	 * @return text without that HTML element
 	 */
 	public static String stripElement(String html, String name) {
-		// TODO
 		String regex = "(?s)(?i)<" + name + "(.*?)" + name + "(\\s*?)>";
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(html);
@@ -258,7 +254,6 @@ public class HtmlCleaner {
 
 		m.appendTail(sb);
 		return sb.toString();
-		// end of lab
 	}
 
 	/**
